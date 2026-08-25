@@ -28,15 +28,15 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px 15px; /* تحسين الهوامش الجانبية */
+            padding: 20px 15px;
         }
 
         .main-card {
             background: var(--card-bg);
             width: 100%;
-            max-width: 550px; /* تم التكبير قليلاً ليتناسب مع اللابتوب */
+            max-width: 550px;
             border-radius: 35px;
-            padding: 40px 30px; /* مساحات داخلية أفضل */
+            padding: 40px 30px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             display: flex;
             flex-direction: column;
@@ -45,7 +45,7 @@
 
         .main-title {
             text-align: center;
-            font-size: clamp(22px, 5vw, 26px); /* خط متجاوب */
+            font-size: clamp(22px, 5vw, 26px);
             font-weight: 900;
             color: var(--text-color);
             margin-bottom: 25px;
@@ -55,7 +55,7 @@
 
         .main-title span {
             display: block;
-            font-size: clamp(24px, 6vw, 28px); /* خط متجاوب */
+            font-size: clamp(24px, 6vw, 28px);
         }
 
         .form-step {
@@ -78,7 +78,7 @@
 
         .input-card label {
             display: block;
-            font-size: 16px; /* تصغير طفيف ليتناسب مع كل الشاشات */
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-color);
             margin-bottom: 10px;
@@ -107,23 +107,22 @@
             color: #555;
         }
 
-        /* تنسيق الأزرار ليكون متجاوباً */
         .btn-container {
             display: flex;
             justify-content: center;
             gap: 15px;
             margin-top: 15px;
             width: 100%;
-            flex-wrap: wrap; /* السماح بالتوزيع في سطرين إن لزم الأمر */
+            flex-wrap: wrap;
         }
 
         .btn-next, .btn-prev {
-            flex: 1; /* لجعل الأزرار تأخذ مساحة متساوية */
-            min-width: 120px; /* أقل عرض مسموح به */
+            flex: 1;
+            min-width: 120px;
             font-weight: 800;
             border: none;
             border-radius: 50px;
-            padding: 12px 20px; /* تعديل المسافات الداخلية */
+            padding: 12px 20px;
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: center;
@@ -162,7 +161,6 @@
             font-size: 16px;
         }
 
-        /* --- تنسيقات اللوجوهات (Responsive) --- */
         .logos-container {
             width: 100%;
             display: flex;
@@ -173,45 +171,48 @@
             direction: ltr; 
         }
 
+        /* تعديل الجزء العلوي ليكون Flex لضم اللوجوهات */
         .top-logos {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
             width: 100%;
-            flex-wrap: wrap; /* السماح بالنزول لسطر جديد في الشاشات الصغيرة جداً */
+            gap: 0;
+            direction: ltr;
         }
 
-        /* تحويل المقاسات الثابتة لمقاسات مرنة */
-        .top-logos img {
-            max-height: 75px; 
-            width: auto;
-            max-width: 30%;
+        .top-logos img,
+        .entities-logos img {
+            display: block;
+            width: 100%;
+            height: 68px;
+            min-width: 0;
+            margin: 0;
+            padding: 0;
             object-fit: contain;
+            object-position: center;
         }
 
-        .top-logos img:nth-child(3) {
-            max-height: 90px; 
+        /* اللوجوهات الثلاثة العلوية متساوية ومتلاصقة */
+        .top-logos img {
+            height: 75px;
+            width: auto; /* إعطاء العرض التلقائي لمنع الفراغات الجانبية */
         }
 
         .entities-logos {
-            display: flex;
-            justify-content: center; 
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
             align-items: center;
-            flex-wrap: wrap; /* ضروري لعدم تشويه اللوجوهات في الموبايل */
             width: 100%;
-            gap: 8px; 
+            gap: 0;
+            direction: ltr;
         }
 
-        .entities-logos img {
-            max-height: 65px; 
-            width: auto;
-            max-width: 18%; /* لتوزيعها بانتظام */
-            min-width: 45px; /* ضمان عدم صغرها بشكل يمنع القراءة */
-            object-fit: contain;
+        /* تكبير لوجو اتحاد بشبابها بصريًا مع الحفاظ على نفس الخانة */
+        .entities-logos img:nth-child(4) {
+            transform: scale(1.28);
         }
 
-        /* --- استعلامات الوسائط (Media Queries) للهواتف --- */
         @media (max-width: 480px) {
             .main-card {
                 padding: 30px 20px;
@@ -222,22 +223,27 @@
                 padding: 15px;
             }
 
-            .top-logos img {
-                max-height: 60px;
+            .top-logos,
+            .entities-logos {
+                gap: 0;
             }
 
-            .top-logos img:nth-child(3) {
-                max-height: 70px;
-            }
-
+            .top-logos img,
             .entities-logos img {
-                max-height: 50px;
-                max-width: 20%; /* السماح بحجم أكبر قليلاً مع نزولها سطر جديد إذا لزم الأمر */
+                height: 45px;
+            }
+
+            .top-logos img {
+                height: 50px;
+            }
+
+            .entities-logos img:nth-child(4) {
+                transform: scale(1.2);
             }
 
             .btn-next, .btn-prev {
                 font-size: 18px;
-                padding: 10px 15px;
+                padding: 10px 10px;
             }
         }
     </style>
@@ -246,7 +252,6 @@
 
 <div class="main-card">
     
-    <!-- قسم اللوجوهات -->
     <div class="logos-container">
         <div class="top-logos">
             <img src="photo_5796201732420341509_y.jpg" alt="Youth Empowered">
@@ -270,11 +275,17 @@
 
     <form id="competitionForm" style="width: 100%;">
         
+        <!-- 🛡️ Honeypot Field -->
+        <div style="opacity: 0; position: absolute; top: -9999px; left: -9999px;" aria-hidden="true">
+            <label for="user_url">Website</label>
+            <input type="text" id="user_url" name="user_url" tabindex="-1" autocomplete="off">
+        </div>
+
         <!-- STEP 1 -->
         <div class="form-step active" id="step-1">
             <div class="input-card">
                 <label>الاسم الثلاثي:</label>
-                <input type="text" id="fullName" placeholder="اكتب اسمك الثلاثي" required>
+                <input type="text" id="fullName" placeholder="اكتب اسمك الثلاثي" required oninput="validateTripleName(this)">
             </div>
 
             <div class="input-card">
@@ -296,7 +307,7 @@
             
             <div id="friendFields" class="input-card hidden">
                 <label>اسم صديقك ثلاثي (اللي رشحلك التدريب):</label>
-                <input type="text" id="friendName" placeholder="اسم صديقك الثلاثي">
+                <input type="text" id="friendName" placeholder="اسم صديقك الثلاثي بالعربية فقط" oninput="validateArabicTripleName(this)">
             </div>
 
             <div class="input-card">
@@ -376,7 +387,6 @@
 
     <div id="message"></div>
 </div>
-
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPvmuYbVibnhlbToybuWAsFwXQpn8YHRRChxFeOFPs9uABS862oBjXsB5KXxSrDGWX/exec';
 
@@ -388,19 +398,58 @@
 
     let currentStep = 1;
 
+    // التحقق من الاسم الثلاثي العادي (لا يشترط اللغة فقط الـ 3 كلمات)
+    function validateTripleName(input) {
+        if (input.value.trim() === "") {
+            input.setCustomValidity("");
+            return;
+        }
+        const words = input.value.trim().split(/\s+/);
+        if (words.length < 3) {
+            input.setCustomValidity("برجاء إدخال الاسم ثلاثي على الأقل (3 كلمات).");
+        } else {
+            input.setCustomValidity("");
+        }
+    }
+
+    // دالة جديدة مخصصة لاسم الصديق: تتحقق من (اللغة العربية فقط) + (ألا يقل عن 3 كلمات)
+    function validateArabicTripleName(input) {
+        if (input.value.trim() === "") {
+            input.setCustomValidity("");
+            return;
+        }
+
+        // ريجكس للتاكد أن النص يحتوي على حروف عربية ومسافات فقط (بدون إنجليزي أو أرقام أو رموز غريبة)
+        const arabicOnlyRegex = /^[\u0600-\u06FF\s]+$/;
+
+        if (!arabicOnlyRegex.test(input.value)) {
+            input.setCustomValidity("يجب كتابة اسم الصديق باللغة العربية فقط (بدون إنجليزية أو أرقام).");
+            return;
+        }
+
+        const words = input.value.trim().split(/\s+/);
+        if (words.length < 3) {
+            input.setCustomValidity("برجاء إدخال اسم الصديق ثلاثي على الأقل (3 كلمات).");
+        } else {
+            input.setCustomValidity("");
+        }
+    }
+
     function handleRegTypeChange() {
         const regType = document.getElementById('regType').value;
         const friendFields = document.getElementById('friendFields');
         const entityLabel = document.getElementById('entityLabel');
+        const friendInput = document.getElementById('friendName');
 
         if (regType === "صديق مرشح من عضو باتحاد شبابي") {
             friendFields.classList.remove('hidden');
-            document.getElementById('friendName').required = true;
+            friendInput.required = true;
+            validateArabicTripleName(friendInput);
             entityLabel.innerText = "الاتحاد التابع له صديقك:";
         } else {
             friendFields.classList.add('hidden');
-            document.getElementById('friendName').required = false;
-            entityLabel.innerText = "الاتحاد المنضم إليه:";
+            friendInput.required = false;
+            friendInput.setCustomValidity("");
         }
         handleEntityChange();
     }
@@ -448,22 +497,17 @@
         }
     }
 
-    // الدالة الجديدة المُحدثة للتحقق من البيانات
     function nextStep(step) {
         const currentStepDiv = document.getElementById(`step-${step}`);
-        
-        // جلب كل الحقول المطلوبة في الخطوة الحالية
         const requiredInputs = currentStepDiv.querySelectorAll('input[required], select[required]');
         
-        // التأكد من أن كل الحقول المطلوبة ممتلئة
         for (let input of requiredInputs) {
             if (!input.checkValidity()) {
-                input.reportValidity(); // هيظهر رسالة الخطأ الحمراء بتاعة المتصفح
-                return; // هيوقف الانتقال للخطوة التالية
+                input.reportValidity(); 
+                return; 
             }
         }
 
-        // لو كله تمام، انتقل للخطوة التالية
         currentStepDiv.classList.remove('active');
         currentStep = step + 1;
         document.getElementById(`step-${currentStep}`).classList.add('active');
@@ -475,12 +519,10 @@
         document.getElementById(`step-${currentStep}`).classList.add('active');
     }
 
-    // دالة فحص وتصغير الصور (مُعدلة لحظر أكثر من 1 ميجا والضغط الفائق)
     function compressImage(file) {
         return new Promise((resolve, reject) => {
             if (!file) { resolve(null); return; }
             
-            // فحص الحجم: إذا كان أكبر من 1 ميجابايت (1,048,576 بايت)
             if (file.size > 1024 * 1024) {
                 alert(`الملف "${file.name}" حجمه أكبر من 1 ميجابايت! يرجى اختيار ملف بحجم أقل.`);
                 reject(new Error("File size limit exceeded"));
@@ -493,7 +535,7 @@
                 img.src = e.target.result;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 600; // تصغير العرض لتخفيف المعالجة
+                    const MAX_WIDTH = 600; 
                     let width = img.width;
                     let height = img.height;
 
@@ -507,7 +549,6 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // ضغط الجودة لـ 40% (كافية لرؤية البيانات ومساحتها صغيرة جداً)
                     const base64 = canvas.toDataURL('image/jpeg', 0.4).split(',')[1];
                     resolve({ name: file.name, base64: base64 });
                 };
@@ -518,9 +559,28 @@
 
     document.getElementById('competitionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
+
+        const messageDiv = document.getElementById('message');
+
+        // 🛡️ نظام Rate Limiting (الحد الأقصى مرتين فقط لكل جهاز/متصفح)
+        let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
+        if (submissionCount >= 2) {
+            messageDiv.style.color = "red";
+            messageDiv.innerText = "لقد تجاوزت الحد الأقصى المسموح به للإرسال (مرتين فقط). لا يمكنك إرسال طلبات أخرى.";
+            return;
+        }
+
+        // 🛡️ التحقق من الـ Honeypot
+        const honeypot = document.getElementById('user_url').value;
+        if (honeypot !== "") {
+            console.warn("Spam Bot Detected!");
+            messageDiv.style.color = "green";
+            messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
+            document.getElementById('competitionForm').reset();
+            return;
+        }
         
         const submitBtn = document.getElementById('submitBtn');
-        const messageDiv = document.getElementById('message');
         
         submitBtn.disabled = true;
         submitBtn.innerText = "جاري الإرسال...";
@@ -553,6 +613,10 @@
             .then(res => res.json())
             .then(data => {
                 if (data.status === "success") {
+                    // زيادة العداد وتخزينه في المتصفح بعد النجاح
+                    submissionCount++;
+                    localStorage.setItem('form_sub_count', submissionCount);
+
                     messageDiv.style.color = "green";
                     messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
                     document.getElementById('competitionForm').reset();
@@ -571,12 +635,10 @@
             });
 
         } catch (err) {
-            // في حالة كان حجم الملف أطول من 1 ميجا
             submitBtn.disabled = false;
             submitBtn.innerText = "Submit";
         }
     });
-
 </script>
 
 </body>
