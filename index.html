@@ -28,15 +28,15 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px 15px;
+            padding: 20px 15px; /* تحسين الهوامش الجانبية */
         }
 
         .main-card {
             background: var(--card-bg);
             width: 100%;
-            max-width: 550px;
+            max-width: 550px; /* تم التكبير قليلاً ليتناسب مع اللابتوب */
             border-radius: 35px;
-            padding: 40px 30px;
+            padding: 40px 30px; /* مساحات داخلية أفضل */
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             display: flex;
             flex-direction: column;
@@ -45,7 +45,7 @@
 
         .main-title {
             text-align: center;
-            font-size: clamp(22px, 5vw, 26px);
+            font-size: clamp(22px, 5vw, 26px); /* خط متجاوب */
             font-weight: 900;
             color: var(--text-color);
             margin-bottom: 25px;
@@ -55,7 +55,7 @@
 
         .main-title span {
             display: block;
-            font-size: clamp(24px, 6vw, 28px);
+            font-size: clamp(24px, 6vw, 28px); /* خط متجاوب */
         }
 
         .form-step {
@@ -78,7 +78,7 @@
 
         .input-card label {
             display: block;
-            font-size: 16px;
+            font-size: 16px; /* تصغير طفيف ليتناسب مع كل الشاشات */
             font-weight: 700;
             color: var(--text-color);
             margin-bottom: 10px;
@@ -107,22 +107,23 @@
             color: #555;
         }
 
+        /* تنسيق الأزرار ليكون متجاوباً */
         .btn-container {
             display: flex;
             justify-content: center;
             gap: 15px;
             margin-top: 15px;
             width: 100%;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* السماح بالتوزيع في سطرين إن لزم الأمر */
         }
 
         .btn-next, .btn-prev {
-            flex: 1;
-            min-width: 120px;
+            flex: 1; /* لجعل الأزرار تأخذ مساحة متساوية */
+            min-width: 120px; /* أقل عرض مسموح به */
             font-weight: 800;
             border: none;
             border-radius: 50px;
-            padding: 12px 20px;
+            padding: 12px 20px; /* تعديل المسافات الداخلية */
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: center;
@@ -161,6 +162,7 @@
             font-size: 16px;
         }
 
+        /* --- تنسيقات اللوجوهات (Responsive) --- */
         .logos-container {
             width: 100%;
             display: flex;
@@ -177,9 +179,10 @@
             align-items: center;
             gap: 15px;
             width: 100%;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* السماح بالنزول لسطر جديد في الشاشات الصغيرة جداً */
         }
 
+        /* تحويل المقاسات الثابتة لمقاسات مرنة */
         .top-logos img {
             max-height: 75px; 
             width: auto;
@@ -195,7 +198,7 @@
             display: flex;
             justify-content: center; 
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* ضروري لعدم تشويه اللوجوهات في الموبايل */
             width: 100%;
             gap: 8px; 
         }
@@ -203,11 +206,12 @@
         .entities-logos img {
             max-height: 65px; 
             width: auto;
-            max-width: 18%;
-            min-width: 45px;
+            max-width: 18%; /* لتوزيعها بانتظام */
+            min-width: 45px; /* ضمان عدم صغرها بشكل يمنع القراءة */
             object-fit: contain;
         }
 
+        /* --- استعلامات الوسائط (Media Queries) للهواتف --- */
         @media (max-width: 480px) {
             .main-card {
                 padding: 30px 20px;
@@ -228,7 +232,7 @@
 
             .entities-logos img {
                 max-height: 50px;
-                max-width: 30%;
+                max-width: 30%; /* السماح بحجم أكبر قليلاً مع نزولها سطر جديد إذا لزم الأمر */
             }
 
             .btn-next, .btn-prev {
@@ -241,7 +245,7 @@
 <body>
 
 <div class="main-card">
-
+    
     <!-- قسم اللوجوهات -->
     <div class="logos-container">
         <div class="top-logos">
@@ -265,7 +269,7 @@
     </h1>
 
     <form id="competitionForm" style="width: 100%;">
-
+        
         <!-- STEP 1 -->
         <div class="form-step active" id="step-1">
             <div class="input-card">
@@ -289,7 +293,7 @@
 
         <!-- STEP 2 -->
         <div class="form-step" id="step-2">
-
+            
             <div id="friendFields" class="input-card hidden">
                 <label>اسم صديقك ثلاثي (اللي رشحلك التدريب):</label>
                 <input type="text" id="friendName" placeholder="اسم صديقك الثلاثي">
@@ -374,8 +378,7 @@
 </div>
 
 <script>
-    // تغيير الرابط ليوجه لـ Vercel Serverless API
-    const SCRIPT_URL = '/api/submit';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzuYAsjRALUC19qeV6IyxJQMUCE2ekHLaepYZ0QizjYd0WH05_HQanAi9jU6u2S4t6A/exec';
 
     const standardGovernorates = [
         "القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "الشرقية", "القليوبية", "كفر الشيخ", "المنوفية", 
@@ -406,9 +409,9 @@
         const entity = document.getElementById('entity').value;
         const govSelect = document.getElementById('governorate');
         const ylyFbQuestion = document.getElementById('ylyFbQuestion');
-
+        
         govSelect.innerHTML = '<option value="">Choose</option>';
-
+        
         let list = [...standardGovernorates];
         if (entity === "اتحاد شباب يدير شباب - YLY") {
             list.unshift("تيم الوزارة", "تيم العاصمة");
@@ -468,10 +471,12 @@
         document.getElementById(`step-${currentStep}`).classList.add('active');
     }
 
+    // دالة فحص وتصغير الصور (مُعدلة لحظر أكثر من 1 ميجا والضغط الفائق)
     function compressImage(file) {
         return new Promise((resolve, reject) => {
             if (!file) { resolve(null); return; }
-
+            
+            // فحص الحجم: إذا كان أكبر من 1 ميجابايت (1,048,576 بايت)
             if (file.size > 1024 * 1024) {
                 alert(`الملف "${file.name}" حجمه أكبر من 1 ميجابايت! يرجى اختيار ملف بحجم أقل.`);
                 reject(new Error("File size limit exceeded"));
@@ -484,7 +489,7 @@
                 img.src = e.target.result;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 600;
+                    const MAX_WIDTH = 600; // تصغير العرض لتخفيف المعالجة
                     let width = img.width;
                     let height = img.height;
 
@@ -497,7 +502,8 @@
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-
+                    
+                    // ضغط الجودة لـ 40% (كافية لرؤية البيانات ومساحتها صغيرة جداً)
                     const base64 = canvas.toDataURL('image/jpeg', 0.4).split(',')[1];
                     resolve({ name: file.name, base64: base64 });
                 };
@@ -508,10 +514,10 @@
 
     document.getElementById('competitionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-
+        
         const submitBtn = document.getElementById('submitBtn');
         const messageDiv = document.getElementById('message');
-
+        
         submitBtn.disabled = true;
         submitBtn.innerText = "جاري الإرسال...";
         messageDiv.innerText = "";
@@ -538,9 +544,6 @@
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
                 body: JSON.stringify(payload)
             })
             .then(res => res.json())
@@ -564,10 +567,12 @@
             });
 
         } catch (err) {
+            // في حالة كان حجم الملف أطول من 1 ميجا
             submitBtn.disabled = false;
             submitBtn.innerText = "Submit";
         }
     });
+
 </script>
 
 </body>
