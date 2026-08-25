@@ -1,0 +1,8 @@
+{
+  "name": "ye-summer-internship-2026",
+  "version": "1.0.0",
+  "main": "index.html",
+  "dependencies": {
+    "googleapis": "^126.0.0"
+  }
+}
