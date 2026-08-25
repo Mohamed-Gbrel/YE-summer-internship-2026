@@ -18,7 +18,6 @@ export default async function handler(req, res) {
         const namesOnCertificates = data.namesOnCertificates || "";
         const files = data.files || {};
 
-        // جدول الفولدرات والشيتات لكل كيان
         const entityConfig = {
             "اتحاد شباب العمال": {
                 folderId: "1x0CxvuWBXnhwFORVUSm-G7T_0Ga0LRzD",
@@ -51,7 +50,6 @@ export default async function handler(req, res) {
 
         const config = entityConfig[entity] || { folderId: defaultFolderId, sheetId: defaultSheetId };
 
-        // إعداد المصادقة
         const auth = new google.auth.GoogleAuth({
             credentials: {
                 client_email: process.env.GOOGLE_CLIENT_EMAIL,
@@ -66,7 +64,6 @@ export default async function handler(req, res) {
         const drive = google.drive({ version: 'v3', auth });
         const sheets = google.sheets({ version: 'v4', auth });
 
-        // رفع الصور لكل كيان في الفولدر الخاص بيه
         async function uploadFile(fileObj, prefix) {
             if (!fileObj || !fileObj.base64) return "لا يوجد ملف";
             try {
@@ -86,7 +83,8 @@ export default async function handler(req, res) {
                         mimeType: 'image/jpeg',
                         body: stream,
                     },
-                    fields: 'webViewLink',
+                    supportsAllDrives: true, // للسماح بالرفع داخل المجلدات المشاركة
+                    fields: 'id, webViewLink',
                 });
 
                 return response.data.webViewLink || "تم الرفع";
@@ -104,24 +102,22 @@ export default async function handler(req, res) {
             uploadFile(files.cert4, "شهادة 4")
         ]);
 
-        // ترتيب الصف بنفس ترتيب أعمدة الصورة بالضبط (من A إلى M)
         const rowData = [
-            new Date().toLocaleString('ar-EG'), // طابع زمني
-            regType,                           // عرفت عن التدريب منين؟
-            fullName,                          // الاسم ثلاثي
-            friendName,                        // اسم صديقك الثلاثي
-            entity,                            // الاتحاد المنضم إليه
-            governorate,                       // المحافظة/التيم التابع له
-            isFollowingFb,                     // متابع لصفحه الفيسبوك؟
-            fbUrl,                             // رابط اسكرين الفيسبوك
-            namesOnCertificates,               // الاسم المستخدم في الشهادات
-            cert1Url,                          // شهادة 1
-            cert2Url,                          // شهادة 2
-            cert3Url,                          // شهادة 3
-            cert4Url                           // شهادة 4
+            new Date().toLocaleString('ar-EG'),
+            regType,
+            fullName,
+            friendName,
+            entity,
+            governorate,
+            isFollowingFb,
+            fbUrl,
+            namesOnCertificates,
+            cert1Url,
+            cert2Url,
+            cert3Url,
+            cert4Url
         ];
 
-        // توجيه البيانات للـ Tab الخاصة بالكيان (مثل: 'اتحاد شباب يدير شباب - YLY')
         const sheetTabName = entity || 'Sheet1';
 
         await sheets.spreadsheets.values.append({
