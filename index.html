@@ -232,7 +232,7 @@
 
             .entities-logos img {
                 max-height: 50px;
-                max-width: 30%; /* السماح بحجم أكبر قليلاً مع نزولها سطر جديد إذا لزم الأمر */
+                max-width: 20%; /* السماح بحجم أكبر قليلاً مع نزولها سطر جديد إذا لزم الأمر */
             }
 
             .btn-next, .btn-prev {
@@ -448,19 +448,23 @@
         }
     }
 
+    // الدالة الجديدة المُحدثة للتحقق من البيانات
     function nextStep(step) {
-        if (step === 1) {
-            if (!document.getElementById('fullName').value || !document.getElementById('regType').value) {
-                alert("يرجى كتابة الاسم الثلاثي واختيار إجابة السؤال.");
-                return;
-            }
-        } else if (step === 2) {
-            if (!document.getElementById('entity').value || !document.getElementById('governorate').value) {
-                alert("يرجى اختيار الاتحاد والمحافظة.");
-                return;
+        const currentStepDiv = document.getElementById(`step-${step}`);
+        
+        // جلب كل الحقول المطلوبة في الخطوة الحالية
+        const requiredInputs = currentStepDiv.querySelectorAll('input[required], select[required]');
+        
+        // التأكد من أن كل الحقول المطلوبة ممتلئة
+        for (let input of requiredInputs) {
+            if (!input.checkValidity()) {
+                input.reportValidity(); // هيظهر رسالة الخطأ الحمراء بتاعة المتصفح
+                return; // هيوقف الانتقال للخطوة التالية
             }
         }
-        document.getElementById(`step-${step}`).classList.remove('active');
+
+        // لو كله تمام، انتقل للخطوة التالية
+        currentStepDiv.classList.remove('active');
         currentStep = step + 1;
         document.getElementById(`step-${currentStep}`).classList.add('active');
     }
