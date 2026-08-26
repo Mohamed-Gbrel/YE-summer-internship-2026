@@ -338,7 +338,8 @@
 
             <div id="fbScreenshotGroup" class="input-card hidden">
                 <label>حط اسكرين لمتابعة صفحة الفيسبوك:</label>
-                <input type="file" id="fbScreenshot" accept="image/*">
+                <!-- التعديل هنا: تحديد صيغ الصور المسموحة فقط -->
+                <input type="file" id="fbScreenshot" accept=".jpg, .jpeg, .png">
             </div>
 
             <div class="btn-container">
@@ -356,22 +357,23 @@
 
             <div class="input-card">
                 <label>شهادة 1 (إجباري):</label>
-                <input type="file" id="cert1" accept="image/*" required>
+                <!-- التعديل هنا: تحديد صيغ الصور المسموحة فقط -->
+                <input type="file" id="cert1" accept=".jpg, .jpeg, .png" required>
             </div>
 
             <div class="input-card">
                 <label>شهادة 2 (اختياري):</label>
-                <input type="file" id="cert2" accept="image/*">
+                <input type="file" id="cert2" accept=".jpg, .jpeg, .png">
             </div>
 
             <div class="input-card">
                 <label>شهادة 3 (اختياري):</label>
-                <input type="file" id="cert3" accept="image/*">
+                <input type="file" id="cert3" accept=".jpg, .jpeg, .png">
             </div>
 
             <div class="input-card">
                 <label>شهادة 4 (اختياري):</label>
-                <input type="file" id="cert4" accept="image/*">
+                <input type="file" id="cert4" accept=".jpg, .jpeg, .png">
             </div>
 
             <div class="btn-container">
@@ -387,7 +389,7 @@
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPvmuYbVibnhlbToybuWAsFwXQpn8YHRRChxFeOFPs9uABS862oBjXsB5KXxSrDGWX/exec';
     
-    // === إعدادات كلاوديناري (تم تصحيح اسم الحساب ليتطابق مع لوحة التحكم الخاصة بك) ===
+    // === إعدادات كلاوديناري ===
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxhe/upload';
     const CLOUDINARY_PRESET = 'ye_intern_preset';
 
@@ -521,9 +523,16 @@
         return new Promise((resolve, reject) => {
             if (!file) { resolve(null); return; }
             
+            // 🛡️ التعديل 1: التحقق من صيغة الملف (صور فقط JPG أو PNG)
+            const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!validImageTypes.includes(file.type)) {
+                reject(new Error(`الملف "${file.name}" صيغته غير مدعومة. يرجى رفع صور بصيغة JPG أو PNG فقط.`));
+                return;
+            }
+
+            // 🛡️ التعديل 2: التحقق من حجم الملف (أقصى حاجة 1 ميجابايت = 1 * 1024 * 1024 بايت)
             if (file.size > 1024 * 1024) {
-                alert(`الملف "${file.name}" حجمه أكبر من 1 ميجابايت! يرجى اختيار ملف بحجم أقل.`);
-                reject(new Error("File size limit exceeded"));
+                reject(new Error(`الملف "${file.name}" حجمه أكبر من 1 ميجابايت! يرجى اختيار ملف بحجم أقل.`));
                 return;
             }
 
@@ -555,14 +564,12 @@
         });
     }
 
-    // دالة الرفع لكلاوديناري وتقسيم الملفات داخل فولدر خاص بكل اتحاد
     async function uploadToCloudinary(dataUrl, folderName) {
         if (!dataUrl) return "";
         try {
             const formData = new FormData();
             formData.append("file", dataUrl);
             formData.append("upload_preset", CLOUDINARY_PRESET);
-            // سيتم إنشاء فولدر رئيسي اسمه "التسجيلات" وبداخله فولدرات بأسماء الاتحادات أوتوماتيك
             formData.append("folder", "التسجيلات/" + folderName);
 
             const response = await fetch(CLOUDINARY_URL, { method: "POST", body: formData });
@@ -570,15 +577,21 @@
             return data.secure_url || ""; 
         } catch (error) {
             console.error("Upload error:", error);
-            return "";
+            throw new Error("حدث خطأ أثناء رفع الصور، يرجى المحاولة مرة أخرى."); // رمي خطأ ليظهر للمستخدم
         }
     }
 
     document.getElementById('competitionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-
         const messageDiv = document.getElementById('message');
+        
+        // 🛡️ التعديل 3: إضافة نظام Rate Limiting (مرة واحدة فقط)
         let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
+        if (submissionCount >= 1) {
+            messageDiv.style.color = "red";
+            messageDiv.innerText = "لقد قمت بالتسجيل مسبقاً. لا يمكنك إرسال طلب آخر.";
+            return;
+        }
         
         const honeypot = document.getElementById('user_url').value;
         if (honeypot !== "") {
@@ -597,20 +610,19 @@
         try {
             const entityName = document.getElementById('entity').value || "غير_معروف";
 
-            // التقاط الصور بأمان
             const fbInput = document.getElementById('fbScreenshot');
             const cert1Input = document.getElementById('cert1');
             const cert2Input = document.getElementById('cert2');
             const cert3Input = document.getElementById('cert3');
             const cert4Input = document.getElementById('cert4');
 
+            // سيقوم هذا الجزء برمي Error في حال كانت الصورة غير مدعومة أو أكبر من 1 ميجا
             const fbImgData = fbInput && fbInput.files[0] ? await compressImage(fbInput.files[0]) : null;
             const cert1Data = cert1Input && cert1Input.files[0] ? await compressImage(cert1Input.files[0]) : null;
             const cert2Data = cert2Input && cert2Input.files[0] ? await compressImage(cert2Input.files[0]) : null;
             const cert3Data = cert3Input && cert3Input.files[0] ? await compressImage(cert3Input.files[0]) : null;
             const cert4Data = cert4Input && cert4Input.files[0] ? await compressImage(cert4Input.files[0]) : null;
 
-            // رفع الصور لكلاوديناري وتوزيعها في الفولدرات المخصصة
             const filesData = {
                 fbScreenshot: await uploadToCloudinary(fbImgData, entityName),
                 cert1: await uploadToCloudinary(cert1Data, entityName),
@@ -630,14 +642,10 @@
                 files: filesData
             };
 
-            // إرسال البيانات لجوجل شيت
-           // إرسال البيانات لجوجل شيت (نظام no-cors)
             await fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
@@ -652,7 +660,8 @@
         } catch (err) {
             console.error(err);
             messageDiv.style.color = "red";
-            messageDiv.innerText = "حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.";
+            // 🛡️ التعديل 4: عرض سبب الخطأ الفعلي للمستخدم (حجم كبير، أو صيغة غلط)
+            messageDiv.innerText = err.message || "حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.";
             submitBtn.disabled = false;
             submitBtn.innerText = "Submit";
         }
