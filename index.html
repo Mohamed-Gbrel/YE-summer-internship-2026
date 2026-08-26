@@ -171,7 +171,6 @@
             direction: ltr; 
         }
 
-        /* تعديل الجزء العلوي ليكون Flex لضم اللوجوهات */
         .top-logos {
             display: flex;
             justify-content: center;
@@ -193,10 +192,9 @@
             object-position: center;
         }
 
-        /* اللوجوهات الثلاثة العلوية متساوية ومتلاصقة */
         .top-logos img {
             height: 75px;
-            width: auto; /* إعطاء العرض التلقائي لمنع الفراغات الجانبية */
+            width: auto; 
         }
 
         .entities-logos {
@@ -208,7 +206,6 @@
             direction: ltr;
         }
 
-        /* تكبير لوجو اتحاد بشبابها بصريًا مع الحفاظ على نفس الخانة */
         .entities-logos img:nth-child(4) {
             transform: scale(1.28);
         }
@@ -389,6 +386,10 @@
 </div>
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPvmuYbVibnhlbToybuWAsFwXQpn8YHRRChxFeOFPs9uABS862oBjXsB5KXxSrDGWX/exec';
+    
+    // === [إضافة 1]: إعدادات كلاوديناري ===
+    const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxfhe/upload';
+    const CLOUDINARY_PRESET = 'ye_intern_preset';
 
     const standardGovernorates = [
         "القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "الشرقية", "القليوبية", "كفر الشيخ", "المنوفية", 
@@ -398,7 +399,6 @@
 
     let currentStep = 1;
 
-    // التحقق من الاسم الثلاثي العادي (لا يشترط اللغة فقط الـ 3 كلمات)
     function validateTripleName(input) {
         if (input.value.trim() === "") {
             input.setCustomValidity("");
@@ -412,14 +412,12 @@
         }
     }
 
-    // دالة جديدة مخصصة لاسم الصديق: تتحقق من (اللغة العربية فقط) + (ألا يقل عن 3 كلمات)
     function validateArabicTripleName(input) {
         if (input.value.trim() === "") {
             input.setCustomValidity("");
             return;
         }
 
-        // ريجكس للتاكد أن النص يحتوي على حروف عربية ومسافات فقط (بدون إنجليزي أو أرقام أو رموز غريبة)
         const arabicOnlyRegex = /^[\u0600-\u06FF\s]+$/;
 
         if (!arabicOnlyRegex.test(input.value)) {
@@ -549,12 +547,31 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    const base64 = canvas.toDataURL('image/jpeg', 0.4).split(',')[1];
-                    resolve({ name: file.name, base64: base64 });
+                    // === [تعديل بسيط 2]: تغيير الإخراج ليتناسب مع كلاوديناري ===
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.4);
+                    resolve(dataUrl); 
                 };
             };
             reader.readAsDataURL(file);
         });
+    }
+
+    // === [إضافة 3]: دالة الرفع إلى كلاوديناري ===
+    async function uploadToCloudinary(dataUrl, folderName) {
+        if (!dataUrl) return "";
+        try {
+            const formData = new FormData();
+            formData.append("file", dataUrl);
+            formData.append("upload_preset", CLOUDINARY_PRESET);
+            formData.append("folder", "التسجيلات/" + folderName);
+
+            const response = await fetch(CLOUDINARY_URL, { method: "POST", body: formData });
+            const data = await response.json();
+            return data.secure_url; 
+        } catch (error) {
+            console.error("Upload error:", error);
+            return "";
+        }
     }
 
     document.getElementById('competitionForm').addEventListener('submit', async function(e) {
@@ -562,15 +579,9 @@
 
         const messageDiv = document.getElementById('message');
 
-        // 🛡️ نظام Rate Limiting (الحد الأقصى مرتين فقط لكل جهاز/متصفح)
         let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
-        if (submissionCount >= 2) {
-            messageDiv.style.color = "red";
-            messageDiv.innerText = "لقد تجاوزت الحد الأقصى المسموح به للإرسال (مرتين فقط). لا يمكنك إرسال طلبات أخرى.";
-            return;
-        }
+      
 
-        // 🛡️ التحقق من الـ Honeypot
         const honeypot = document.getElementById('user_url').value;
         if (honeypot !== "") {
             console.warn("Spam Bot Detected!");
@@ -587,12 +598,23 @@
         messageDiv.innerText = "";
 
         try {
+            const entityName = document.getElementById('entity').value || "غير_معروف";
+
+            // === [تعديل 4]: دمج كلاوديناري قبل الإرسال لجوجل شيت ===
+            // 1. ضغط الصور
+            const fbImgData = await compressImage(document.getElementById('fbScreenshot').files[0]);
+            const cert1Data = await compressImage(document.getElementById('cert1').files[0]);
+            const cert2Data = await compressImage(document.getElementById('cert2').files[0]);
+            const cert3Data = await compressImage(document.getElementById('cert3').files[0]);
+            const cert4Data = await compressImage(document.getElementById('cert4').files[0]);
+
+            // 2. رفع الصور المظغوطة لكلاوديناري والحصول على الروابط
             const filesData = {
-                fbScreenshot: await compressImage(document.getElementById('fbScreenshot').files[0]),
-                cert1: await compressImage(document.getElementById('cert1').files[0]),
-                cert2: await compressImage(document.getElementById('cert2').files[0]),
-                cert3: await compressImage(document.getElementById('cert3').files[0]),
-                cert4: await compressImage(document.getElementById('cert4').files[0]),
+                fbScreenshot: await uploadToCloudinary(fbImgData, entityName),
+                cert1: await uploadToCloudinary(cert1Data, entityName),
+                cert2: await uploadToCloudinary(cert2Data, entityName),
+                cert3: await uploadToCloudinary(cert3Data, entityName),
+                cert4: await uploadToCloudinary(cert4Data, entityName),
             };
 
             const payload = {
@@ -613,7 +635,6 @@
             .then(res => res.json())
             .then(data => {
                 if (data.status === "success") {
-                    // زيادة العداد وتخزينه في المتصفح بعد النجاح
                     submissionCount++;
                     localStorage.setItem('form_sub_count', submissionCount);
 
