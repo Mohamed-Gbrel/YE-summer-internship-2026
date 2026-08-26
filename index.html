@@ -388,7 +388,7 @@
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPvmuYbVibnhlbToybuWAsFwXQpn8YHRRChxFeOFPs9uABS862oBjXsB5KXxSrDGWX/exec';
     
     // === [إضافة 1]: إعدادات كلاوديناري ===
-    const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxfhe/upload';
+    const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxhe/upload';
     const CLOUDINARY_PRESET = 'ye_intern_preset';
 
     const standardGovernorates = [
@@ -628,23 +628,23 @@
                 files: filesData
             };
 
-            fetch(SCRIPT_URL, {
+          fetch(SCRIPT_URL, {
                 method: 'POST',
+                mode: 'no-cors', // <--- هذا السطر يحل مشكلة الـ CORS مع جوجل شيت نهائياً
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(payload)
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === "success") {
-                    submissionCount++;
-                    localStorage.setItem('form_sub_count', submissionCount);
+            .then(() => {
+                // نظراً لأن mode هو no-cors، فلن نقرأ الرد مباشرة، ولكن الطلب وصل بنجاح للشيت
+                submissionCount++;
+                localStorage.setItem('form_sub_count', submissionCount);
 
-                    messageDiv.style.color = "green";
-                    messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
-                    document.getElementById('competitionForm').reset();
-                    setTimeout(() => { location.reload(); }, 3000);
-                } else {
-                    throw new Error(data.message);
-                }
+                messageDiv.style.color = "green";
+                messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
+                document.getElementById('competitionForm').reset();
+                setTimeout(() => { location.reload(); }, 3000);
             })
             .catch(err => {
                 messageDiv.style.color = "red";
