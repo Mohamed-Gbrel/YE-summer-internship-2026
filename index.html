@@ -244,45 +244,59 @@
     color: var(--primary-red);
 }
 
-        @media (max-width: 480px) {
-            .main-card {
-                padding: 30px 20px;
-                border-radius: 25px;
-            }
+       @media (max-width: 480px) {
+    .main-card {
+        padding: 30px 20px;
+        border-radius: 25px;
+    }
 
-            .input-card {
-                padding: 15px;
-            }
+    .input-card {
+        padding: 15px;
+    }
 
-            .top-logos,
-            .entities-logos {
-                gap: 0;
-            }
+    .top-logos,
+    .entities-logos {
+        gap: 0;
+    }
 
-            .top-logos img,
-            .entities-logos img {
-                height: 45px;
-            }
+    .top-logos img,
+    .entities-logos img {
+        height: 45px;
+    }
 
-            .top-logos img {
-                height: 50px;
-            }
+    .top-logos img {
+        height: 50px;
+    }
 
-            .entities-logos img:nth-child(4) {
-                transform: scale(1.2);
-            }
+    .entities-logos img:nth-child(4) {
+        transform: scale(1.2);
+    }
 
-            .btn-next, .btn-prev {
-                font-size: 18px;
-                padding: 10px 10px;
-            }
+   
+    .btn-container {
+        flex-direction: column;
+        gap: 10px;
+    }
 
-            .developer-credit {
-                font-size: 13px;
-                margin-top: 20px;
-            }
+    .btn-next {
+        order: 1; 
+        font-size: 18px;
+        padding: 12px 10px;
+        width: 100%;
+    }
 
-        }
+    .btn-prev {
+        order: 2; 
+        font-size: 18px;
+        padding: 12px 10px;
+        width: 100%;
+    }
+
+    .developer-credit {
+        font-size: 13px;
+        margin-top: 20px;
+    }
+}
     </style>
 </head>
 <body>
@@ -653,6 +667,15 @@
         e.preventDefault();
         const messageDiv = document.getElementById('message');
         
+ 
+        let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
+        if (submissionCount >= 1) {
+            messageDiv.style.color = "red";
+            messageDiv.innerText = "لقد قمت بالتسجيل مسبقاً. لا يمكنك إرسال طلب آخر.";
+            return;
+        }
+
+
         const honeypot = document.getElementById('user_url').value;
         if (honeypot !== "") {
             console.warn("Spam Bot Detected!");
@@ -707,6 +730,11 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+
+
+             submissionCount++;
+            localStorage.setItem('form_sub_count', submissionCount);
+
 
             messageDiv.style.color = "green";
             messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
