@@ -500,11 +500,36 @@
     function nextStep(step) {
         const currentStepDiv = document.getElementById(`step-${step}`);
         const requiredInputs = currentStepDiv.querySelectorAll('input[required], select[required]');
+        const messageDiv = document.getElementById('message');
+        messageDiv.innerText = "";
         
         for (let input of requiredInputs) {
             if (!input.checkValidity()) {
                 input.reportValidity(); 
                 return; 
+            }
+        }
+
+        // التحقق من صورة السكرين شوت في الخطوة الثانية قبل الانتقال
+        if (step === 2) {
+            const fbScreenshotInput = document.getElementById('fbScreenshot');
+            const fbScreenshotGroup = document.getElementById('fbScreenshotGroup');
+            
+            if (!fbScreenshotGroup.classList.contains('hidden') && fbScreenshotInput.files[0]) {
+                const file = fbScreenshotInput.files[0];
+                const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                
+                if (!validImageTypes.includes(file.type)) {
+                    messageDiv.style.color = "red";
+                    messageDiv.innerText = `الملف "${file.name}" صيغته غير مدعومة. يرجى رفع صور بصيغة JPG أو PNG فقط.`;
+                    return;
+                }
+
+                if (file.size > 1024 * 1024) {
+                    messageDiv.style.color = "red";
+                    messageDiv.innerText = `الملف "${file.name}" حجمه أكبر من 1 ميجابايت! يرجى اختيار ملف بحجم أقل.`;
+                    return;
+                }
             }
         }
 
@@ -523,14 +548,12 @@
         return new Promise((resolve, reject) => {
             if (!file) { resolve(null); return; }
             
-            // 🛡️ التعديل 1: التحقق من صيغة الملف (صور فقط JPG أو PNG)
             const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
             if (!validImageTypes.includes(file.type)) {
                 reject(new Error(`الملف "${file.name}" صيغته غير مدعومة. يرجى رفع صور بصيغة JPG أو PNG فقط.`));
                 return;
             }
 
-            // 🛡️ التعديل 2: التحقق من حجم الملف (أقصى حاجة 1 ميجابايت = 1 * 1024 * 1024 بايت)
             if (file.size > 1024 * 1024) {
                 reject(new Error(`الملف "${file.name}" حجمه أكبر من 1 ميجابايت! يرجى اختيار ملف بحجم أقل.`));
                 return;
@@ -577,16 +600,13 @@
             return data.secure_url || ""; 
         } catch (error) {
             console.error("Upload error:", error);
-            throw new Error("حدث خطأ أثناء رفع الصور، يرجى المحاولة مرة أخرى."); // رمي خطأ ليظهر للمستخدم
+            throw new Error("حدث خطأ أثناء رفع الصور، يرجى المحاولة مرة أخرى.");
         }
     }
 
     document.getElementById('competitionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const messageDiv = document.getElementById('message');
-        
-        // 🛡️ التعديل 3: إضافة نظام Rate Limiting (مرة واحدة فقط)
-       
         
         const honeypot = document.getElementById('user_url').value;
         if (honeypot !== "") {
@@ -611,7 +631,6 @@
             const cert3Input = document.getElementById('cert3');
             const cert4Input = document.getElementById('cert4');
 
-            // سيقوم هذا الجزء برمي Error في حال كانت الصورة غير مدعومة أو أكبر من 1 ميجا
             const fbImgData = fbInput && fbInput.files[0] ? await compressImage(fbInput.files[0]) : null;
             const cert1Data = cert1Input && cert1Input.files[0] ? await compressImage(cert1Input.files[0]) : null;
             const cert2Data = cert2Input && cert2Input.files[0] ? await compressImage(cert2Input.files[0]) : null;
@@ -644,8 +663,6 @@
                 body: JSON.stringify(payload)
             });
 
-         
-
             messageDiv.style.color = "green";
             messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
             document.getElementById('competitionForm').reset();
@@ -654,12 +671,9 @@
         } catch (err) {
             console.error(err);
             messageDiv.style.color = "red";
-            // 🛡️ التعديل 4: عرض سبب الخطأ الفعلي للمستخدم (حجم كبير، أو صيغة غلط)
             messageDiv.innerText = err.message || "حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.";
             submitBtn.disabled = false;
             submitBtn.innerText = "Submit";
         }
     });
 </script>
-</body>
-</html>
