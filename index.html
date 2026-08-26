@@ -25,6 +25,7 @@
         body {
             background-color: var(--bg-color);
             display: flex;
+            flex-direction: column; 
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -86,6 +87,7 @@
         }
 
         .input-card input[type="text"],
+        .input-card textarea,
         .input-card select,
         .input-card input[type="file"] {
             width: 100%;
@@ -98,8 +100,10 @@
             max-width: 100%;
         }
 
-        .input-card input[type="text"] {
+        .input-card input[type="text"],
+        .input-card textarea {
             border-bottom: 2px solid var(--primary-red);
+            resize: vertical;
         }
 
         .input-card select {
@@ -210,6 +214,36 @@
             transform: scale(1.28);
         }
 
+     
+        .developer-credit {
+            margin-top: 25px;
+            font-size: 14px;
+            color: #6c757d;
+            text-align: center;
+            direction: ltr;
+            letter-spacing: 0.5px;
+        }
+
+        .developer-credit span {
+            color: var(--text-color);
+            font-weight: 800;
+            transition: color 0.3s ease;
+        }
+
+        .developer-credit span:hover {
+            color: var(--primary-red);
+        }
+        .developer-credit a {
+    color: var(--text-color);
+    font-weight: 800;
+    text-decoration: none; 
+    transition: color 0.3s ease;
+}
+
+.developer-credit a:hover {
+    color: var(--primary-red);
+}
+
         @media (max-width: 480px) {
             .main-card {
                 padding: 30px 20px;
@@ -242,6 +276,12 @@
                 font-size: 18px;
                 padding: 10px 10px;
             }
+
+            .developer-credit {
+                font-size: 13px;
+                margin-top: 20px;
+            }
+
         }
     </style>
 </head>
@@ -272,13 +312,13 @@
 
     <form id="competitionForm" style="width: 100%;">
         
-        <!-- 🛡️ Honeypot Field -->
+       
         <div style="opacity: 0; position: absolute; top: -9999px; left: -9999px;" aria-hidden="true">
             <label for="user_url">Website</label>
             <input type="text" id="user_url" name="user_url" tabindex="-1" autocomplete="off">
         </div>
 
-        <!-- STEP 1 -->
+    
         <div class="form-step active" id="step-1">
             <div class="input-card">
                 <label>الاسم الثلاثي:</label>
@@ -299,12 +339,12 @@
             </div>
         </div>
 
-        <!-- STEP 2 -->
+       
         <div class="form-step" id="step-2">
             
             <div id="friendFields" class="input-card hidden">
                 <label>اسم صديقك ثلاثي (اللي رشحلك التدريب):</label>
-                <input type="text" id="friendName" placeholder="اسم صديقك الثلاثي بالعربية فقط" oninput="validateArabicTripleName(this)">
+                <input type="text" id="friendName" placeholder="اسم صديقك الثلاثي بالحروف العربية الأساسية فقط" oninput="validateArabicTripleName(this)">
             </div>
 
             <div class="input-card">
@@ -337,8 +377,7 @@
             </div>
 
             <div id="fbScreenshotGroup" class="input-card hidden">
-                <label>حط اسكرين لمتابعة صفحة الفيسبوك:</label>
-                <!-- التعديل هنا: تحديد صيغ الصور المسموحة فقط -->
+                <label>حط اسكرين لمتابعة صفحة الفيسبوك (اختياري):</label>
                 <input type="file" id="fbScreenshot" accept=".jpg, .jpeg, .png">
             </div>
 
@@ -348,16 +387,15 @@
             </div>
         </div>
 
-        <!-- STEP 3 -->
+    
         <div class="form-step" id="step-3">
             <div class="input-card">
                 <label>الاسم/ الاسماء المستخدمة في الموقع (كما في الشهادات):</label>
-                <input type="text" id="namesOnCertificates" placeholder="اكتب الاسماء المستخدمة" required>
+                <textarea id="namesOnCertificates" placeholder="اكتب الأسماء المستخدمة (اضغط Enter لكتابة كل اسم في سطر جديد)" rows="3" required></textarea>
             </div>
 
             <div class="input-card">
                 <label>شهادة 1 (إجباري):</label>
-                <!-- التعديل هنا: تحديد صيغ الصور المسموحة فقط -->
                 <input type="file" id="cert1" accept=".jpg, .jpeg, .png" required>
             </div>
 
@@ -386,10 +424,16 @@
 
     <div id="message"></div>
 </div>
+
+
+<div class="developer-credit">
+    Designed & Developed by <a href="https://wa.me/201064683942" target="_blank" rel="noopener noreferrer">Mohamed Gbrel</a>
+</div>
+
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPvmuYbVibnhlbToybuWAsFwXQpn8YHRRChxFeOFPs9uABS862oBjXsB5KXxSrDGWX/exec';
     
-    // === إعدادات كلاوديناري ===
+   
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxhe/upload';
     const CLOUDINARY_PRESET = 'ye_intern_preset';
 
@@ -420,10 +464,11 @@
             return;
         }
 
-        const arabicOnlyRegex = /^[\u0600-\u06FF\s]+$/;
+       
+        const strictArabicRegex = /^[ابتثجحخدذرزسشصضطظعغفقكلمنهوي\s]+$/;
 
-        if (!arabicOnlyRegex.test(input.value)) {
-            input.setCustomValidity("يجب كتابة اسم الصديق باللغة العربية فقط (بدون إنجليزية أو أرقام).");
+        if (!strictArabicRegex.test(input.value)) {
+            input.setCustomValidity("يجب كتابة الاسم بحروف عربية أساسية فقط (بدون همزات أ/إ/آ، بدون ة مربوطة، وبدون حروف خاصة).");
             return;
         }
 
@@ -490,7 +535,7 @@
 
         if (regType === "صديق مرشح من عضو باتحاد شبابي" && entity === "اتحاد شباب يدير شباب - YLY" && isFollowingFb === "نعم") {
             fbScreenshotGroup.classList.remove('hidden');
-            fbScreenshotInput.required = true;
+            fbScreenshotInput.required = false; 
         } else {
             fbScreenshotGroup.classList.add('hidden');
             fbScreenshotInput.required = false;
@@ -499,7 +544,7 @@
 
     function nextStep(step) {
         const currentStepDiv = document.getElementById(`step-${step}`);
-        const requiredInputs = currentStepDiv.querySelectorAll('input[required], select[required]');
+        const requiredInputs = currentStepDiv.querySelectorAll('input[required], select[required], textarea[required]');
         const messageDiv = document.getElementById('message');
         messageDiv.innerText = "";
         
@@ -510,7 +555,7 @@
             }
         }
 
-        // التحقق من صورة السكرين شوت في الخطوة الثانية قبل الانتقال
+       
         if (step === 2) {
             const fbScreenshotInput = document.getElementById('fbScreenshot');
             const fbScreenshotGroup = document.getElementById('fbScreenshotGroup');
@@ -619,7 +664,7 @@
         
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.disabled = true;
-        submitBtn.innerText = "جاري الإرسال...";
+        submitBtn.innerText = "Submitting...";
         messageDiv.innerText = "";
 
         try {
@@ -677,3 +722,5 @@
         }
     });
 </script>
+</body>
+</html>
