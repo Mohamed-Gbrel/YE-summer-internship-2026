@@ -387,7 +387,7 @@
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPvmuYbVibnhlbToybuWAsFwXQpn8YHRRChxFeOFPs9uABS862oBjXsB5KXxSrDGWX/exec';
     
-    // === [إضافة 1]: إعدادات كلاوديناري ===
+    // === إعدادات كلاوديناري (تم تصحيح اسم الحساب ليتطابق مع لوحة التحكم الخاصة بك) ===
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxhe/upload';
     const CLOUDINARY_PRESET = 'ye_intern_preset';
 
@@ -547,7 +547,6 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // === [تعديل بسيط 2]: تغيير الإخراج ليتناسب مع كلاوديناري ===
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.4);
                     resolve(dataUrl); 
                 };
@@ -556,48 +555,31 @@
         });
     }
 
-    // === [إضافة 3]: دالة الرفع إلى كلاوديناري ===
- async function uploadFileToCloudinary(file, entityName, prefix, fullName) {
-    if (!file) return "لا يوجد ملف";
+    // دالة الرفع لكلاوديناري وتقسيم الملفات داخل فولدر خاص بكل اتحاد
+    async function uploadToCloudinary(dataUrl, folderName) {
+        if (!dataUrl) return "";
+        try {
+            const formData = new FormData();
+            formData.append("file", dataUrl);
+            formData.append("upload_preset", CLOUDINARY_PRESET);
+            // سيتم إنشاء فولدر رئيسي اسمه "التسجيلات" وبداخله فولدرات بأسماء الاتحادات أوتوماتيك
+            formData.append("folder", "التسجيلات/" + folderName);
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'ye_intern_preset');
-    
-    // 📂 السر هنا: بنبعت اسم الكيان كفولدر، وكلاوديناري هيعمله أوتوماتيك لو مش موجود
-    formData.append('folder', entityName); 
-    
-    // اختيار اختياري لتسمية الملف بوضوح جوه الفولدر
-    const customPublicId = `${fullName} - ${prefix}`.replace(/\s+/g, '_');
-    formData.append('public_id', customPublicId);
-
-    try {
-        let response = await fetch('https://api.cloudinary.com/v1_1/gqxqvxfhe/image/upload', {
-            method: 'POST',
-            body: formData
-        });
-        
-        let data = await response.json();
-        if (data.secure_url) {
-            return data.secure_url; // رابط الصورة المباشر
-        } else {
-            console.error("Cloudinary Error:", data);
-            return "خطأ في الرفع";
+            const response = await fetch(CLOUDINARY_URL, { method: "POST", body: formData });
+            const data = await response.json();
+            return data.secure_url || ""; 
+        } catch (error) {
+            console.error("Upload error:", error);
+            return "";
         }
-    } catch (err) {
-        console.error("Upload failed:", err);
-        return "خطأ في الرفع";
     }
-}
 
     document.getElementById('competitionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const messageDiv = document.getElementById('message');
-
         let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
-      
-
+        
         const honeypot = document.getElementById('user_url').value;
         if (honeypot !== "") {
             console.warn("Spam Bot Detected!");
@@ -608,7 +590,6 @@
         }
         
         const submitBtn = document.getElementById('submitBtn');
-        
         submitBtn.disabled = true;
         submitBtn.innerText = "جاري الإرسال...";
         messageDiv.innerText = "";
@@ -616,15 +597,20 @@
         try {
             const entityName = document.getElementById('entity').value || "غير_معروف";
 
-            // === [تعديل 4]: دمج كلاوديناري قبل الإرسال لجوجل شيت ===
-            // 1. ضغط الصور
-            const fbImgData = await compressImage(document.getElementById('fbScreenshot').files[0]);
-            const cert1Data = await compressImage(document.getElementById('cert1').files[0]);
-            const cert2Data = await compressImage(document.getElementById('cert2').files[0]);
-            const cert3Data = await compressImage(document.getElementById('cert3').files[0]);
-            const cert4Data = await compressImage(document.getElementById('cert4').files[0]);
+            // التقاط الصور بأمان
+            const fbInput = document.getElementById('fbScreenshot');
+            const cert1Input = document.getElementById('cert1');
+            const cert2Input = document.getElementById('cert2');
+            const cert3Input = document.getElementById('cert3');
+            const cert4Input = document.getElementById('cert4');
 
-            // 2. رفع الصور المظغوطة لكلاوديناري والحصول على الروابط
+            const fbImgData = fbInput && fbInput.files[0] ? await compressImage(fbInput.files[0]) : null;
+            const cert1Data = cert1Input && cert1Input.files[0] ? await compressImage(cert1Input.files[0]) : null;
+            const cert2Data = cert2Input && cert2Input.files[0] ? await compressImage(cert2Input.files[0]) : null;
+            const cert3Data = cert3Input && cert3Input.files[0] ? await compressImage(cert3Input.files[0]) : null;
+            const cert4Data = cert4Input && cert4Input.files[0] ? await compressImage(cert4Input.files[0]) : null;
+
+            // رفع الصور لكلاوديناري وتوزيعها في الفولدرات المخصصة
             const filesData = {
                 fbScreenshot: await uploadToCloudinary(fbImgData, entityName),
                 cert1: await uploadToCloudinary(cert1Data, entityName),
@@ -644,39 +630,32 @@
                 files: filesData
             };
 
-          fetch(SCRIPT_URL, {
+            // إرسال البيانات لجوجل شيت
+            await fetch(SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', // <--- هذا السطر يحل مشكلة الـ CORS مع جوجل شيت نهائياً
+                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(payload)
-            })
-            .then(() => {
-                // نظراً لأن mode هو no-cors، فلن نقرأ الرد مباشرة، ولكن الطلب وصل بنجاح للشيت
-                submissionCount++;
-                localStorage.setItem('form_sub_count', submissionCount);
-
-                messageDiv.style.color = "green";
-                messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
-                document.getElementById('competitionForm').reset();
-                setTimeout(() => { location.reload(); }, 3000);
-            })
-            .catch(err => {
-                messageDiv.style.color = "red";
-                messageDiv.innerText = "حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.";
-            })
-            .finally(() => {
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Submit";
             });
 
+            submissionCount++;
+            localStorage.setItem('form_sub_count', submissionCount);
+
+            messageDiv.style.color = "green";
+            messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
+            document.getElementById('competitionForm').reset();
+            setTimeout(() => { location.reload(); }, 3000);
+
         } catch (err) {
+            console.error(err);
+            messageDiv.style.color = "red";
+            messageDiv.innerText = "حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.";
             submitBtn.disabled = false;
             submitBtn.innerText = "Submit";
         }
     });
 </script>
-
 </body>
 </html>
