@@ -557,22 +557,38 @@
     }
 
     // === [إضافة 3]: دالة الرفع إلى كلاوديناري ===
-    async function uploadToCloudinary(dataUrl, folderName) {
-        if (!dataUrl) return "";
-        try {
-            const formData = new FormData();
-            formData.append("file", dataUrl);
-            formData.append("upload_preset", CLOUDINARY_PRESET);
-            formData.append("folder", "التسجيلات/" + folderName);
+ async function uploadFileToCloudinary(file, entityName, prefix, fullName) {
+    if (!file) return "لا يوجد ملف";
 
-            const response = await fetch(CLOUDINARY_URL, { method: "POST", body: formData });
-            const data = await response.json();
-            return data.secure_url; 
-        } catch (error) {
-            console.error("Upload error:", error);
-            return "";
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'ye_intern_preset');
+    
+    // 📂 السر هنا: بنبعت اسم الكيان كفولدر، وكلاوديناري هيعمله أوتوماتيك لو مش موجود
+    formData.append('folder', entityName); 
+    
+    // اختيار اختياري لتسمية الملف بوضوح جوه الفولدر
+    const customPublicId = `${fullName} - ${prefix}`.replace(/\s+/g, '_');
+    formData.append('public_id', customPublicId);
+
+    try {
+        let response = await fetch('https://api.cloudinary.com/v1_1/gqxqvxfhe/image/upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        let data = await response.json();
+        if (data.secure_url) {
+            return data.secure_url; // رابط الصورة المباشر
+        } else {
+            console.error("Cloudinary Error:", data);
+            return "خطأ في الرفع";
         }
+    } catch (err) {
+        console.error("Upload failed:", err);
+        return "خطأ في الرفع";
     }
+}
 
     document.getElementById('competitionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
