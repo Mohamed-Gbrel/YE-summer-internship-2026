@@ -581,12 +581,7 @@
         }
     }
 
-    document.getElementById('competitionForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const messageDiv = document.getElementById('message');
-        
-        // 🛡️ التعديل 3: إضافة نظام Rate Limiting (مرة واحدة فقط)
-      
+  
         
         const honeypot = document.getElementById('user_url').value;
         if (honeypot !== "") {
