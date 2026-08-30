@@ -720,7 +720,12 @@
         e.preventDefault();
         const messageDiv = document.getElementById('message');
         
-  
+      let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
+        if (submissionCount >= 1) {
+            messageDiv.style.color = "red";
+            messageDiv.innerText = "لقد قمت بالتسجيل مسبقاً. لا يمكنك إرسال طلب آخر.";
+            return;
+        }
 
         const honeypotValue = document.getElementById('user_url').value;
         if (honeypotValue !== "") {
@@ -789,7 +794,8 @@
                 throw new Error(result.message || "حدث خطأ أثناء التسجيل، يرجى المحاولة مرة أخرى.");
             }
 
-           
+             submissionCount++;
+            localStorage.setItem('form_sub_count', submissionCount);
 
             messageDiv.style.color = "green";
             messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
