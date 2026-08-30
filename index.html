@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YE Summer Internship 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- ✅ سكريبت reCAPTCHA v3 - لازم الـ Site Key ده يتحط هنا في الـ render parameter -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeqaqAtAAAAAL6QRjbJP0JZnXd4U7KtuLpkEuof"></script>
     <style>
         :root {
             --primary-red: #e31b23;
@@ -243,6 +245,25 @@
             color: var(--primary-red);
         }
 
+        /* ✅ إخفاء شارة reCAPTCHA الافتراضية القبيحة - جوجل بيسمح بده
+           بشرط إننا نعرض الإشعار المطلوب في مكان تاني بالصفحة (موجود تحت) */
+        .grecaptcha-badge {
+            visibility: hidden;
+        }
+
+        .recaptcha-notice {
+            font-size: 11px;
+            color: #999;
+            text-align: center;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        .recaptcha-notice a {
+            color: #999;
+            text-decoration: underline;
+        }
+
         @media (max-width: 480px) {
             .main-card {
                 padding: 30px 20px;
@@ -437,6 +458,15 @@
     </form>
 
     <div id="message"></div>
+
+    <!-- ✅ إشعار reCAPTCHA - مطلوب من Google شروط الاستخدام لما بنخفي الشارة الافتراضية -->
+    <div class="recaptcha-notice">
+        هذا الموقع محمي بواسطة reCAPTCHA وتطبق عليه
+        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة الخصوصية</a>
+        و
+        <a href="https://policies.google.com/terms" target="_blank" rel="noopener">شروط الخدمة</a>
+        الخاصة بـ Google.
+    </div>
 </div>
 
 <div class="developer-credit">
@@ -448,6 +478,9 @@
     
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxhe/upload';
     const CLOUDINARY_PRESET = 'ye_intern_preset';
+
+    // ✅ Site Key بتاع reCAPTCHA - نفسه المستخدم في تحميل السكريبت فوق في <head>
+    const RECAPTCHA_SITE_KEY = '6LeqaqAtAAAAAL6QRjbJP0JZnXd4U7KtuLpkEuof';
 
     const standardGovernorates = [
         "القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "الشرقية", "القليوبية", "كفر الشيخ", "المنوفية", 
@@ -672,6 +705,21 @@
         }
     }
 
+    // ✅ دالة أخذ الـ reCAPTCHA token - بتتنفذ مرة واحدة عند الإرسال
+    function getRecaptchaToken() {
+        return new Promise((resolve, reject) => {
+            if (typeof grecaptcha === "undefined") {
+                reject(new Error("تعذر تحميل نظام التحقق الأمني (reCAPTCHA). تأكد من اتصالك بالإنترنت وأعد المحاولة."));
+                return;
+            }
+            grecaptcha.ready(() => {
+                grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'submit' })
+                    .then(resolve)
+                    .catch(() => reject(new Error("تعذر التحقق الأمني (reCAPTCHA)، برجاء إعادة تحميل الصفحة والمحاولة مرة أخرى.")));
+            });
+        });
+    }
+
     document.getElementById('competitionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const messageDiv = document.getElementById('message');
@@ -693,6 +741,9 @@
         messageDiv.innerText = "";
 
         try {
+            // ✅ نجيب الـ reCAPTCHA token الأول قبل أي رفع صور، عشان لو فشل نوقف بسرعة
+            const recaptchaToken = await getRecaptchaToken();
+
             const entityName = document.getElementById('entity').value || "غير_معروف";
 
             const fbInput = document.getElementById('fbScreenshot');
@@ -719,12 +770,13 @@
  
             const payload = {
                 honeypot: honeypotValue,
+                recaptchaToken: recaptchaToken, // ✅ بيتبعت للباك إند عشان يتحقق منه عند Google
                 registrationType: document.getElementById('regType').value,
                 fullName: document.getElementById('fullName').value,
                 friendName: document.getElementById('friendName').value,
                 entity: document.getElementById('entity').value,
                 governorate: document.getElementById('governorate').value,
-                committee: document.getElementById('committee').value, // <-- تم إضافة اللجنة للبيانات المُرسلة
+                committee: document.getElementById('committee').value,
                 isFollowingFb: document.getElementById('isFollowingFb').value,
                 namesOnCertificates: document.getElementById('namesOnCertificates').value,
                 files: filesData
@@ -742,7 +794,7 @@
                 throw new Error(result.message || "حدث خطأ أثناء التسجيل، يرجى المحاولة مرة أخرى.");
             }
 
-             
+            
             messageDiv.style.color = "green";
             messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
             document.getElementById('competitionForm').reset();
