@@ -700,13 +700,16 @@
             const cert3Data = cert3Input && cert3Input.files[0] ? await compressImage(cert3Input.files[0]) : null;
             const cert4Data = cert4Input && cert4Input.files[0] ? await compressImage(cert4Input.files[0]) : null;
  
-            const filesData = {
-                fbScreenshot: await uploadToCloudinary(fbImgData, entityName),
-                cert1: await uploadToCloudinary(cert1Data, entityName),
-                cert2: await uploadToCloudinary(cert2Data, entityName),
-                cert3: await uploadToCloudinary(cert3Data, entityName),
-                cert4: await uploadToCloudinary(cert4Data, entityName),
-            };
+          // رفع جميع الصور في نفس الوقت بالتوازي لتقليل وقت التجميع والرفع
+const [fbScreenshot, cert1, cert2, cert3, cert4] = await Promise.all([
+    uploadToCloudinary(fbImgData, entityName),
+    uploadToCloudinary(cert1Data, entityName),
+    uploadToCloudinary(cert2Data, entityName),
+    uploadToCloudinary(cert3Data, entityName),
+    uploadToCloudinary(cert4Data, entityName)
+]);
+
+const filesData = { fbScreenshot, cert1, cert2, cert3, cert4 };
  
             const payload = {
                 // ✅ ضيف قيمة الـ honeypot هنا عشان توصل للباك إند ويقدر يفحصها
