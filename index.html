@@ -668,12 +668,6 @@
         const messageDiv = document.getElementById('message');
         
  
-        let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
-        if (submissionCount >= 1) {
-            messageDiv.style.color = "red";
-            messageDiv.innerText = "لقد قمت بالتسجيل مسبقاً. لا يمكنك إرسال طلب آخر.";
-            return;
-        }
 
 
         const honeypot = document.getElementById('user_url').value;
@@ -732,8 +726,7 @@
             });
 
 
-             submissionCount++;
-            localStorage.setItem('form_sub_count', submissionCount);
+         
 
 
             messageDiv.style.color = "green";
