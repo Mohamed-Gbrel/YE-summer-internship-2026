@@ -475,7 +475,6 @@
 
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPvmuYbVibnhlbToybuWAsFwXQpn8YHRRChxFeOFPs9uABS862oBjXsB5KXxSrDGWX/exec';
-    
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxhe/upload';
     const CLOUDINARY_PRESET = 'ye_intern_preset';
 
@@ -724,7 +723,7 @@
         e.preventDefault();
         const messageDiv = document.getElementById('message');
         
-      
+     
 
         const honeypotValue = document.getElementById('user_url').value;
         if (honeypotValue !== "") {
@@ -795,6 +794,7 @@
             }
 
             
+
             messageDiv.style.color = "green";
             messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
             document.getElementById('competitionForm').reset();
