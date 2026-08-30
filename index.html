@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YE Summer Internship 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <!-- ✅ سكريبت reCAPTCHA v3 - لازم الـ Site Key ده يتحط هنا في الـ render parameter -->
     <script src="https://www.google.com/recaptcha/api.js?render=6LeqaqAtAAAAAL6QRjbJP0JZnXd4U7KtuLpkEuof"></script>
     <style>
         :root {
@@ -245,8 +244,7 @@
             color: var(--primary-red);
         }
 
-        /* ✅ إخفاء شارة reCAPTCHA الافتراضية القبيحة - جوجل بيسمح بده
-           بشرط إننا نعرض الإشعار المطلوب في مكان تاني بالصفحة (موجود تحت) */
+    
         .grecaptcha-badge {
             visibility: hidden;
         }
@@ -341,7 +339,7 @@
             <input type="text" id="user_url" name="user_url" tabindex="-1" autocomplete="off">
         </div>
 
-        <!-- Step 1 -->
+ 
         <div class="form-step active" id="step-1">
             <div class="input-card">
                 <label>الاسم الثلاثي:</label>
@@ -362,7 +360,7 @@
             </div>
         </div>
 
-        <!-- Step 2 -->
+   
         <div class="form-step" id="step-2">
             
             <div id="friendFields" class="input-card hidden">
@@ -390,7 +388,7 @@
                 </select>
             </div>
 
-            <!-- الحقل الجديد: اللجنة -->
+         
             <div id="committeeGroup" class="input-card hidden">
                 <label>اللجنة:</label>
                 <select id="committee">
@@ -422,7 +420,7 @@
             </div>
         </div>
 
-        <!-- Step 3 -->
+    
         <div class="form-step" id="step-3">
             <div class="input-card">
                 <label>الاسم/ الاسماء المستخدمة في الموقع (كما في الشهادات):</label>
@@ -459,7 +457,7 @@
 
     <div id="message"></div>
 
-    <!-- ✅ إشعار reCAPTCHA - مطلوب من Google شروط الاستخدام لما بنخفي الشارة الافتراضية -->
+  
     <div class="recaptcha-notice">
         هذا الموقع محمي بواسطة reCAPTCHA وتطبق عليه
         <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة الخصوصية</a>
@@ -478,7 +476,7 @@
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxhe/upload';
     const CLOUDINARY_PRESET = 'ye_intern_preset';
 
-    // ✅ Site Key بتاع reCAPTCHA - نفسه المستخدم في تحميل السكريبت فوق في <head>
+
     const RECAPTCHA_SITE_KEY = '6LeqaqAtAAAAAL6QRjbJP0JZnXd4U7KtuLpkEuof';
 
     const standardGovernorates = [
@@ -562,14 +560,14 @@
             document.getElementById('isFollowingFb').required = false;
         }
 
-        // إظهار اللجنة فقط في حالة (عضو) و (YLY)
+       
         if (regType === "عضو باتحاد شبابي" && entity === "اتحاد شباب يدير شباب - YLY") {
             committeeGroup.classList.remove('hidden');
             committeeSelect.required = true;
         } else {
             committeeGroup.classList.add('hidden');
             committeeSelect.required = false;
-            committeeSelect.value = ""; // تفريغ الحقل لو اختفى
+            committeeSelect.value = ""; 
         }
 
         list.forEach(gov => {
@@ -704,8 +702,7 @@
         }
     }
 
-    // ✅ دالة أخذ الـ reCAPTCHA token - بتتنفذ مرة واحدة عند الإرسال
-    function getRecaptchaToken() {
+   function getRecaptchaToken() {
         return new Promise((resolve, reject) => {
             if (typeof grecaptcha === "undefined") {
                 reject(new Error("تعذر تحميل نظام التحقق الأمني (reCAPTCHA). تأكد من اتصالك بالإنترنت وأعد المحاولة."));
@@ -723,7 +720,12 @@
         e.preventDefault();
         const messageDiv = document.getElementById('message');
         
-     
+      let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
+        if (submissionCount >= 1) {
+            messageDiv.style.color = "red";
+            messageDiv.innerText = "لقد قمت بالتسجيل مسبقاً. لا يمكنك إرسال طلب آخر.";
+            return;
+        }
 
         const honeypotValue = document.getElementById('user_url').value;
         if (honeypotValue !== "") {
@@ -740,8 +742,7 @@
         messageDiv.innerText = "";
 
         try {
-            // ✅ نجيب الـ reCAPTCHA token الأول قبل أي رفع صور، عشان لو فشل نوقف بسرعة
-            const recaptchaToken = await getRecaptchaToken();
+                const recaptchaToken = await getRecaptchaToken();
 
             const entityName = document.getElementById('entity').value || "غير_معروف";
 
@@ -769,7 +770,7 @@
  
             const payload = {
                 honeypot: honeypotValue,
-                recaptchaToken: recaptchaToken, // ✅ بيتبعت للباك إند عشان يتحقق منه عند Google
+                recaptchaToken: recaptchaToken, 
                 registrationType: document.getElementById('regType').value,
                 fullName: document.getElementById('fullName').value,
                 friendName: document.getElementById('friendName').value,
@@ -793,7 +794,8 @@
                 throw new Error(result.message || "حدث خطأ أثناء التسجيل، يرجى المحاولة مرة أخرى.");
             }
 
-            
+             submissionCount++;
+            localStorage.setItem('form_sub_count', submissionCount);
 
             messageDiv.style.color = "green";
             messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
