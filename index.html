@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YE Summer Internship 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    
-    <!-- إضافة مكتبة Cloudflare Turnstile -->
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    
     <style>
         :root {
             --primary-red: #e31b23;
@@ -218,6 +214,7 @@
             transform: scale(1.28);
         }
 
+     
         .developer-credit {
             margin-top: 25px;
             font-size: 14px;
@@ -237,74 +234,75 @@
             color: var(--primary-red);
         }
         .developer-credit a {
-            color: var(--text-color);
-            font-weight: 800;
-            text-decoration: none; 
-            transition: color 0.3s ease;
-        }
+    color: var(--text-color);
+    font-weight: 800;
+    text-decoration: none; 
+    transition: color 0.3s ease;
+}
 
-        .developer-credit a:hover {
-            color: var(--primary-red);
-        }
+.developer-credit a:hover {
+    color: var(--primary-red);
+}
 
        @media (max-width: 480px) {
-            .main-card {
-                padding: 30px 20px;
-                border-radius: 25px;
-            }
+    .main-card {
+        padding: 30px 20px;
+        border-radius: 25px;
+    }
 
-            .input-card {
-                padding: 15px;
-            }
+    .input-card {
+        padding: 15px;
+    }
 
-            .top-logos,
-            .entities-logos {
-                gap: 0;
-            }
+    .top-logos,
+    .entities-logos {
+        gap: 0;
+    }
 
-            .top-logos img,
-            .entities-logos img {
-                height: 45px;
-            }
+    .top-logos img,
+    .entities-logos img {
+        height: 45px;
+    }
 
-            .top-logos img {
-                height: 50px;
-            }
+    .top-logos img {
+        height: 50px;
+    }
 
-            .entities-logos img:nth-child(4) {
-                transform: scale(1.2);
-            }
+    .entities-logos img:nth-child(4) {
+        transform: scale(1.2);
+    }
 
-            .btn-container {
-                flex-direction: column;
-                gap: 10px;
-            }
+   
+    .btn-container {
+        flex-direction: column;
+        gap: 10px;
+    }
 
-            .btn-next {
-                order: 1; 
-                font-size: 18px;
-                padding: 12px 10px;
-                width: 100%;
-            }
+    .btn-next {
+        order: 1; 
+        font-size: 18px;
+        padding: 12px 10px;
+        width: 100%;
+    }
 
-            .btn-prev {
-                order: 2; 
-                font-size: 18px;
-                padding: 12px 10px;
-                width: 100%;
-            }
+    .btn-prev {
+        order: 2; 
+        font-size: 18px;
+        padding: 12px 10px;
+        width: 100%;
+    }
 
-            .developer-credit {
-                font-size: 13px;
-                margin-top: 20px;
-            }
-        }
+    .developer-credit {
+        font-size: 13px;
+        margin-top: 20px;
+    }
+}
     </style>
 </head>
 <body>
 
 <div class="main-card">
-
+    
     <div class="logos-container">
         <div class="top-logos">
             <img src="photo_5796201732420341509_y.jpg" alt="Youth Empowered">
@@ -327,12 +325,14 @@
     </h1>
 
     <form id="competitionForm" style="width: 100%;">
-
+        
+       
         <div style="opacity: 0; position: absolute; top: -9999px; left: -9999px;" aria-hidden="true">
             <label for="user_url">Website</label>
             <input type="text" id="user_url" name="user_url" tabindex="-1" autocomplete="off">
         </div>
 
+    
         <div class="form-step active" id="step-1">
             <div class="input-card">
                 <label>الاسم الثلاثي:</label>
@@ -353,8 +353,9 @@
             </div>
         </div>
 
-
+       
         <div class="form-step" id="step-2">
+            
             <div id="friendFields" class="input-card hidden">
                 <label>اسم صديقك ثلاثي (اللي رشحلك التدريب):</label>
                 <input type="text" id="friendName" placeholder="اسم صديقك الثلاثي بالحروف العربية الأساسية فقط" oninput="validateArabicTripleName(this)">
@@ -400,7 +401,7 @@
             </div>
         </div>
 
-
+    
         <div class="form-step" id="step-3">
             <div class="input-card">
                 <label>الاسم/ الاسماء المستخدمة في الموقع (كما في الشهادات):</label>
@@ -426,11 +427,6 @@
                 <label>شهادة 4 (اختياري):</label>
                 <input type="file" id="cert4" accept=".jpg, .jpeg, .png">
             </div>
-            
-            <!-- ويدجت كلاود فلير تم إضافته هنا -->
-            <div style="display: flex; justify-content: center; margin-bottom: 10px;">
-                <div class="cf-turnstile" data-sitekey="0x4AAAAAAEh6S77XekPjQyh7"></div>
-            </div>
 
             <div class="btn-container">
                 <button type="button" class="btn-prev" onclick="prevStep(3)">Back</button>
@@ -450,6 +446,8 @@
 
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPvmuYbVibnhlbToybuWAsFwXQpn8YHRRChxFeOFPs9uABS862oBjXsB5KXxSrDGWX/exec';
+    
+   
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxhe/upload';
     const CLOUDINARY_PRESET = 'ye_intern_preset';
 
@@ -480,6 +478,7 @@
             return;
         }
 
+       
         const strictArabicRegex = /^[ابتثجحخدذرزسشصضطظعغفقكلمنهوي\s]+$/;
 
         if (!strictArabicRegex.test(input.value)) {
@@ -518,9 +517,9 @@
         const entity = document.getElementById('entity').value;
         const govSelect = document.getElementById('governorate');
         const ylyFbQuestion = document.getElementById('ylyFbQuestion');
-
+        
         govSelect.innerHTML = '<option value="">Choose</option>';
-
+        
         let list = [...standardGovernorates];
         if (entity === "اتحاد شباب يدير شباب - YLY") {
             list.unshift("تيم الوزارة", "تيم العاصمة");
@@ -562,7 +561,7 @@
         const requiredInputs = currentStepDiv.querySelectorAll('input[required], select[required], textarea[required]');
         const messageDiv = document.getElementById('message');
         messageDiv.innerText = "";
-
+        
         for (let input of requiredInputs) {
             if (!input.checkValidity()) {
                 input.reportValidity(); 
@@ -570,14 +569,15 @@
             }
         }
 
+       
         if (step === 2) {
             const fbScreenshotInput = document.getElementById('fbScreenshot');
             const fbScreenshotGroup = document.getElementById('fbScreenshotGroup');
-
+            
             if (!fbScreenshotGroup.classList.contains('hidden') && fbScreenshotInput.files[0]) {
                 const file = fbScreenshotInput.files[0];
                 const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-
+                
                 if (!validImageTypes.includes(file.type)) {
                     messageDiv.style.color = "red";
                     messageDiv.innerText = `الملف "${file.name}" صيغته غير مدعومة. يرجى رفع صور بصيغة JPG أو PNG فقط.`;
@@ -606,7 +606,7 @@
     function compressImage(file) {
         return new Promise((resolve, reject) => {
             if (!file) { resolve(null); return; }
-
+            
             const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
             if (!validImageTypes.includes(file.type)) {
                 reject(new Error(`الملف "${file.name}" صيغته غير مدعومة. يرجى رفع صور بصيغة JPG أو PNG فقط.`));
@@ -637,7 +637,7 @@
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-
+                    
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.4);
                     resolve(dataUrl); 
                 };
@@ -666,8 +666,15 @@
     document.getElementById('competitionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const messageDiv = document.getElementById('message');
+        
+ 
+        let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
+        if (submissionCount >= 1) {
+            messageDiv.style.color = "red";
+            messageDiv.innerText = "لقد قمت بالتسجيل مسبقاً. لا يمكنك إرسال طلب آخر.";
+            return;
+        }
 
-      
 
         const honeypot = document.getElementById('user_url').value;
         if (honeypot !== "") {
@@ -677,21 +684,7 @@
             document.getElementById('competitionForm').reset();
             return;
         }
-
-        // ==========================================
-        // 1. جلب رمز التحقق من كلاود فلير
-        // ==========================================
-        const turnstileElement = document.querySelector('[name="cf-turnstile-response"]');
-        const turnstileResponse = turnstileElement ? turnstileElement.value : "";
-
-        // 2. التأكد من أن المستخدم اجتاز التحقق
-        if (!turnstileResponse) {
-            messageDiv.style.color = "red";
-            messageDiv.innerText = "الرجاء الانتظار حتى يكتمل التحقق الأمني من Cloudflare، أو قم بتحديث الصفحة.";
-            return; // إيقاف عملية الإرسال
-        }
-        // ==========================================
-
+        
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.disabled = true;
         submitBtn.innerText = "Submitting...";
@@ -728,8 +721,7 @@
                 governorate: document.getElementById('governorate').value,
                 isFollowingFb: document.getElementById('isFollowingFb').value,
                 namesOnCertificates: document.getElementById('namesOnCertificates').value,
-                files: filesData,
-                turnstileToken: turnstileResponse // الإضافة الجديدة للـ Payload
+                files: filesData
             };
 
             await fetch(SCRIPT_URL, {
@@ -739,7 +731,10 @@
                 body: JSON.stringify(payload)
             });
 
-            
+
+             submissionCount++;
+            localStorage.setItem('form_sub_count', submissionCount);
+
 
             messageDiv.style.color = "green";
             messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
