@@ -668,10 +668,11 @@
         const messageDiv = document.getElementById('message');
         
  
-       
+        
  
-        const honeypot = document.getElementById('user_url').value;
-        if (honeypot !== "") {
+ 
+        const honeypotValue = document.getElementById('user_url').value;
+        if (honeypotValue !== "") {
             console.warn("Spam Bot Detected!");
             messageDiv.style.color = "green";
             messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
@@ -708,6 +709,8 @@
             };
  
             const payload = {
+                // ✅ ضيف قيمة الـ honeypot هنا عشان توصل للباك إند ويقدر يفحصها
+                honeypot: honeypotValue,
                 registrationType: document.getElementById('regType').value,
                 fullName: document.getElementById('fullName').value,
                 friendName: document.getElementById('friendName').value,
@@ -733,7 +736,7 @@
                 throw new Error(result.message || "حدث خطأ أثناء التسجيل، يرجى المحاولة مرة أخرى.");
             }
  
-            
+           
  
             messageDiv.style.color = "green";
             messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
