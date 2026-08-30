@@ -14,14 +14,14 @@
             --card-bg: #ffffff;
             --text-color: #111111;
         }
- 
+
         * {
             box-sizing: border-box;
             font-family: 'Cairo', sans-serif;
             margin: 0;
             padding: 0;
         }
- 
+
         body {
             background-color: var(--bg-color);
             display: flex;
@@ -31,7 +31,7 @@
             min-height: 100vh;
             padding: 20px 15px;
         }
- 
+
         .main-card {
             background: var(--card-bg);
             width: 100%;
@@ -43,7 +43,7 @@
             flex-direction: column;
             align-items: center;
         }
- 
+
         .main-title {
             text-align: center;
             font-size: clamp(22px, 5vw, 26px);
@@ -53,21 +53,21 @@
             line-height: 1.2;
             letter-spacing: -0.5px;
         }
- 
+
         .main-title span {
             display: block;
             font-size: clamp(24px, 6vw, 28px);
         }
- 
+
         .form-step {
             display: none;
             width: 100%;
         }
- 
+
         .form-step.active {
             display: block;
         }
- 
+
         .input-card {
             border: 2px solid var(--box-border);
             border-radius: 20px;
@@ -76,7 +76,7 @@
             background-color: #ffffff;
             width: 100%;
         }
- 
+
         .input-card label {
             display: block;
             font-size: 16px;
@@ -85,7 +85,7 @@
             margin-bottom: 10px;
             text-align: right;
         }
- 
+
         .input-card input[type="text"],
         .input-card textarea,
         .input-card select,
@@ -99,18 +99,18 @@
             padding: 8px 0;
             max-width: 100%;
         }
- 
+
         .input-card input[type="text"],
         .input-card textarea {
             border-bottom: 2px solid var(--primary-red);
             resize: vertical;
         }
- 
+
         .input-card select {
             cursor: pointer;
             color: #555;
         }
- 
+
         .btn-container {
             display: flex;
             justify-content: center;
@@ -119,7 +119,7 @@
             width: 100%;
             flex-wrap: wrap;
         }
- 
+
         .btn-next, .btn-prev {
             flex: 1;
             min-width: 120px;
@@ -131,40 +131,40 @@
             transition: all 0.2s ease;
             text-align: center;
         }
- 
+
         .btn-next {
             background-color: var(--primary-red);
             color: #ffffff;
             font-size: 20px;
             box-shadow: 0 6px 15px rgba(227, 27, 35, 0.3);
         }
- 
+
         .btn-next:hover {
             background-color: var(--primary-hover);
             transform: translateY(-2px);
         }
- 
+
         .btn-prev {
             background-color: #6c757d;
             color: #ffffff;
             font-size: 18px;
         }
- 
+
         .btn-prev:hover {
             background-color: #5a6268;
         }
- 
+
         .hidden {
             display: none !important;
         }
- 
+
         #message {
             margin-top: 15px;
             text-align: center;
             font-weight: 700;
             font-size: 16px;
         }
- 
+
         .logos-container {
             width: 100%;
             display: flex;
@@ -174,7 +174,7 @@
             margin-bottom: 25px;
             direction: ltr; 
         }
- 
+
         .top-logos {
             display: flex;
             justify-content: center;
@@ -183,7 +183,7 @@
             gap: 0;
             direction: ltr;
         }
- 
+
         .top-logos img,
         .entities-logos img {
             display: block;
@@ -195,12 +195,12 @@
             object-fit: contain;
             object-position: center;
         }
- 
+
         .top-logos img {
             height: 75px;
             width: auto; 
         }
- 
+
         .entities-logos {
             display: grid;
             grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -209,12 +209,11 @@
             gap: 0;
             direction: ltr;
         }
- 
+
         .entities-logos img:nth-child(4) {
             transform: scale(1.28);
         }
- 
-     
+
         .developer-credit {
             margin-top: 25px;
             font-size: 14px;
@@ -223,84 +222,74 @@
             direction: ltr;
             letter-spacing: 0.5px;
         }
- 
+
         .developer-credit span {
             color: var(--text-color);
             font-weight: 800;
             transition: color 0.3s ease;
         }
- 
+
         .developer-credit span:hover {
             color: var(--primary-red);
         }
         .developer-credit a {
-    color: var(--text-color);
-    font-weight: 800;
-    text-decoration: none; 
-    transition: color 0.3s ease;
-}
- 
-.developer-credit a:hover {
-    color: var(--primary-red);
-}
- 
-       @media (max-width: 480px) {
-    .main-card {
-        padding: 30px 20px;
-        border-radius: 25px;
-    }
- 
-    .input-card {
-        padding: 15px;
-    }
- 
-    .top-logos,
-    .entities-logos {
-        gap: 0;
-    }
- 
-    .top-logos img,
-    .entities-logos img {
-        height: 45px;
-    }
- 
-    .top-logos img {
-        height: 50px;
-    }
- 
-    .entities-logos img:nth-child(4) {
-        transform: scale(1.2);
-    }
- 
-   
-    .btn-container {
-        flex-direction: column;
-        gap: 10px;
-    }
- 
-    .btn-next {
-        order: 1; 
-        font-size: 18px;
-        padding: 12px 10px;
-        width: 100%;
-    }
- 
-    .btn-prev {
-        order: 2; 
-        font-size: 18px;
-        padding: 12px 10px;
-        width: 100%;
-    }
- 
-    .developer-credit {
-        font-size: 13px;
-        margin-top: 20px;
-    }
-}
+            color: var(--text-color);
+            font-weight: 800;
+            text-decoration: none; 
+            transition: color 0.3s ease;
+        }
+
+        .developer-credit a:hover {
+            color: var(--primary-red);
+        }
+
+        @media (max-width: 480px) {
+            .main-card {
+                padding: 30px 20px;
+                border-radius: 25px;
+            }
+            .input-card {
+                padding: 15px;
+            }
+            .top-logos,
+            .entities-logos {
+                gap: 0;
+            }
+            .top-logos img,
+            .entities-logos img {
+                height: 45px;
+            }
+            .top-logos img {
+                height: 50px;
+            }
+            .entities-logos img:nth-child(4) {
+                transform: scale(1.2);
+            }
+            .btn-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .btn-next {
+                order: 1; 
+                font-size: 18px;
+                padding: 12px 10px;
+                width: 100%;
+            }
+            .btn-prev {
+                order: 2; 
+                font-size: 18px;
+                padding: 12px 10px;
+                width: 100%;
+            }
+            .developer-credit {
+                font-size: 13px;
+                margin-top: 20px;
+            }
+        }
     </style>
 </head>
 <body>
- 
+
 <div class="main-card">
     
     <div class="logos-container">
@@ -309,7 +298,7 @@
             <img src="photo_5796201732420341515_y.jpg" alt="YLY">
             <img src="photo_5796201732420341513_y.jpg" alt="Ministry of Youth and Sports">
         </div>
- 
+
         <div class="entities-logos">
             <img src="photo_5796201732420341516_y.jpg" alt="الاتحاد الوطني">
             <img src="photo_5796201732420341514_y.jpg" alt="شباب العمال">
@@ -318,27 +307,26 @@
             <img src="photo_5796201732420341512_y.jpg" alt="الكيانات الشبابية">
         </div>
     </div>
- 
+
     <h1 class="main-title">
         YE Summer Internship
         <span>2026</span>
     </h1>
- 
+
     <form id="competitionForm" style="width: 100%;">
         
-       
         <div style="opacity: 0; position: absolute; top: -9999px; left: -9999px;" aria-hidden="true">
             <label for="user_url">Website</label>
             <input type="text" id="user_url" name="user_url" tabindex="-1" autocomplete="off">
         </div>
- 
-    
+
+        <!-- Step 1 -->
         <div class="form-step active" id="step-1">
             <div class="input-card">
                 <label>الاسم الثلاثي:</label>
                 <input type="text" id="fullName" placeholder="اكتب اسمك الثلاثي" required oninput="validateTripleName(this)">
             </div>
- 
+
             <div class="input-card">
                 <label>عرفت التدريب منين؟:</label>
                 <select id="regType" required onchange="handleRegTypeChange()">
@@ -347,20 +335,20 @@
                     <option value="صديق مرشح من عضو باتحاد شبابي">صديق مرشح من عضو باتحاد شبابي</option>
                 </select>
             </div>
- 
+
             <div class="btn-container">
                 <button type="button" class="btn-next" onclick="nextStep(1)">Next</button>
             </div>
         </div>
- 
-       
+
+        <!-- Step 2 -->
         <div class="form-step" id="step-2">
             
             <div id="friendFields" class="input-card hidden">
                 <label>اسم صديقك ثلاثي (اللي رشحلك التدريب):</label>
                 <input type="text" id="friendName" placeholder="اسم صديقك الثلاثي بالحروف العربية الأساسية فقط" oninput="validateArabicTripleName(this)">
             </div>
- 
+
             <div class="input-card">
                 <label id="entityLabel">الاتحاد المنضم إليه:</label>
                 <select id="entity" required onchange="handleEntityChange()">
@@ -373,14 +361,26 @@
                     <option value="اتحاد شباب يدير شباب - YLY">اتحاد شباب يدير شباب - YLY</option>
                 </select>
             </div>
- 
+
             <div class="input-card">
                 <label>المحافظة / التيم التابع له:</label>
                 <select id="governorate" required>
                     <option value="">Choose</option>
                 </select>
             </div>
- 
+
+            <!-- الحقل الجديد: اللجنة -->
+            <div id="committeeGroup" class="input-card hidden">
+                <label>اللجنة:</label>
+                <select id="committee">
+                    <option value="">Choose</option>
+                    <option value="HR">HR</option>
+                    <option value="PR">PR</option>
+                    <option value="OR">OR</option>
+                    <option value="SM">SM</option>
+                </select>
+            </div>
+
             <div id="ylyFbQuestion" class="input-card hidden">
                 <label>هل انت متابع لصفحة الاتحاد الرسمية على الفيسبوك؟</label>
                 <select id="isFollowingFb" onchange="handleFbChange()">
@@ -389,76 +389,74 @@
                     <option value="لا">لا</option>
                 </select>
             </div>
- 
+
             <div id="fbScreenshotGroup" class="input-card hidden">
                 <label>حط اسكرين لمتابعة صفحة الفيسبوك (اختياري):</label>
                 <input type="file" id="fbScreenshot" accept=".jpg, .jpeg, .png">
             </div>
- 
+
             <div class="btn-container">
                 <button type="button" class="btn-prev" onclick="prevStep(2)">Back</button>
                 <button type="button" class="btn-next" onclick="nextStep(2)">Next</button>
             </div>
         </div>
- 
-    
+
+        <!-- Step 3 -->
         <div class="form-step" id="step-3">
             <div class="input-card">
                 <label>الاسم/ الاسماء المستخدمة في الموقع (كما في الشهادات):</label>
                 <textarea id="namesOnCertificates" placeholder="اكتب الأسماء المستخدمة (اضغط Enter لكتابة كل اسم في سطر جديد)" rows="3" required></textarea>
             </div>
- 
+
             <div class="input-card">
                 <label>شهادة 1 (إجباري):</label>
                 <input type="file" id="cert1" accept=".jpg, .jpeg, .png" required>
             </div>
- 
+
             <div class="input-card">
                 <label>شهادة 2 (اختياري):</label>
                 <input type="file" id="cert2" accept=".jpg, .jpeg, .png">
             </div>
- 
+
             <div class="input-card">
                 <label>شهادة 3 (اختياري):</label>
                 <input type="file" id="cert3" accept=".jpg, .jpeg, .png">
             </div>
- 
+
             <div class="input-card">
                 <label>شهادة 4 (اختياري):</label>
                 <input type="file" id="cert4" accept=".jpg, .jpeg, .png">
             </div>
- 
+
             <div class="btn-container">
                 <button type="button" class="btn-prev" onclick="prevStep(3)">Back</button>
                 <button type="submit" id="submitBtn" class="btn-next">Submit</button>
             </div>
         </div>
- 
+
     </form>
- 
+
     <div id="message"></div>
 </div>
- 
- 
+
 <div class="developer-credit">
     Designed & Developed by <span>Mohamed Gbrel</span>
 </div>
- 
+
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPvmuYbVibnhlbToybuWAsFwXQpn8YHRRChxFeOFPs9uABS862oBjXsB5KXxSrDGWX/exec';
     
-   
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxhe/upload';
     const CLOUDINARY_PRESET = 'ye_intern_preset';
- 
+
     const standardGovernorates = [
         "القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "الشرقية", "القليوبية", "كفر الشيخ", "المنوفية", 
         "الغربية", "البحيرة", "الإسماعيلية", "بورسعيد", "السويس", "المنيا", "بني سويف", "الفيوم", 
         "أسيوط", "سوهاج", "قنا", "الأقصر", "أسوان", "البحر الأحمر", "الوادي الجديد", "مطروح", "شمال سيناء", "جنوب سيناء"
     ];
- 
+
     let currentStep = 1;
- 
+
     function validateTripleName(input) {
         if (input.value.trim() === "") {
             input.setCustomValidity("");
@@ -471,21 +469,20 @@
             input.setCustomValidity("");
         }
     }
- 
+
     function validateArabicTripleName(input) {
         if (input.value.trim() === "") {
             input.setCustomValidity("");
             return;
         }
- 
-       
+
         const strictArabicRegex = /^[ابتثجحخدذرزسشصضطظعغفقكلمنهوي\s]+$/;
- 
+
         if (!strictArabicRegex.test(input.value)) {
             input.setCustomValidity("يجب كتابة الاسم بحروف عربية أساسية فقط (بدون همزات أ/إ/آ، بدون ة مربوطة، وبدون حروف خاصة).");
             return;
         }
- 
+
         const words = input.value.trim().split(/\s+/);
         if (words.length < 3) {
             input.setCustomValidity("برجاء إدخال اسم الصديق ثلاثي على الأقل (3 كلمات).");
@@ -493,13 +490,13 @@
             input.setCustomValidity("");
         }
     }
- 
+
     function handleRegTypeChange() {
         const regType = document.getElementById('regType').value;
         const friendFields = document.getElementById('friendFields');
         const entityLabel = document.getElementById('entityLabel');
         const friendInput = document.getElementById('friendName');
- 
+
         if (regType === "صديق مرشح من عضو باتحاد شبابي") {
             friendFields.classList.remove('hidden');
             friendInput.required = true;
@@ -512,11 +509,14 @@
         }
         handleEntityChange();
     }
- 
+
     function handleEntityChange() {
         const entity = document.getElementById('entity').value;
+        const regType = document.getElementById('regType').value;
         const govSelect = document.getElementById('governorate');
         const ylyFbQuestion = document.getElementById('ylyFbQuestion');
+        const committeeGroup = document.getElementById('committeeGroup');
+        const committeeSelect = document.getElementById('committee');
         
         govSelect.innerHTML = '<option value="">Choose</option>';
         
@@ -529,24 +529,34 @@
             ylyFbQuestion.classList.add('hidden');
             document.getElementById('isFollowingFb').required = false;
         }
- 
+
+        // إظهار اللجنة فقط في حالة (عضو) و (YLY)
+        if (regType === "عضو باتحاد شبابي" && entity === "اتحاد شباب يدير شباب - YLY") {
+            committeeGroup.classList.remove('hidden');
+            committeeSelect.required = true;
+        } else {
+            committeeGroup.classList.add('hidden');
+            committeeSelect.required = false;
+            committeeSelect.value = ""; // تفريغ الحقل لو اختفى
+        }
+
         list.forEach(gov => {
             const opt = document.createElement('option');
             opt.value = gov;
             opt.innerText = gov;
             govSelect.appendChild(opt);
         });
- 
+
         handleFbChange();
     }
- 
+
     function handleFbChange() {
         const regType = document.getElementById('regType').value;
         const entity = document.getElementById('entity').value;
         const isFollowingFb = document.getElementById('isFollowingFb').value;
         const fbScreenshotGroup = document.getElementById('fbScreenshotGroup');
         const fbScreenshotInput = document.getElementById('fbScreenshot');
- 
+
         if (regType === "صديق مرشح من عضو باتحاد شبابي" && entity === "اتحاد شباب يدير شباب - YLY" && isFollowingFb === "نعم") {
             fbScreenshotGroup.classList.remove('hidden');
             fbScreenshotInput.required = false; 
@@ -555,7 +565,7 @@
             fbScreenshotInput.required = false;
         }
     }
- 
+
     function nextStep(step) {
         const currentStepDiv = document.getElementById(`step-${step}`);
         const requiredInputs = currentStepDiv.querySelectorAll('input[required], select[required], textarea[required]');
@@ -568,8 +578,7 @@
                 return; 
             }
         }
- 
-       
+
         if (step === 2) {
             const fbScreenshotInput = document.getElementById('fbScreenshot');
             const fbScreenshotGroup = document.getElementById('fbScreenshotGroup');
@@ -583,7 +592,7 @@
                     messageDiv.innerText = `الملف "${file.name}" صيغته غير مدعومة. يرجى رفع صور بصيغة JPG أو PNG فقط.`;
                     return;
                 }
- 
+
                 if (file.size > 1024 * 1024) {
                     messageDiv.style.color = "red";
                     messageDiv.innerText = `الملف "${file.name}" حجمه أكبر من 1 ميجابايت! يرجى اختيار ملف بحجم أقل.`;
@@ -591,18 +600,18 @@
                 }
             }
         }
- 
+
         currentStepDiv.classList.remove('active');
         currentStep = step + 1;
         document.getElementById(`step-${currentStep}`).classList.add('active');
     }
- 
+
     function prevStep(step) {
         document.getElementById(`step-${step}`).classList.remove('active');
         currentStep = step - 1;
         document.getElementById(`step-${currentStep}`).classList.add('active');
     }
- 
+
     function compressImage(file) {
         return new Promise((resolve, reject) => {
             if (!file) { resolve(null); return; }
@@ -612,12 +621,12 @@
                 reject(new Error(`الملف "${file.name}" صيغته غير مدعومة. يرجى رفع صور بصيغة JPG أو PNG فقط.`));
                 return;
             }
- 
+
             if (file.size > 1024 * 1024) {
                 reject(new Error(`الملف "${file.name}" حجمه أكبر من 1 ميجابايت! يرجى اختيار ملف بحجم أقل.`));
                 return;
             }
- 
+
             const reader = new FileReader();
             reader.onload = (e) => {
                 const img = new Image();
@@ -627,12 +636,12 @@
                     const MAX_WIDTH = 600; 
                     let width = img.width;
                     let height = img.height;
- 
+
                     if (width > MAX_WIDTH) {
                         height = Math.round((height * MAX_WIDTH) / width);
                         width = MAX_WIDTH;
                     }
- 
+
                     canvas.width = width;
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
@@ -645,7 +654,7 @@
             reader.readAsDataURL(file);
         });
     }
- 
+
     async function uploadToCloudinary(dataUrl, folderName) {
         if (!dataUrl) return "";
         try {
@@ -653,7 +662,7 @@
             formData.append("file", dataUrl);
             formData.append("upload_preset", CLOUDINARY_PRESET);
             formData.append("folder", "التسجيلات/" + folderName);
- 
+
             const response = await fetch(CLOUDINARY_URL, { method: "POST", body: formData });
             const data = await response.json();
             return data.secure_url || ""; 
@@ -662,15 +671,13 @@
             throw new Error("حدث خطأ أثناء رفع الصور، يرجى المحاولة مرة أخرى.");
         }
     }
- 
+
     document.getElementById('competitionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const messageDiv = document.getElementById('message');
         
- 
-        
- 
- 
+      
+
         const honeypotValue = document.getElementById('user_url').value;
         if (honeypotValue !== "") {
             console.warn("Spam Bot Detected!");
@@ -684,68 +691,63 @@
         submitBtn.disabled = true;
         submitBtn.innerText = "Submitting...";
         messageDiv.innerText = "";
- 
+
         try {
             const entityName = document.getElementById('entity').value || "غير_معروف";
- 
+
             const fbInput = document.getElementById('fbScreenshot');
             const cert1Input = document.getElementById('cert1');
             const cert2Input = document.getElementById('cert2');
             const cert3Input = document.getElementById('cert3');
             const cert4Input = document.getElementById('cert4');
- 
+
             const fbImgData = fbInput && fbInput.files[0] ? await compressImage(fbInput.files[0]) : null;
             const cert1Data = cert1Input && cert1Input.files[0] ? await compressImage(cert1Input.files[0]) : null;
             const cert2Data = cert2Input && cert2Input.files[0] ? await compressImage(cert2Input.files[0]) : null;
             const cert3Data = cert3Input && cert3Input.files[0] ? await compressImage(cert3Input.files[0]) : null;
             const cert4Data = cert4Input && cert4Input.files[0] ? await compressImage(cert4Input.files[0]) : null;
- 
-          // رفع جميع الصور في نفس الوقت بالتوازي لتقليل وقت التجميع والرفع
-const [fbScreenshot, cert1, cert2, cert3, cert4] = await Promise.all([
-    uploadToCloudinary(fbImgData, entityName),
-    uploadToCloudinary(cert1Data, entityName),
-    uploadToCloudinary(cert2Data, entityName),
-    uploadToCloudinary(cert3Data, entityName),
-    uploadToCloudinary(cert4Data, entityName)
-]);
 
-const filesData = { fbScreenshot, cert1, cert2, cert3, cert4 };
+            const [fbScreenshot, cert1, cert2, cert3, cert4] = await Promise.all([
+                uploadToCloudinary(fbImgData, entityName),
+                uploadToCloudinary(cert1Data, entityName),
+                uploadToCloudinary(cert2Data, entityName),
+                uploadToCloudinary(cert3Data, entityName),
+                uploadToCloudinary(cert4Data, entityName)
+            ]);
+
+            const filesData = { fbScreenshot, cert1, cert2, cert3, cert4 };
  
             const payload = {
-                // ✅ ضيف قيمة الـ honeypot هنا عشان توصل للباك إند ويقدر يفحصها
                 honeypot: honeypotValue,
                 registrationType: document.getElementById('regType').value,
                 fullName: document.getElementById('fullName').value,
                 friendName: document.getElementById('friendName').value,
                 entity: document.getElementById('entity').value,
                 governorate: document.getElementById('governorate').value,
+                committee: document.getElementById('committee').value, // <-- تم إضافة اللجنة للبيانات المُرسلة
                 isFollowingFb: document.getElementById('isFollowingFb').value,
                 namesOnCertificates: document.getElementById('namesOnCertificates').value,
                 files: filesData
             };
- 
-            // ✅ اتشالت mode: 'no-cors' عشان نقدر فعلاً نقرأ رد الـ Apps Script
-            // ونعرف لو الطلب فشل في الباك إند (زي حالات الـ validation أو الـ rate limit)
+
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(payload)
             });
- 
+
             const result = await response.json();
- 
+
             if (result.status !== "success") {
-                // فيه رسالة خطأ واضحة راجعة من الباك إند (Apps Script) — نعرضها زي ما هي
                 throw new Error(result.message || "حدث خطأ أثناء التسجيل، يرجى المحاولة مرة أخرى.");
             }
- 
-           
- 
+
+             
             messageDiv.style.color = "green";
             messageDiv.innerText = "تم التسجيل ورفع كافة البيانات والشهادات بنجاح!";
             document.getElementById('competitionForm').reset();
             setTimeout(() => { location.reload(); }, 3000);
- 
+
         } catch (err) {
             console.error(err);
             messageDiv.style.color = "red";
