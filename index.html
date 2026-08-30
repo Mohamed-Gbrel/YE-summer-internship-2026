@@ -826,7 +826,10 @@
         e.preventDefault();
         const messageDiv = document.getElementById('message');
         
-       
+        
+    messageDiv.style.color = "red";
+    messageDiv.innerText = "التسجيل مغلق مؤقتاً، برجاء المحاولة لاحقاً.";
+    return;
         let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
         if (submissionCount >= 1) {
             messageDiv.style.color = "red";
