@@ -353,16 +353,21 @@
         }
     }
 
-    async function fetchDashboardData() {
-        const loginError = document.getElementById('loginError');
-        try {
-            const response = await fetch(DASHBOARD_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ password: currentPassword })
-            });
+   // الكود المعدل في الـ HTML
+async function fetchDashboardData() {
+    const loginError = document.getElementById('loginError');
+    try {
+        // ⚠️ مهم جداً: استخدام redirect: 'follow' ضروري مع Apps Script
+        const response = await fetch(DASHBOARD_URL, {
+            method: 'POST',
+            // هنشيل السطر بتاع Content-Type خالص عشان نمنع متصفح جوجل من عمل preflight request (CORS)
+            body: JSON.stringify({ password: currentPassword }),
+            redirect: 'follow' // السطر ده سحري ومهم جداً مع Apps Script
+        });
 
-            const result = await response.json();
+        const result = await response.json();
+
+        // ... باقي الكود زي ما هو ...
 
             if (result.status !== "success") {
                 loginError.innerText = result.message || "حدث خطأ، برجاء المحاولة مرة أخرى.";
