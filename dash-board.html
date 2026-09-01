@@ -320,11 +320,10 @@
     </div>
 
 <script>
-    // ⚠️ حط هنا رابط الـ Apps Script الجديد بتاع الداشبورد (بعد الديبلوي)
-    const DASHBOARD_URL = 'https://script.google.com/macros/s/AKfycbyA4fLxOWnoCT12Wd0GLzNlK8DFAEWhPzADkRT5SCSWaTNQOqqMnDJ5Wtq14CXh528h/exec';
+    // ⚠️ تأكد إنك حاطط رابط الـ Web App الأخير والجديد (بعد ما عملت New Version في الـ Deploy)
+    const DASHBOARD_URL = 'https://script.google.com/macros/s/AKfycbyN-_mt9BD_0pBgODc6SvP36A3oyZNa89myc1cYV6FTw79Cdwg9J3Nm8-6EdF2wwf8S/exec';
 
     let currentPassword = ""; // بيتخزن في الذاكرة بس (متغير JS)، مش localStorage
-                               // فبيتمسح تلقائيًا لما الصفحة تتقفل أو تتعمل reload
 
     async function attemptLogin() {
         const passwordInput = document.getElementById('passwordInput');
@@ -353,21 +352,18 @@
         }
     }
 
-   // الكود المعدل في الـ HTML
-async function fetchDashboardData() {
-    const loginError = document.getElementById('loginError');
-    try {
-        // ⚠️ مهم جداً: استخدام redirect: 'follow' ضروري مع Apps Script
-        const response = await fetch(DASHBOARD_URL, {
-            method: 'POST',
-            // هنشيل السطر بتاع Content-Type خالص عشان نمنع متصفح جوجل من عمل preflight request (CORS)
-            body: JSON.stringify({ password: currentPassword }),
-            redirect: 'follow' // السطر ده سحري ومهم جداً مع Apps Script
-        });
+    async function fetchDashboardData() {
+        const loginError = document.getElementById('loginError');
+        try {
+            // التعديل الجديد: إرسال الطلب بطريقة GET وتمرير كلمة المرور في الرابط
+            const requestUrl = DASHBOARD_URL + '?password=' + encodeURIComponent(currentPassword);
 
-        const result = await response.json();
+            const response = await fetch(requestUrl, {
+                method: 'GET',
+                redirect: 'follow'
+            });
 
-        // ... باقي الكود زي ما هو ...
+            const result = await response.json();
 
             if (result.status !== "success") {
                 loginError.innerText = result.message || "حدث خطأ، برجاء المحاولة مرة أخرى.";
