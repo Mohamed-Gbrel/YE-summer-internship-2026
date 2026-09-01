@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YE Summer Internship 2026</title>
+    <title>لوحة تحكم التسجيلات - YE Summer Internship 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://www.google.com/recaptcha/api.js?render=6LeqaqAtAAAAAL6QRjbJP0JZnXd4U7KtuLpkEuof"></script>
     <style>
         :root {
             --primary-red: #e31b23;
             --primary-hover: #c41219;
-            --box-border: #f4b2b5;
             --bg-color: #e5e5e5;
             --card-bg: #ffffff;
             --text-color: #111111;
+            --muted-text: #666666;
+            --border-color: #eeeeee;
         }
 
         * {
@@ -25,894 +25,454 @@
 
         body {
             background-color: var(--bg-color);
-            display: flex;
-            flex-direction: column; 
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
             padding: 20px 15px;
         }
 
-        .main-card {
+        /* ===== شاشة الدخول ===== */
+        #loginScreen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+        }
+
+        .login-card {
             background: var(--card-bg);
             width: 100%;
-            max-width: 550px;
-            border-radius: 35px;
+            max-width: 400px;
+            border-radius: 30px;
             padding: 40px 30px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .main-title {
             text-align: center;
-            font-size: clamp(22px, 5vw, 26px);
+        }
+
+        .login-card h1 {
+            font-size: 22px;
             font-weight: 900;
-            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+
+        .login-card p {
+            font-size: 14px;
+            color: var(--muted-text);
             margin-bottom: 25px;
-            line-height: 1.2;
-            letter-spacing: -0.5px;
         }
 
-        .main-title span {
-            display: block;
-            font-size: clamp(24px, 6vw, 28px);
-        }
-
-        .form-step {
-            display: none;
+        .login-card input[type="password"] {
             width: 100%;
-        }
-
-        .form-step.active {
-            display: block;
-        }
-
-        .input-card {
-            border: 2px solid var(--box-border);
-            border-radius: 20px;
-            padding: 18px 20px;
-            margin-bottom: 20px;
-            background-color: #ffffff;
-            width: 100%;
-        }
-
-        .input-card label {
-            display: block;
+            padding: 14px 16px;
+            border: 2px solid #f4b2b5;
+            border-radius: 14px;
             font-size: 16px;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 10px;
-            text-align: right;
-        }
-
-        .input-card input[type="text"],
-        .input-card textarea,
-        .input-card select,
-        .input-card input[type="file"] {
-            width: 100%;
-            border: none;
+            font-family: 'Cairo', sans-serif;
             outline: none;
-            font-size: 15px;
-            color: #333;
-            background: transparent;
-            padding: 8px 0;
-            max-width: 100%;
+            margin-bottom: 15px;
+            text-align: center;
         }
 
-        .input-card input[type="text"],
-        .input-card textarea {
-            border-bottom: 2px solid var(--primary-red);
-            resize: vertical;
-        }
-
-        .input-card select {
-            cursor: pointer;
-            color: #555;
-        }
-
-        .btn-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
+        .login-card button {
             width: 100%;
-            flex-wrap: wrap;
-        }
-
-        .btn-next, .btn-prev {
-            flex: 1;
-            min-width: 120px;
-            font-weight: 800;
+            padding: 14px;
+            background-color: var(--primary-red);
+            color: #ffffff;
             border: none;
             border-radius: 50px;
-            padding: 12px 20px;
+            font-size: 17px;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
+            transition: background-color 0.2s ease;
         }
 
-        .btn-next {
-            background-color: var(--primary-red);
-            color: #ffffff;
-            font-size: 20px;
-            box-shadow: 0 6px 15px rgba(227, 27, 35, 0.3);
-        }
-
-        .btn-next:hover {
+        .login-card button:hover {
             background-color: var(--primary-hover);
-            transform: translateY(-2px);
         }
 
-        .btn-prev {
-            background-color: #6c757d;
-            color: #ffffff;
-            font-size: 18px;
+        .login-card button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
-        .btn-prev:hover {
-            background-color: #5a6268;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        #message {
-            margin-top: 15px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        .logos-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px; 
-            margin-bottom: 25px;
-            direction: ltr; 
-        }
-
-        .top-logos {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            gap: 0;
-            direction: ltr;
-        }
-
-        .top-logos img,
-        .entities-logos img {
-            display: block;
-            width: 100%;
-            height: 68px;
-            min-width: 0;
-            margin: 0;
-            padding: 0;
-            object-fit: contain;
-            object-position: center;
-        }
-
-        .top-logos img {
-            height: 75px;
-            width: auto; 
-        }
-
-        .entities-logos {
-            display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
-            align-items: center;
-            width: 100%;
-            gap: 0;
-            direction: ltr;
-        }
-
-        .entities-logos img:nth-child(4) {
-            transform: scale(1.28);
-        }
-
-        .developer-credit {
-            margin-top: 25px;
+        #loginError {
+            color: var(--primary-red);
             font-size: 14px;
-            color: #6c757d;
-            text-align: center;
-            direction: ltr;
-            letter-spacing: 0.5px;
+            font-weight: 700;
+            margin-top: 12px;
+            min-height: 18px;
         }
 
-        .developer-credit span {
-            color: var(--text-color);
-            font-weight: 800;
-            transition: color 0.3s ease;
-        }
-
-        .developer-credit span:hover {
-            color: var(--primary-red);
-        }
-        .developer-credit a {
-            color: var(--text-color);
-            font-weight: 800;
-            text-decoration: none; 
-            transition: color 0.3s ease;
-        }
-
-        .developer-credit a:hover {
-            color: var(--primary-red);
-        }
-
-        .grecaptcha-badge {
-            visibility: hidden;
-        }
-
-        .recaptcha-notice {
-            font-size: 11px;
-            color: #999;
-            text-align: center;
-            margin-top: 15px;
-            line-height: 1.5;
-        }
-
-        .recaptcha-notice a {
-            color: #999;
-            text-decoration: underline;
-        }
-
-        /* ===== شاشة الشكر (Thank You) ===== */
-        #thankYouScreen {
+        /* ===== الداشبورد ===== */
+        #dashboardScreen {
             display: none;
-            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        #dashboardScreen.active {
+            display: block;
+        }
+
+        .dash-header {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 25px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .dash-total {
+            display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
-            animation: fadeInUp 0.6s ease;
         }
 
-        #thankYouScreen.active {
-            display: flex;
-        }
-
-        .thank-you-icon {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-red), var(--primary-hover));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 25px rgba(227, 27, 35, 0.35);
-            animation: popIn 0.5s ease;
-        }
-
-        .thank-you-icon svg {
-            width: 45px;
-            height: 45px;
-            stroke: #ffffff;
-        }
-
-        .thank-you-title {
-            font-size: clamp(26px, 7vw, 34px);
+        .dash-total .number {
+            font-size: 42px;
             font-weight: 900;
-            color: var(--text-color);
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
-        }
-
-        .thank-you-title span {
             color: var(--primary-red);
+            line-height: 1;
         }
 
-        .thank-you-subtitle {
-            font-size: 16px;
+        .dash-total .label {
+            font-size: 14px;
+            color: var(--muted-text);
+            margin-top: 4px;
+        }
+
+        .dash-meta {
+            text-align: left;
+            direction: ltr;
+        }
+
+        .dash-meta .updated {
+            font-size: 12px;
+            color: var(--muted-text);
+            margin-bottom: 8px;
+        }
+
+        .refresh-btn {
+            background-color: #f0f0f0;
+            color: var(--text-color);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .refresh-btn:hover {
+            background-color: #e5e5e5;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 25px 0 12px;
+            color: var(--text-color);
+        }
+
+        /* ===== الفايزين ===== */
+        .winners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+
+        .winner-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 16px 18px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+            border-right: 4px solid var(--primary-red);
+        }
+
+        .winner-card .gov-name {
+            font-size: 13px;
+            color: var(--muted-text);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .winner-card .winner-name {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .winner-card .winner-stats {
+            font-size: 13px;
+            color: var(--muted-text);
+        }
+
+        /* ===== جدول المحافظات ===== */
+        .gov-details {
+            background: var(--card-bg);
+            border-radius: 18px;
+            margin-bottom: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .gov-details summary {
+            padding: 16px 20px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            list-style: none;
+        }
+
+        .gov-details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .gov-summary-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
             font-weight: 600;
-            color: #555;
-            line-height: 1.8;
-            max-width: 400px;
-            margin-bottom: 5px;
+            color: var(--muted-text);
         }
 
-        .thank-you-divider {
-            width: 60px;
-            height: 4px;
-            background-color: var(--primary-red);
-            border-radius: 10px;
-            margin: 20px 0;
+        .gov-summary-stats b {
+            color: var(--text-color);
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .entity-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            70% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
+        .entity-table th,
+        .entity-table td {
+            padding: 10px 20px;
+            text-align: right;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .entity-table th {
+            color: var(--muted-text);
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        #emptyState {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted-text);
         }
 
         @media (max-width: 480px) {
-            .main-card {
-                padding: 30px 20px;
-                border-radius: 25px;
-            }
-            .input-card {
-                padding: 15px;
-            }
-            .top-logos,
-            .entities-logos {
-                gap: 0;
-            }
-            .top-logos img,
-            .entities-logos img {
-                height: 45px;
-            }
-            .top-logos img {
-                height: 50px;
-            }
-            .entities-logos img:nth-child(4) {
-                transform: scale(1.2);
-            }
-            .btn-container {
+            .dash-header {
                 flex-direction: column;
-                gap: 10px;
+                align-items: flex-start;
             }
-            .btn-next {
-                order: 1; 
-                font-size: 18px;
-                padding: 12px 10px;
+            .dash-meta {
+                text-align: right;
+                direction: rtl;
                 width: 100%;
-            }
-            .btn-prev {
-                order: 2; 
-                font-size: 18px;
-                padding: 12px 10px;
-                width: 100%;
-            }
-            .developer-credit {
-                font-size: 13px;
-                margin-top: 20px;
-            }
-            .thank-you-icon {
-                width: 75px;
-                height: 75px;
-            }
-            .thank-you-icon svg {
-                width: 38px;
-                height: 38px;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="main-card">
-    
-    <div class="logos-container">
-        <div class="top-logos">
-            <img src="photo_5796201732420341509_y.jpg" alt="Youth Empowered">
-            <img src="photo_5796201732420341515_y.jpg" alt="YLY">
-            <img src="photo_5796201732420341513_y.jpg" alt="Ministry of Youth and Sports">
-        </div>
-
-        <div class="entities-logos">
-            <img src="photo_5796201732420341516_y.jpg" alt="الاتحاد الوطني">
-            <img src="photo_5796201732420341514_y.jpg" alt="شباب العمال">
-            <img src="photo_5796201732420341511_y.jpg" alt="تحيا مصر">
-            <img src="photo_5796201732420341510_y.jpg" alt="بشبابها">
-            <img src="photo_5796201732420341512_y.jpg" alt="الكيانات الشبابية">
+    <!-- ===== شاشة الدخول ===== -->
+    <div id="loginScreen">
+        <div class="login-card">
+            <h1>لوحة تحكم التسجيلات</h1>
+            <p>أدخل كلمة المرور للمتابعة</p>
+            <input type="password" id="passwordInput" placeholder="كلمة المرور" autocomplete="off">
+            <button id="loginBtn" onclick="attemptLogin()">دخول</button>
+            <div id="loginError"></div>
         </div>
     </div>
 
-    <h1 class="main-title" id="mainTitle">
-        YE Summer Internship
-        <span>2026</span>
-    </h1>
-
-    <form id="competitionForm" style="width: 100%;">
-        
-        <div style="opacity: 0; position: absolute; top: -9999px; left: -9999px;" aria-hidden="true">
-            <label for="user_url">Website</label>
-            <input type="text" id="user_url" name="user_url" tabindex="-1" autocomplete="off">
-        </div>
-
- 
-        <div class="form-step active" id="step-1">
-            <div class="input-card">
-                <label>الاسم الثلاثي:</label>
-                <input type="text" id="fullName" placeholder="اكتب اسمك الثلاثي" required oninput="validateTripleName(this)">
+    <!-- ===== الداشبورد ===== -->
+    <div id="dashboardScreen">
+        <div class="dash-header">
+            <div class="dash-total">
+                <div class="number" id="totalCount">0</div>
+                <div class="label">إجمالي التسجيلات</div>
             </div>
-
-            <div class="input-card">
-                <label>عرفت التدريب منين؟:</label>
-                <select id="regType" required onchange="handleRegTypeChange()">
-                    <option value="">Choose</option>
-                    <option value="عضو باتحاد شبابي">عضو باتحاد شبابي</option>
-                    <option value="صديق مرشح من عضو باتحاد شبابي">صديق مرشح من عضو باتحاد شبابي</option>
-                </select>
-            </div>
-
-            <div class="btn-container">
-                <button type="button" class="btn-next" onclick="nextStep(1)">Next</button>
+            <div class="dash-meta">
+                <div class="updated" id="lastUpdated"></div>
+                <button class="refresh-btn" onclick="fetchDashboardData()">تحديث البيانات</button>
             </div>
         </div>
 
-   
-        <div class="form-step" id="step-2">
-            
-            <div id="friendFields" class="input-card hidden">
-                <label>اسم صديقك ثلاثي (اللي رشحلك التدريب):</label>
-                <input type="text" id="friendName" placeholder="اسم صديقك الثلاثي بالحروف العربية الأساسية فقط" oninput="validateArabicTripleName(this)">
-            </div>
+        <div id="winnersSection"></div>
 
-            <div class="input-card">
-                <label id="entityLabel">الاتحاد المنضم إليه:</label>
-                <select id="entity" required onchange="handleEntityChange()">
-                    <option value="">Choose</option>
-                    <option value="اتحاد شباب العمال">اتحاد شباب العمال</option>
-                    <option value="الاتحاد المصري للكيانات الشبابيه">الاتحاد المصري للكيانات الشبابيه</option>
-                    <option value="اتحاد بشبابها">اتحاد بشبابها</option>
-                    <option value="اتحاد الوطني للقيادات الشبابيه">اتحاد الوطني للقيادات الشبابيه</option>
-                    <option value="اتحاد شباب تحيا مصر">اتحاد شباب تحيا مصر</option>
-                    <option value="اتحاد شباب يدير شباب - YLY">اتحاد شباب يدير شباب - YLY</option>
-                </select>
-            </div>
+        <div class="section-title">التسجيلات حسب المحافظة</div>
+        <div id="governoratesList"></div>
 
-            <div class="input-card">
-                <label>المحافظة / التيم التابع له:</label>
-                <select id="governorate" required>
-                    <option value="">Choose</option>
-                </select>
-            </div>
-
-         
-          <div id="committeeGroup" class="input-card hidden">
-    <label>اللجنة:</label>
-    <select id="committee">
-        <option value="">Choose</option>
-        <option value="HR">HR</option>
-        <option value="PR">PR</option>
-        <option value="OR">OR</option>
-        <option value="SM">SM</option>
-        <option value="Media">Media</option>
-        <option value="Training">Training</option>
-        <option value="R&D">R&D</option>
-    </select>
-</div>
-
-            <div id="ylyFbQuestion" class="input-card hidden">
-                <label>هل انت متابع لصفحة الاتحاد الرسمية على الفيسبوك؟</label>
-                <select id="isFollowingFb" onchange="handleFbChange()">
-                    <option value="">Choose</option>
-                    <option value="نعم">نعم</option>
-                    <option value="لا">لا</option>
-                </select>
-            </div>
-
-            <div id="fbScreenshotGroup" class="input-card hidden">
-                <label>حط اسكرين لمتابعة صفحة الفيسبوك (اختياري):</label>
-                <input type="file" id="fbScreenshot" accept=".jpg, .jpeg, .png">
-            </div>
-
-            <div class="btn-container">
-                <button type="button" class="btn-prev" onclick="prevStep(2)">Back</button>
-                <button type="button" class="btn-next" onclick="nextStep(2)">Next</button>
-            </div>
-        </div>
-
-    
-        <div class="form-step" id="step-3">
-            <div class="input-card">
-                <label>الاسم/ الاسماء المستخدمة في الموقع (كما في الشهادات):</label>
-                <textarea id="namesOnCertificates" placeholder="اكتب الأسماء المستخدمة (اضغط Enter لكتابة كل اسم في سطر جديد)" rows="3" required></textarea>
-            </div>
-
-            <div class="input-card">
-                <label>شهادة 1 (إجباري):</label>
-                <input type="file" id="cert1" accept=".jpg, .jpeg, .png" required>
-            </div>
-
-            <div class="input-card">
-                <label>شهادة 2 (اختياري):</label>
-                <input type="file" id="cert2" accept=".jpg, .jpeg, .png">
-            </div>
-
-            <div class="input-card">
-                <label>شهادة 3 (اختياري):</label>
-                <input type="file" id="cert3" accept=".jpg, .jpeg, .png">
-            </div>
-
-            <div class="input-card">
-                <label>شهادة 4 (اختياري):</label>
-                <input type="file" id="cert4" accept=".jpg, .jpeg, .png">
-            </div>
-
-            <div class="btn-container">
-                <button type="button" class="btn-prev" onclick="prevStep(3)">Back</button>
-                <button type="submit" id="submitBtn" class="btn-next">Submit</button>
-            </div>
-        </div>
-
-    </form>
-
-    <div id="thankYouScreen">
-        <div class="thank-you-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-        </div>
-        <h1 class="thank-you-title">Thank <span>You!</span></h1>
-        <div class="thank-you-divider"></div>
-        <p class="thank-you-subtitle">
-            تم استلام تسجيلك بنجاح ✅<br>
-            هيتم مراجعة بياناتك وشهاداتك قريباً.
-        </p>
+        <div id="emptyState" style="display: none;">لا توجد بيانات تسجيل بعد.</div>
     </div>
-
-    <div id="message"></div>
-
-  
-    <div class="recaptcha-notice" id="recaptchaNotice">
-        هذا الموقع محمي بواسطة reCAPTCHA وتطبق عليه
-        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة الخصوصية</a>
-        و
-        <a href="https://policies.google.com/terms" target="_blank" rel="noopener">شروط الخدمة</a>
-        الخاصة بـ Google.
-    </div>
-</div>
-
-<div class="developer-credit">
-    Designed & Developed by <span>Mohamed Gbrel</span>
-</div>
 
 <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPvmuYbVibnhlbToybuWAsFwXQpn8YHRRChxFeOFPs9uABS862oBjXsB5KXxSrDGWX/exec';
-    const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxhe/upload';
-    const CLOUDINARY_PRESET = 'ye_intern_preset';
+    // ⚠️ حط هنا رابط الـ Apps Script الجديد بتاع الداشبورد (بعد الديبلوي)
+    const DASHBOARD_URL = 'https://script.google.com/macros/s/AKfycbyA4fLxOWnoCT12Wd0GLzNlK8DFAEWhPzADkRT5SCSWaTNQOqqMnDJ5Wtq14CXh528h/exec';
 
+    let currentPassword = ""; // بيتخزن في الذاكرة بس (متغير JS)، مش localStorage
+                               // فبيتمسح تلقائيًا لما الصفحة تتقفل أو تتعمل reload
 
-    const RECAPTCHA_SITE_KEY = '6LeqaqAtAAAAAL6QRjbJP0JZnXd4U7KtuLpkEuof';
+    async function attemptLogin() {
+        const passwordInput = document.getElementById('passwordInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+        const password = passwordInput.value;
 
-    const standardGovernorates = [
-        "القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "الشرقية", "القليوبية", "كفر الشيخ", "المنوفية", 
-        "الغربية", "البحيرة", "الإسماعيلية", "بورسعيد", "السويس", "المنيا", "بني سويف", "الفيوم", 
-        "أسيوط", "دمياط", "سوهاج", "قنا", "الأقصر", "أسوان", "البحر الأحمر", "الوادي الجديد", "مطروح", "شمال سيناء", "جنوب سيناء"
-    ];
-
-    let currentStep = 1;
-
-    function validateTripleName(input) {
-        if (input.value.trim() === "") {
-            input.setCustomValidity("");
-            return;
-        }
-        const words = input.value.trim().split(/\s+/);
-        if (words.length < 3) {
-            input.setCustomValidity("برجاء إدخال الاسم ثلاثي على الأقل (3 كلمات).");
-        } else {
-            input.setCustomValidity("");
-        }
-    }
-
-    function validateArabicTripleName(input) {
-        if (input.value.trim() === "") {
-            input.setCustomValidity("");
+        if (!password) {
+            loginError.innerText = "برجاء إدخال كلمة المرور.";
             return;
         }
 
-        const strictArabicRegex = /^[ابتثجحخدذرزسشصضطظعغفقكلمنهوي\s]+$/;
+        loginBtn.disabled = true;
+        loginBtn.innerText = "جاري التحقق...";
+        loginError.innerText = "";
 
-        if (!strictArabicRegex.test(input.value)) {
-            input.setCustomValidity("يجب كتابة الاسم بحروف عربية أساسية فقط (بدون همزات أ/إ/آ، بدون ة مربوطة، وبدون حروف خاصة).");
-            return;
-        }
+        currentPassword = password;
+        const success = await fetchDashboardData();
 
-        const words = input.value.trim().split(/\s+/);
-        if (words.length < 3) {
-            input.setCustomValidity("برجاء إدخال اسم الصديق ثلاثي على الأقل (3 كلمات).");
-        } else {
-            input.setCustomValidity("");
-        }
-    }
+        loginBtn.disabled = false;
+        loginBtn.innerText = "دخول";
 
-    function handleRegTypeChange() {
-        const regType = document.getElementById('regType').value;
-        const friendFields = document.getElementById('friendFields');
-        const entityLabel = document.getElementById('entityLabel');
-        const friendInput = document.getElementById('friendName');
-
-        if (regType === "صديق مرشح من عضو باتحاد شبابي") {
-            friendFields.classList.remove('hidden');
-            friendInput.required = true;
-            validateArabicTripleName(friendInput);
-            entityLabel.innerText = "الاتحاد التابع له صديقك:";
-        } else {
-            friendFields.classList.add('hidden');
-            friendInput.required = false;
-            friendInput.setCustomValidity("");
-        }
-        handleEntityChange();
-    }
-
-    function handleEntityChange() {
-        const entity = document.getElementById('entity').value;
-        const regType = document.getElementById('regType').value;
-        const govSelect = document.getElementById('governorate');
-        const ylyFbQuestion = document.getElementById('ylyFbQuestion');
-        const committeeGroup = document.getElementById('committeeGroup');
-        const committeeSelect = document.getElementById('committee');
-        
-        govSelect.innerHTML = '<option value="">Choose</option>';
-        
-        let list = [...standardGovernorates];
-        if (entity === "اتحاد شباب يدير شباب - YLY") {
-            list.unshift("تيم الوزارة", "تيم العاصمة");
-            ylyFbQuestion.classList.remove('hidden');
-            document.getElementById('isFollowingFb').required = true;
-        } else {
-            ylyFbQuestion.classList.add('hidden');
-            document.getElementById('isFollowingFb').required = false;
-        }
-
-       
-        if (regType === "عضو باتحاد شبابي" && entity === "اتحاد شباب يدير شباب - YLY") {
-            committeeGroup.classList.remove('hidden');
-            committeeSelect.required = true;
-        } else {
-            committeeGroup.classList.add('hidden');
-            committeeSelect.required = false;
-            committeeSelect.value = ""; 
-        }
-
-        list.forEach(gov => {
-            const opt = document.createElement('option');
-            opt.value = gov;
-            opt.innerText = gov;
-            govSelect.appendChild(opt);
-        });
-
-        handleFbChange();
-    }
-
-    function handleFbChange() {
-        const regType = document.getElementById('regType').value;
-        const entity = document.getElementById('entity').value;
-        const isFollowingFb = document.getElementById('isFollowingFb').value;
-        const fbScreenshotGroup = document.getElementById('fbScreenshotGroup');
-        const fbScreenshotInput = document.getElementById('fbScreenshot');
-
-        if (regType === "صديق مرشح من عضو باتحاد شبابي" && entity === "اتحاد شباب يدير شباب - YLY" && isFollowingFb === "نعم") {
-            fbScreenshotGroup.classList.remove('hidden');
-            fbScreenshotInput.required = false; 
-        } else {
-            fbScreenshotGroup.classList.add('hidden');
-            fbScreenshotInput.required = false;
+        if (!success) {
+            currentPassword = "";
+            passwordInput.value = "";
         }
     }
 
-    function nextStep(step) {
-        const currentStepDiv = document.getElementById(`step-${step}`);
-        const requiredInputs = currentStepDiv.querySelectorAll('input[required], select[required], textarea[required]');
-        const messageDiv = document.getElementById('message');
-        messageDiv.innerText = "";
-        
-        for (let input of requiredInputs) {
-            if (!input.checkValidity()) {
-                input.reportValidity(); 
-                return; 
-            }
-        }
-
-        if (step === 2) {
-            const fbScreenshotInput = document.getElementById('fbScreenshot');
-            const fbScreenshotGroup = document.getElementById('fbScreenshotGroup');
-            
-            if (!fbScreenshotGroup.classList.contains('hidden') && fbScreenshotInput.files[0]) {
-                const file = fbScreenshotInput.files[0];
-                const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-                
-                if (!validImageTypes.includes(file.type)) {
-                    messageDiv.style.color = "red";
-                    messageDiv.innerText = `الملف "${file.name}" صيغته غير مدعومة. يرجى رفع صور بصيغة JPG أو PNG فقط.`;
-                    return;
-                }
-
-                if (file.size > 1024 * 1024) {
-                    messageDiv.style.color = "red";
-                    messageDiv.innerText = `الملف "${file.name}" حجمه أكبر من 1 ميجابايت! يرجى اختيار ملف بحجم أقل.`;
-                    return;
-                }
-            }
-        }
-
-        currentStepDiv.classList.remove('active');
-        currentStep = step + 1;
-        document.getElementById(`step-${currentStep}`).classList.add('active');
-    }
-
-    function prevStep(step) {
-        document.getElementById(`step-${step}`).classList.remove('active');
-        currentStep = step - 1;
-        document.getElementById(`step-${currentStep}`).classList.add('active');
-    }
-
-    function compressImage(file) {
-        return new Promise((resolve, reject) => {
-            if (!file) { resolve(null); return; }
-            
-            const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-            if (!validImageTypes.includes(file.type)) {
-                reject(new Error(`الملف "${file.name}" صيغته غير مدعومة. يرجى رفع صور بصيغة JPG أو PNG فقط.`));
-                return;
-            }
-
-            if (file.size > 1024 * 1024) {
-                reject(new Error(`الملف "${file.name}" حجمه أكبر من 1 ميجابايت! يرجى اختيار ملف بحجم أقل.`));
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 600; 
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > MAX_WIDTH) {
-                        height = Math.round((height * MAX_WIDTH) / width);
-                        width = MAX_WIDTH;
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.4);
-                    resolve(dataUrl); 
-                };
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-
-    async function uploadToCloudinary(dataUrl, folderName) {
-        if (!dataUrl) return "";
+    async function fetchDashboardData() {
+        const loginError = document.getElementById('loginError');
         try {
-            const formData = new FormData();
-            formData.append("file", dataUrl);
-            formData.append("upload_preset", CLOUDINARY_PRESET);
-            formData.append("folder", "التسجيلات/" + folderName);
-
-            const response = await fetch(CLOUDINARY_URL, { method: "POST", body: formData });
-            const data = await response.json();
-            return data.secure_url || ""; 
-        } catch (error) {
-            console.error("Upload error:", error);
-            throw new Error("حدث خطأ أثناء رفع الصور، يرجى المحاولة مرة أخرى.");
-        }
-    }
-
-   function getRecaptchaToken() {
-        return new Promise((resolve, reject) => {
-            if (typeof grecaptcha === "undefined") {
-                reject(new Error("تعذر تحميل نظام التحقق الأمني (reCAPTCHA). تأكد من اتصالك بالإنترنت وأعد المحاولة."));
-                return;
-            }
-            grecaptcha.ready(() => {
-                grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'submit' })
-                    .then(resolve)
-                    .catch(() => reject(new Error("تعذر التحقق الأمني (reCAPTCHA)، برجاء إعادة تحميل الصفحة والمحاولة مرة أخرى.")));
-            });
-        });
-    }
-
-   
-    function showThankYouScreen() {
-        document.getElementById('mainTitle').classList.add('hidden');
-        document.getElementById('competitionForm').classList.add('hidden');
-        document.getElementById('recaptchaNotice').classList.add('hidden');
-        document.getElementById('message').innerText = "";
-        document.getElementById('thankYouScreen').classList.add('active');
-    }
-
-    document.getElementById('competitionForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const messageDiv = document.getElementById('message');
-        
-       
-        let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
-        if (submissionCount >= 1) {
-            messageDiv.style.color = "red";
-            messageDiv.innerText = "لقد قمت بالتسجيل مسبقاً. لا يمكنك إرسال طلب آخر.";
-            return;
-        }
-
-        const honeypotValue = document.getElementById('user_url').value;
-        if (honeypotValue !== "") {
-            console.warn("Spam Bot Detected!");
-            showThankYouScreen();
-            document.getElementById('competitionForm').reset();
-            return;
-        }
-        
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        submitBtn.innerText = "Submitting...";
-        messageDiv.innerText = "";
-
-        try {
-                const recaptchaToken = await getRecaptchaToken();
-
-            const entityName = document.getElementById('entity').value || "غير_معروف";
-
-            const fbInput = document.getElementById('fbScreenshot');
-            const cert1Input = document.getElementById('cert1');
-            const cert2Input = document.getElementById('cert2');
-            const cert3Input = document.getElementById('cert3');
-            const cert4Input = document.getElementById('cert4');
-
-            const fbImgData = fbInput && fbInput.files[0] ? await compressImage(fbInput.files[0]) : null;
-            const cert1Data = cert1Input && cert1Input.files[0] ? await compressImage(cert1Input.files[0]) : null;
-            const cert2Data = cert2Input && cert2Input.files[0] ? await compressImage(cert2Input.files[0]) : null;
-            const cert3Data = cert3Input && cert3Input.files[0] ? await compressImage(cert3Input.files[0]) : null;
-            const cert4Data = cert4Input && cert4Input.files[0] ? await compressImage(cert4Input.files[0]) : null;
-
-            const [fbScreenshot, cert1, cert2, cert3, cert4] = await Promise.all([
-                uploadToCloudinary(fbImgData, entityName),
-                uploadToCloudinary(cert1Data, entityName),
-                uploadToCloudinary(cert2Data, entityName),
-                uploadToCloudinary(cert3Data, entityName),
-                uploadToCloudinary(cert4Data, entityName)
-            ]);
-
-            const filesData = { fbScreenshot, cert1, cert2, cert3, cert4 };
- 
-            const payload = {
-                honeypot: honeypotValue,
-                recaptchaToken: recaptchaToken, 
-                registrationType: document.getElementById('regType').value,
-                fullName: document.getElementById('fullName').value,
-                friendName: document.getElementById('friendName').value,
-                entity: document.getElementById('entity').value,
-                governorate: document.getElementById('governorate').value,
-                committee: document.getElementById('committee').value,
-                isFollowingFb: document.getElementById('isFollowingFb').value,
-                namesOnCertificates: document.getElementById('namesOnCertificates').value,
-                files: filesData
-            };
-
-            const response = await fetch(SCRIPT_URL, {
+            const response = await fetch(DASHBOARD_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({ password: currentPassword })
             });
 
             const result = await response.json();
 
             if (result.status !== "success") {
-                throw new Error(result.message || "حدث خطأ أثناء التسجيل، يرجى المحاولة مرة أخرى.");
+                loginError.innerText = result.message || "حدث خطأ، برجاء المحاولة مرة أخرى.";
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('dashboardScreen').classList.remove('active');
+                return false;
             }
 
-            submissionCount++;
-            localStorage.setItem('form_sub_count', submissionCount);
-
-        
-            document.getElementById('competitionForm').reset();
-            showThankYouScreen();
+            renderDashboard(result);
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').classList.add('active');
+            return true;
 
         } catch (err) {
             console.error(err);
-            messageDiv.style.color = "red";
-            messageDiv.innerText = err.message || "حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.";
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Submit";
+            loginError.innerText = "تعذر الاتصال بالخادم، تأكد من اتصالك بالإنترنت.";
+            return false;
+        }
+    }
+
+    function renderDashboard(data) {
+        document.getElementById('totalCount').innerText = data.totalCount;
+        document.getElementById('lastUpdated').innerText = "آخر تحديث: " + formatDate(data.lastUpdated);
+
+        const govNames = Object.keys(data.governorates);
+
+        if (govNames.length === 0) {
+            document.getElementById('emptyState').style.display = 'block';
+            document.getElementById('winnersSection').innerHTML = '';
+            document.getElementById('governoratesList').innerHTML = '';
+            return;
+        }
+
+        document.getElementById('emptyState').style.display = 'none';
+
+        // ===== قسم الفايزين =====
+        const winnersHtml = govNames
+            .filter(gov => data.governorates[gov].winner)
+            .map(gov => {
+                const w = data.governorates[gov].winner;
+                return `
+                    <div class="winner-card">
+                        <div class="gov-name">${escapeHtml(gov)}</div>
+                        <div class="winner-name">${escapeHtml(w.name)}</div>
+                        <div class="winner-stats">${w.referredCount} ترشيح · ${w.followersCount} متابع</div>
+                    </div>
+                `;
+            }).join('');
+
+        if (winnersHtml) {
+            document.getElementById('winnersSection').innerHTML = `
+                <div class="section-title">الفائزين (الأكثر ترشيحاً - YLY)</div>
+                <div class="winners-grid">${winnersHtml}</div>
+            `;
+        } else {
+            document.getElementById('winnersSection').innerHTML = '';
+        }
+
+        // ===== جدول المحافظات (كل محافظة قابلة للفتح لعرض تفاصيل الاتحادات) =====
+        const govsHtml = govNames.map(gov => {
+            const g = data.governorates[gov];
+            const entityRows = g.byEntity.map(e => `
+                <tr>
+                    <td>${escapeHtml(e.entity)}</td>
+                    <td>${e.count}</td>
+                    <td>${e.certs}</td>
+                </tr>
+            `).join('');
+
+            return `
+                <details class="gov-details">
+                    <summary>
+                        <span>${escapeHtml(gov)}</span>
+                        <span class="gov-summary-stats">
+                            <span><b>${g.total}</b> تسجيل</span>
+                            <span><b>${g.totalCerts}</b> شهادة</span>
+                        </span>
+                    </summary>
+                    <table class="entity-table">
+                        <thead>
+                            <tr><th>الاتحاد</th><th>عدد المسجلين</th><th>الشهادات</th></tr>
+                        </thead>
+                        <tbody>${entityRows}</tbody>
+                    </table>
+                </details>
+            `;
+        }).join('');
+
+        document.getElementById('governoratesList').innerHTML = govsHtml;
+    }
+
+    // بيحول أي نص لصيغة آمنة قبل إدراجه في الصفحة (حماية من XSS)
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.innerText = str;
+        return div.innerHTML;
+    }
+
+    function formatDate(dateStr) {
+        try {
+            const d = new Date(dateStr);
+            return d.toLocaleString('ar-EG');
+        } catch (e) {
+            return dateStr;
+        }
+    }
+
+    document.getElementById('passwordInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            attemptLogin();
         }
     });
 </script>
