@@ -148,6 +148,12 @@
         .refresh-btn:hover {
             background-color: #e5e5e5;
         }
+        .refresh-status {
+            font-size: 12px;
+            color: var(--primary-red);
+            margin-top: 8px;
+            min-height: 14px;
+        }
         .section-title {
             font-size: 18px;
             font-weight: 800;
@@ -269,6 +275,7 @@
             <div class="dash-meta">
                 <div class="updated" id="lastUpdated"></div>
                 <button class="refresh-btn" onclick="fetchDashboardData()">تحديث البيانات</button>
+                <div class="refresh-status" id="refreshStatus"></div>
             </div>
         </div>
         <div id="winnersSection"></div>
@@ -323,6 +330,11 @@
     }
     async function fetchDashboardData(silent) {
         const loginError = document.getElementById('loginError');
+        const refreshStatus = document.getElementById('refreshStatus');
+        // isInsideDashboard بتفرق بين حالتين:
+        // - true: إحنا مسجلين دخول أصلاً وبس بنحدّث البيانات (يدوي أو تلقائي)
+        // - false: دي أول محاولة تسجيل دخول من شاشة الباسورد
+        const isInsideDashboard = document.getElementById('dashboardScreen').classList.contains('active');
         try {
             const response = await fetch(DASHBOARD_URL, {
                 method: 'POST',
@@ -331,9 +343,14 @@
             });
             const result = await response.json();
             if (result.status !== "success") {
-                if (silent) {
-                    // تحديث تلقائي فشل مؤقتًا - نسجل الخطأ بس من غير ما نبوظ الشاشة على المستخدم
-                    console.error("فشل التحديث التلقائي:", result.message);
+                console.error("فشل التحديث:", result.message);
+                if (isInsideDashboard) {
+                    // إحنا أصلاً جوه الداشبورد - منرجعش لشاشة الدخول، بس نوري
+                    // تنبيه بسيط جنب زرار التحديث لو الفشل ده من ضغطة يدوية
+                    if (!silent && refreshStatus) {
+                        refreshStatus.innerText = result.message || "فشل التحديث، جرب تاني.";
+                        setTimeout(function () { refreshStatus.innerText = ''; }, 5000);
+                    }
                 } else {
                     loginError.innerText = result.message || "حدث خطأ، برجاء المحاولة مرة أخرى.";
                     document.getElementById('loginScreen').style.display = 'flex';
@@ -342,6 +359,7 @@
                 }
                 return false;
             }
+            if (refreshStatus) refreshStatus.innerText = '';
             renderDashboard(result);
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboardScreen').classList.add('active');
@@ -349,7 +367,12 @@
             return true;
         } catch (err) {
             console.error(err);
-            if (!silent) {
+            if (isInsideDashboard) {
+                if (!silent && refreshStatus) {
+                    refreshStatus.innerText = "تعذر الاتصال بالخادم، جرب تاني.";
+                    setTimeout(function () { refreshStatus.innerText = ''; }, 5000);
+                }
+            } else if (!silent) {
                 loginError.innerText = "تعذر الاتصال بالخادم، تأكد من اتصالك بالإنترنت.";
             }
             return false;
