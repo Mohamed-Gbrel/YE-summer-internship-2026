@@ -134,6 +134,11 @@
             color: var(--muted-text);
             margin-bottom: 8px;
         }
+        .dash-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
         .refresh-btn {
             background-color: #f0f0f0;
             color: var(--text-color);
@@ -147,6 +152,21 @@
         }
         .refresh-btn:hover {
             background-color: #e5e5e5;
+        }
+        .logout-btn {
+            background-color: transparent;
+            color: var(--muted-text);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 16px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .logout-btn:hover {
+            color: var(--primary-red);
         }
         .refresh-status {
             font-size: 12px;
@@ -274,7 +294,10 @@
             </div>
             <div class="dash-meta">
                 <div class="updated" id="lastUpdated"></div>
-                <button class="refresh-btn" onclick="fetchDashboardData()">تحديث البيانات</button>
+                <div class="dash-actions">
+                    <button class="refresh-btn" onclick="fetchDashboardData()">تحديث البيانات</button>
+                    <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
+                </div>
                 <div class="refresh-status" id="refreshStatus"></div>
             </div>
         </div>
@@ -286,8 +309,14 @@
 <script>
     // ⚠️ حط هنا رابط الـ Apps Script الجديد بتاع الداشبورد (بعد الديبلوي)
     const DASHBOARD_URL = 'https://script.google.com/macros/s/AKfycbxJZ8G0DbhhdqoX_BP5v03gkfkHeWGAZdoZLGFfx5H29DmGyauc8D47ivjdegwV800/exec';
-    let currentPassword = ""; // بيتخزن في الذاكرة بس (متغير JS)، مش localStorage
-                               // فبيتمسح تلقائيًا لما الصفحة تتقفل أو تتعمل reload
+
+    // مفتاح تخزين كلمة المرور في localStorage عشان اليوزر "يفضل مسجل دخول"
+    const SAVED_PASSWORD_KEY = 'dashboard_saved_password';
+
+    let currentPassword = ""; // بتتحط هنا وقت الاستخدام، وبتتحفظ كمان في localStorage
+                               // (بمفتاح SAVED_PASSWORD_KEY) عشان اليوزر ميحتاجش يسجل
+                               // دخول تاني كل مرة يقفل الصفحة ويفتحها - يدخل عادي على طول.
+                               // زرار "تسجيل خروج" هو اللي بيمسح النسخة المحفوظة دي.
 
     // ===== تحديث تلقائي كل ساعة (بجانب زرار "تحديث البيانات" اليدوي) =====
     const AUTO_REFRESH_INTERVAL_MS = 60 * 60 * 1000; // ساعة بالميلي ثانية
@@ -323,11 +352,74 @@
         const success = await fetchDashboardData();
         loginBtn.disabled = false;
         loginBtn.innerText = "دخول";
-        if (!success) {
+        if (success) {
+            // نجح الدخول - نحفظ كلمة المرور في localStorage عشان المرة الجاية
+            // يدخل عادي من غير ما يسجل دخول تاني
+            try {
+                localStorage.setItem(SAVED_PASSWORD_KEY, password);
+            } catch (e) {
+                console.warn("تعذر حفظ الجلسة محليًا:", e);
+            }
+        } else {
             currentPassword = "";
             passwordInput.value = "";
         }
     }
+
+    // ============================================================
+    // 🔁 الدخول التلقائي: لو فيه كلمة مرور محفوظة من مرة قبل كده في
+    // localStorage، بنجرب ندخل بيها على طول من غير ما اليوزر يكتب
+    // حاجة. لو نجحت: يدخل الداشبورد عادي. لو فشلت (الباسورد اتغير
+    // مثلاً): بنمسح المحفوظ ونسيبه يسجل دخول عادي بشاشة فاضية.
+    // ============================================================
+    async function tryAutoLogin() {
+        let savedPassword = null;
+        try {
+            savedPassword = localStorage.getItem(SAVED_PASSWORD_KEY);
+        } catch (e) {
+            savedPassword = null;
+        }
+        if (!savedPassword) return; // مفيش جلسة محفوظة - سيبه في شاشة الدخول العادية
+
+        const passwordInput = document.getElementById('passwordInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+
+        passwordInput.disabled = true;
+        loginBtn.disabled = true;
+        loginBtn.innerText = "جاري الدخول...";
+        currentPassword = savedPassword;
+
+        const success = await fetchDashboardData();
+
+        passwordInput.disabled = false;
+        loginBtn.disabled = false;
+        loginBtn.innerText = "دخول";
+
+        if (!success) {
+            // الباسورد المحفوظ بقى مش شغال (اتغير مثلاً) - امسحه من
+            // localStorage وسيبه يدخله بنفسه من جديد
+            try { localStorage.removeItem(SAVED_PASSWORD_KEY); } catch (e) {}
+            currentPassword = "";
+            passwordInput.value = "";
+            loginError.innerText = "انتهت صلاحية الجلسة، برجاء إدخال كلمة المرور مرة أخرى.";
+        }
+    }
+
+    // ============================================================
+    // 🚪 تسجيل خروج: بيمسح الجلسة المحفوظة ويوقف التحديث التلقائي
+    // ويرجّع اليوزر لشاشة الدخول (مفيد لو الجهاز مشترك مع حد تاني)
+    // ============================================================
+    function logout() {
+        try { localStorage.removeItem(SAVED_PASSWORD_KEY); } catch (e) {}
+        currentPassword = "";
+        stopAutoRefresh();
+        document.getElementById('dashboardScreen').classList.remove('active');
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('passwordInput').value = "";
+        document.getElementById('loginError').innerText = "";
+    }
+
     async function fetchDashboardData(silent) {
         const loginError = document.getElementById('loginError');
         const refreshStatus = document.getElementById('refreshStatus');
@@ -459,6 +551,10 @@
             attemptLogin();
         }
     });
+
+    // أول ما الصفحة تفتح: لو فيه جلسة محفوظة، جرب ادخل بيها تلقائيًا
+    // (يدخل عادي من غير ما يشوف شاشة الباسورد أصلاً)
+    tryAutoLogin();
 </script>
 </body>
 </html>
