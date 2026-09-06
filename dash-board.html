@@ -281,6 +281,25 @@
     const DASHBOARD_URL = 'https://script.google.com/macros/s/AKfycbxJZ8G0DbhhdqoX_BP5v03gkfkHeWGAZdoZLGFfx5H29DmGyauc8D47ivjdegwV800/exec';
     let currentPassword = ""; // بيتخزن في الذاكرة بس (متغير JS)، مش localStorage
                                // فبيتمسح تلقائيًا لما الصفحة تتقفل أو تتعمل reload
+
+    // ===== تحديث تلقائي كل ساعة (بجانب زرار "تحديث البيانات" اليدوي) =====
+    const AUTO_REFRESH_INTERVAL_MS = 60 * 60 * 1000; // ساعة بالميلي ثانية
+    let autoRefreshTimer = null;
+
+    function startAutoRefresh() {
+        if (autoRefreshTimer) return; // شغال أصلاً، متبدأش تاني تايمر جديد
+        autoRefreshTimer = setInterval(function () {
+            fetchDashboardData(true); // true = silent، عشان لو حصل خطأ مؤقت ميرجعكش لشاشة تسجيل الدخول
+        }, AUTO_REFRESH_INTERVAL_MS);
+    }
+
+    function stopAutoRefresh() {
+        if (autoRefreshTimer) {
+            clearInterval(autoRefreshTimer);
+            autoRefreshTimer = null;
+        }
+    }
+
     async function attemptLogin() {
         const passwordInput = document.getElementById('passwordInput');
         const loginBtn = document.getElementById('loginBtn');
@@ -302,7 +321,7 @@
             passwordInput.value = "";
         }
     }
-    async function fetchDashboardData() {
+    async function fetchDashboardData(silent) {
         const loginError = document.getElementById('loginError');
         try {
             const response = await fetch(DASHBOARD_URL, {
@@ -312,18 +331,27 @@
             });
             const result = await response.json();
             if (result.status !== "success") {
-                loginError.innerText = result.message || "حدث خطأ، برجاء المحاولة مرة أخرى.";
-                document.getElementById('loginScreen').style.display = 'flex';
-                document.getElementById('dashboardScreen').classList.remove('active');
+                if (silent) {
+                    // تحديث تلقائي فشل مؤقتًا - نسجل الخطأ بس من غير ما نبوظ الشاشة على المستخدم
+                    console.error("فشل التحديث التلقائي:", result.message);
+                } else {
+                    loginError.innerText = result.message || "حدث خطأ، برجاء المحاولة مرة أخرى.";
+                    document.getElementById('loginScreen').style.display = 'flex';
+                    document.getElementById('dashboardScreen').classList.remove('active');
+                    stopAutoRefresh();
+                }
                 return false;
             }
             renderDashboard(result);
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboardScreen').classList.add('active');
+            startAutoRefresh(); // بعد أول نجاح، شغّل (أو استمر في) التحديث التلقائي كل ساعة
             return true;
         } catch (err) {
             console.error(err);
-            loginError.innerText = "تعذر الاتصال بالخادم، تأكد من اتصالك بالإنترنت.";
+            if (!silent) {
+                loginError.innerText = "تعذر الاتصال بالخادم، تأكد من اتصالك بالإنترنت.";
+            }
             return false;
         }
     }
