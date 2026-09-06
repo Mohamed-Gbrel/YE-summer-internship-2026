@@ -9,10 +9,11 @@
         :root {
             --primary-red: #e31b23;
             --primary-hover: #c41219;
-            --bg-color: #e5e5e5;
+            --gold: #d4a017;
+            --bg-color: #f2f2f2;
             --card-bg: #ffffff;
             --text-color: #111111;
-            --muted-text: #666666;
+            --muted-text: #6c757d;
             --border-color: #eeeeee;
         }
 
@@ -26,7 +27,7 @@
         body {
             background-color: var(--bg-color);
             min-height: 100vh;
-            padding: 20px 15px;
+            padding: 20px 15px 60px;
         }
 
         /* ===== شاشة الدخول ===== */
@@ -104,167 +105,203 @@
         /* ===== الداشبورد ===== */
         #dashboardScreen {
             display: none;
-            max-width: 900px;
-            margin: 0 auto;
         }
 
         #dashboardScreen.active {
             display: block;
         }
 
-        .dash-header {
-            background: var(--card-bg);
-            border-radius: 25px;
-            padding: 25px 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
+            max-width: 1200px;
+            margin: 0 auto 20px;
         }
-
-        .dash-total {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .dash-total .number {
-            font-size: 42px;
-            font-weight: 900;
-            color: var(--primary-red);
-            line-height: 1;
-        }
-
-        .dash-total .label {
-            font-size: 14px;
-            color: var(--muted-text);
-            margin-top: 4px;
-        }
+        .header h1 { font-size: clamp(18px, 4vw, 24px); font-weight: 900; }
 
         .dash-meta {
-            text-align: left;
-            direction: ltr;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .dash-meta .updated {
             font-size: 12px;
             color: var(--muted-text);
-            margin-bottom: 8px;
         }
 
         .refresh-btn {
-            background-color: #f0f0f0;
+            background-color: #fff;
             color: var(--text-color);
-            border: none;
+            border: 2px solid var(--border-color);
             border-radius: 50px;
-            padding: 10px 20px;
+            padding: 8px 18px;
             font-family: 'Cairo', sans-serif;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
+            transition: background-color 0.2s ease;
         }
 
         .refresh-btn:hover {
-            background-color: #e5e5e5;
+            background-color: #f5f5f5;
         }
+
+        /* ===== إجمالي عام ===== */
+        .total-card {
+            max-width: 1200px;
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, var(--primary-red), #b3141a);
+            color: #fff;
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(227,27,35,.25);
+        }
+        .total-card .num { font-size: clamp(38px, 7vw, 56px); font-weight: 900; line-height: 1; }
+        .total-card .label { font-size: 15px; font-weight: 700; opacity: .9; margin-top: 8px; }
+
+        /* ===== كنترولز عامة ===== */
+        .controls {
+            max-width: 1200px;
+            margin: 0 auto 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        select.filter, input.search {
+            font-family: 'Cairo', sans-serif;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 14px;
+            background: #fff;
+            cursor: pointer;
+        }
+        input.search { cursor: text; flex: 1; min-width: 180px; }
 
         .section-title {
             font-size: 18px;
             font-weight: 800;
-            margin: 25px 0 12px;
+            margin: 25px auto 12px;
             color: var(--text-color);
+            max-width: 1200px;
         }
 
         /* ===== الفايزين ===== */
         .winners-grid {
+            max-width: 1200px;
+            margin: 0 auto 10px;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 14px;
-            margin-bottom: 10px;
         }
 
         .winner-card {
-            background: var(--card-bg);
+            background: linear-gradient(135deg, #fff8e6, #fff);
+            border: 2px solid var(--gold);
             border-radius: 18px;
             padding: 16px 18px;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
-            border-right: 4px solid var(--primary-red);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
         }
 
+        .winner-card .trophy { font-size: 24px; line-height: 1; }
+
         .winner-card .gov-name {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--muted-text);
             font-weight: 700;
             margin-bottom: 4px;
         }
 
         .winner-card .winner-name {
-            font-size: 17px;
+            font-size: 15px;
             font-weight: 800;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .winner-card .winner-stats {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--muted-text);
         }
 
-        /* ===== جدول المحافظات ===== */
-        .gov-details {
+        /* ===== كارت محافظة ===== */
+        .governorates-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 18px;
+        }
+        .gov-card {
             background: var(--card-bg);
-            border-radius: 18px;
-            margin-bottom: 10px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 6px 18px rgba(0,0,0,.06);
             overflow: hidden;
         }
-
-        .gov-details summary {
+        .gov-header {
             padding: 16px 20px;
-            cursor: pointer;
-            font-weight: 800;
-            font-size: 15px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            list-style: none;
+            gap: 10px;
         }
-
-        .gov-details summary::-webkit-details-marker {
-            display: none;
-        }
-
-        .gov-summary-stats {
-            display: flex;
-            gap: 16px;
+        .gov-header h3 { font-size: 17px; font-weight: 800; }
+        .gov-total-badge {
+            background: #fdeceb;
+            color: var(--primary-red);
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 50px;
+            white-space: nowrap;
+        }
+        .gov-body { padding: 16px 20px; }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
             color: var(--muted-text);
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--border-color);
         }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-row .val { font-weight: 800; color: var(--text-color); }
 
-        .gov-summary-stats b {
-            color: var(--text-color);
+        .entity-list { margin-top: 10px; }
+        .entity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            padding: 6px 0;
         }
+        .entity-item .name { color: var(--text-color); font-weight: 600; }
+        .entity-item .nums { display: flex; gap: 10px; color: var(--muted-text); font-size: 12px; white-space: nowrap; }
+        .entity-item .nums b { color: var(--primary-red); }
 
-        .entity-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-
-        .entity-table th,
-        .entity-table td {
-            padding: 10px 20px;
-            text-align: right;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .entity-table th {
-            color: var(--muted-text);
-            font-weight: 700;
+        .section-label {
             font-size: 12px;
+            font-weight: 800;
+            color: var(--muted-text);
+            margin-top: 14px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+
+        .empty-note { font-size: 12px; color: var(--muted-text); text-align: center; padding: 8px 0; }
 
         #emptyState {
             text-align: center;
@@ -273,14 +310,9 @@
         }
 
         @media (max-width: 480px) {
-            .dash-header {
+            .header {
                 flex-direction: column;
                 align-items: flex-start;
-            }
-            .dash-meta {
-                text-align: right;
-                direction: rtl;
-                width: 100%;
             }
         }
     </style>
@@ -300,21 +332,32 @@
 
     <!-- ===== الداشبورد ===== -->
     <div id="dashboardScreen">
-        <div class="dash-header">
-            <div class="dash-total">
-                <div class="number" id="totalCount">0</div>
-                <div class="label">إجمالي التسجيلات</div>
-            </div>
+        <div class="header">
+            <h1>Dashboard - YE Summer Internship 2026</h1>
             <div class="dash-meta">
                 <div class="updated" id="lastUpdated"></div>
                 <button class="refresh-btn" onclick="fetchDashboardData()">تحديث البيانات</button>
             </div>
         </div>
 
+        <div class="total-card">
+            <div class="num" id="totalCount">0</div>
+            <div class="label">إجمالي التسجيلات</div>
+        </div>
+
+        <div class="controls">
+            <input type="text" id="searchBox" class="search" placeholder="ابحث عن محافظة..." oninput="onSearchChange(this.value)">
+            <select id="sortSelect" class="filter" onchange="onSortChange(this.value)">
+                <option value="count_desc">الأكتر تسجيلاً أولاً</option>
+                <option value="count_asc">الأقل تسجيلاً أولاً</option>
+                <option value="name">ترتيب أبجدي</option>
+            </select>
+        </div>
+
         <div id="winnersSection"></div>
 
         <div class="section-title">التسجيلات حسب المحافظة</div>
-        <div id="governoratesList"></div>
+        <div id="governoratesList" class="governorates-grid"></div>
 
         <div id="emptyState" style="display: none;">لا توجد بيانات تسجيل بعد.</div>
     </div>
@@ -325,6 +368,10 @@
 
     let currentPassword = ""; // بيتخزن في الذاكرة بس (متغير JS)، مش localStorage
                                // فبيتمسح تلقائيًا لما الصفحة تتقفل أو تتعمل reload
+
+    let lastData = null;
+    let searchTerm = '';
+    let sortMode = 'count_desc';
 
     async function attemptLogin() {
         const passwordInput = document.getElementById('passwordInput');
@@ -371,6 +418,7 @@
                 return false;
             }
 
+            lastData = result;
             renderDashboard(result);
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboardScreen').classList.add('active');
@@ -383,13 +431,50 @@
         }
     }
 
+    function onSearchChange(val) {
+        searchTerm = val.trim();
+        if (lastData) renderDashboard(lastData);
+    }
+    function onSortChange(val) {
+        sortMode = val;
+        if (lastData) renderDashboard(lastData);
+    }
+
+    function renderEntityList(byEntity) {
+        if (!byEntity.length) return '<div class="empty-note">لا يوجد بيانات اتحادات</div>';
+        return byEntity.map(ent => `
+            <div class="entity-item">
+                <span class="name">${escapeHtml(ent.entity)}</span>
+                <span class="nums"><b>${ent.count}</b> مسجل &middot; ${ent.certs} شهادة</span>
+            </div>
+        `).join('');
+    }
+
+    function renderGovCard(name, gov) {
+        return `
+            <div class="gov-card">
+                <div class="gov-header">
+                    <h3>${escapeHtml(name)}</h3>
+                    <span class="gov-total-badge">${gov.total} مسجل</span>
+                </div>
+                <div class="gov-body">
+                    <div class="stat-row"><span>إجمالي الشهادات</span><span class="val">${gov.totalCerts}</span></div>
+                    <div class="stat-row"><span>أصدقاء مرشحين</span><span class="val">${gov.friendReferredCount || 0}</span></div>
+
+                    <div class="section-label">📊 التوزيع حسب الاتحاد</div>
+                    <div class="entity-list">${renderEntityList(gov.byEntity)}</div>
+                </div>
+            </div>
+        `;
+    }
+
     function renderDashboard(data) {
         document.getElementById('totalCount').innerText = data.totalCount;
         document.getElementById('lastUpdated').innerText = "آخر تحديث: " + formatDate(data.lastUpdated);
 
-        const govNames = Object.keys(data.governorates);
+        const allGovNames = Object.keys(data.governorates);
 
-        if (govNames.length === 0) {
+        if (allGovNames.length === 0) {
             document.getElementById('emptyState').style.display = 'block';
             document.getElementById('winnersSection').innerHTML = '';
             document.getElementById('governoratesList').innerHTML = '';
@@ -399,15 +484,18 @@
         document.getElementById('emptyState').style.display = 'none';
 
         // ===== قسم الفايزين =====
-        const winnersHtml = govNames
+        const winnersHtml = allGovNames
             .filter(gov => data.governorates[gov].winner)
             .map(gov => {
                 const w = data.governorates[gov].winner;
                 return `
                     <div class="winner-card">
-                        <div class="gov-name">${escapeHtml(gov)}</div>
-                        <div class="winner-name">${escapeHtml(w.name)}</div>
-                        <div class="winner-stats">${w.referredCount} ترشيح · ${w.followersCount} متابع</div>
+                        <div class="trophy">🏆</div>
+                        <div class="info">
+                            <div class="gov-name">${escapeHtml(gov)}</div>
+                            <div class="winner-name">${escapeHtml(w.name)}</div>
+                            <div class="winner-stats">${w.referredCount} ترشيح &middot; ${w.followersCount} متابع</div>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -421,37 +509,27 @@
             document.getElementById('winnersSection').innerHTML = '';
         }
 
-        // ===== جدول المحافظات (كل محافظة قابلة للفتح لعرض تفاصيل الاتحادات) =====
-        const govsHtml = govNames.map(gov => {
-            const g = data.governorates[gov];
-            const entityRows = g.byEntity.map(e => `
-                <tr>
-                    <td>${escapeHtml(e.entity)}</td>
-                    <td>${e.count}</td>
-                    <td>${e.certs}</td>
-                </tr>
-            `).join('');
+        // ===== كروت المحافظات مع البحث والترتيب =====
+        let entries = allGovNames.map(name => ({ name: name, gov: data.governorates[name] }));
 
-            return `
-                <details class="gov-details">
-                    <summary>
-                        <span>${escapeHtml(gov)}</span>
-                        <span class="gov-summary-stats">
-                            <span><b>${g.total}</b> تسجيل</span>
-                            <span><b>${g.totalCerts}</b> شهادة</span>
-                        </span>
-                    </summary>
-                    <table class="entity-table">
-                        <thead>
-                            <tr><th>الاتحاد</th><th>عدد المسجلين</th><th>الشهادات</th></tr>
-                        </thead>
-                        <tbody>${entityRows}</tbody>
-                    </table>
-                </details>
-            `;
-        }).join('');
+        if (searchTerm) {
+            entries = entries.filter(e => e.name.includes(searchTerm));
+        }
 
-        document.getElementById('governoratesList').innerHTML = govsHtml;
+        if (sortMode === 'count_desc') {
+            entries.sort((a, b) => b.gov.total - a.gov.total);
+        } else if (sortMode === 'count_asc') {
+            entries.sort((a, b) => a.gov.total - b.gov.total);
+        } else {
+            entries.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+        }
+
+        if (entries.length === 0) {
+            document.getElementById('governoratesList').innerHTML = '<div class="empty-note" style="grid-column:1/-1; padding:30px;">لا يوجد نتائج مطابقة</div>';
+            return;
+        }
+
+        document.getElementById('governoratesList').innerHTML = entries.map(e => renderGovCard(e.name, e.gov)).join('');
     }
 
     // بيحول أي نص لصيغة آمنة قبل إدراجه في الصفحة (حماية من XSS)
