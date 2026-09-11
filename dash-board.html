@@ -272,7 +272,7 @@
         return true;
     }
 
-    // دالة لتصفية واستبعاد المحافظات الوهمية أو عناوين الأعمدة
+    // دالة لتصفية واستبعاد المحافظات الوهمية أو عناوين الأعمدة بشكل شامل
     function isValidGovernorate(govName) {
         if (!govName) return false;
         const cleaned = govName.trim();
@@ -280,6 +280,8 @@
             cleaned === "" || 
             cleaned.includes("المحافظة/التيم التابع له") ||
             cleaned.includes("المحافظة / التيم التابع له") ||
+            (cleaned.includes("المحافظة") && cleaned.includes("التيم")) ||
+            cleaned.includes("التابع له") ||
             cleaned.toLowerCase() === "undefined" ||
             cleaned.toLowerCase() === "null"
         ) {
