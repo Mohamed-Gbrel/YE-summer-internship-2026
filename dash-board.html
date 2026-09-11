@@ -180,15 +180,42 @@
             margin: 25px 0 12px;
             color: var(--text-color);
         }
-        
-        /* ===== جدول المحافظات والتفاصيل ===== */
+        /* ===== الفايزين ===== */
+        .winners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+        .winner-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 16px 18px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+            border-right: 4px solid var(--primary-red);
+        }
+        .winner-card .gov-name {
+            font-size: 13px;
+            color: var(--muted-text);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .winner-card .winner-name {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .winner-card .winner-stats {
+            font-size: 13px;
+            color: var(--muted-text);
+        }
+        /* ===== جدول المحافظات ===== */
         .gov-details {
             background: var(--card-bg);
             border-radius: 18px;
             margin-bottom: 10px;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
             overflow: hidden;
-            transition: all 0.3s ease;
         }
         .gov-details summary {
             padding: 16px 20px;
@@ -199,51 +226,10 @@
             justify-content: space-between;
             align-items: center;
             list-style: none;
-            user-select: none;
         }
-        /* إخفاء السهم القديم */
         .gov-details summary::-webkit-details-marker {
             display: none;
         }
-        
-        /* ===== شكل أيقونة الفتح والقفل (+ / -) ===== */
-        .gov-name-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .toggle-icon {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 28px;
-            height: 28px;
-            background-color: #ffe6e6;
-            color: var(--primary-red);
-            border-radius: 8px;
-            font-size: 20px;
-            font-weight: 900;
-            transition: all 0.3s ease;
-        }
-        .toggle-icon::after {
-            content: '+';
-            margin-top: -2px;
-        }
-        /* الشكل لما المحافظة تتفتح */
-        .gov-details[open] .toggle-icon {
-            background-color: var(--primary-red);
-            color: #ffffff;
-            transform: rotate(180deg);
-        }
-        .gov-details[open] .toggle-icon::after {
-            content: '-';
-            margin-top: -4px;
-        }
-        .gov-details summary:hover .toggle-icon {
-            background-color: var(--primary-red);
-            color: #ffffff;
-        }
-
         .gov-summary-stats {
             display: flex;
             gap: 16px;
@@ -253,18 +239,15 @@
         }
         .gov-summary-stats b {
             color: var(--text-color);
-            font-size: 15px;
         }
-        
         .entity-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
-            background-color: #fafafa;
         }
         .entity-table th,
         .entity-table td {
-            padding: 12px 20px;
+            padding: 10px 20px;
             text-align: right;
             border-top: 1px solid var(--border-color);
         }
@@ -278,7 +261,6 @@
             padding: 60px 20px;
             color: var(--muted-text);
         }
-        
         @media (max-width: 480px) {
             .dash-header {
                 flex-direction: column;
@@ -303,7 +285,6 @@
             <div id="loginError"></div>
         </div>
     </div>
-
     <!-- ===== الداشبورد ===== -->
     <div id="dashboardScreen">
         <div class="dash-header">
@@ -320,30 +301,31 @@
                 <div class="refresh-status" id="refreshStatus"></div>
             </div>
         </div>
-        
         <div id="winnersSection"></div>
-        
         <div class="section-title">التسجيلات حسب المحافظة</div>
         <div id="governoratesList"></div>
         <div id="emptyState" style="display: none;">لا توجد بيانات تسجيل بعد.</div>
     </div>
-
 <script>
     // ⚠️ حط هنا رابط الـ Apps Script الجديد بتاع الداشبورد (بعد الديبلوي)
     const DASHBOARD_URL = 'https://script.google.com/macros/s/AKfycbxJZ8G0DbhhdqoX_BP5v03gkfkHeWGAZdoZLGFfx5H29DmGyauc8D47ivjdegwV800/exec';
 
-    // مفتاح تخزين كلمة المرور في localStorage
+    // مفتاح تخزين كلمة المرور في localStorage عشان اليوزر "يفضل مسجل دخول"
     const SAVED_PASSWORD_KEY = 'dashboard_saved_password';
-    let currentPassword = ""; 
 
-    // ===== تحديث تلقائي كل ساعة =====
-    const AUTO_REFRESH_INTERVAL_MS = 60 * 60 * 1000; 
+    let currentPassword = ""; // بتتحط هنا وقت الاستخدام، وبتتحفظ كمان في localStorage
+                               // (بمفتاح SAVED_PASSWORD_KEY) عشان اليوزر ميحتاجش يسجل
+                               // دخول تاني كل مرة يقفل الصفحة ويفتحها - يدخل عادي على طول.
+                               // زرار "تسجيل خروج" هو اللي بيمسح النسخة المحفوظة دي.
+
+    // ===== تحديث تلقائي كل ساعة (بجانب زرار "تحديث البيانات" اليدوي) =====
+    const AUTO_REFRESH_INTERVAL_MS = 60 * 60 * 1000; // ساعة بالميلي ثانية
     let autoRefreshTimer = null;
 
     function startAutoRefresh() {
-        if (autoRefreshTimer) return; 
+        if (autoRefreshTimer) return; // شغال أصلاً، متبدأش تاني تايمر جديد
         autoRefreshTimer = setInterval(function () {
-            fetchDashboardData(true); 
+            fetchDashboardData(true); // true = silent، عشان لو حصل خطأ مؤقت ميرجعكش لشاشة تسجيل الدخول
         }, AUTO_REFRESH_INTERVAL_MS);
     }
 
@@ -354,180 +336,225 @@
         }
     }
 
-    // فحص إذا كان المستخدم مسجل دخول من قبل
-    window.onload = function() {
-        const savedPassword = localStorage.getItem(SAVED_PASSWORD_KEY);
-        if (savedPassword) {
-            currentPassword = savedPassword;
-            document.getElementById('passwordInput').value = currentPassword;
-            attemptLogin();
-        }
-    };
-
-    // تسجيل الدخول
     async function attemptLogin() {
-        const passInput = document.getElementById('passwordInput').value;
-        if (!passInput) return;
-        
+        const passwordInput = document.getElementById('passwordInput');
         const loginBtn = document.getElementById('loginBtn');
-        const errorDiv = document.getElementById('loginError');
-        
+        const loginError = document.getElementById('loginError');
+        const password = passwordInput.value;
+        if (!password) {
+            loginError.innerText = "برجاء إدخال كلمة المرور.";
+            return;
+        }
         loginBtn.disabled = true;
-        loginBtn.innerText = 'جاري التحقق...';
-        errorDiv.innerText = '';
-        currentPassword = passInput;
-
-        await fetchDashboardData(false);
+        loginBtn.innerText = "جاري التحقق...";
+        loginError.innerText = "";
+        currentPassword = password;
+        const success = await fetchDashboardData();
+        loginBtn.disabled = false;
+        loginBtn.innerText = "دخول";
+        if (success) {
+            // نجح الدخول - نحفظ كلمة المرور في localStorage عشان المرة الجاية
+            // يدخل عادي من غير ما يسجل دخول تاني
+            try {
+                localStorage.setItem(SAVED_PASSWORD_KEY, password);
+            } catch (e) {
+                console.warn("تعذر حفظ الجلسة محليًا:", e);
+            }
+        } else {
+            currentPassword = "";
+            passwordInput.value = "";
+        }
     }
 
-    // جلب البيانات من الجوجل شيت
-    async function fetchDashboardData(isSilent = false) {
-        const refreshStatus = document.getElementById('refreshStatus');
-        const loginBtn = document.getElementById('loginBtn');
-        const errorDiv = document.getElementById('loginError');
-
-        if (!isSilent) {
-            refreshStatus.innerText = 'جاري التحديث...';
-        }
-
+    // ============================================================
+    // 🔁 الدخول التلقائي: لو فيه كلمة مرور محفوظة من مرة قبل كده في
+    // localStorage، بنجرب ندخل بيها على طول من غير ما اليوزر يكتب
+    // حاجة. لو نجحت: يدخل الداشبورد عادي. لو فشلت (الباسورد اتغير
+    // مثلاً): بنمسح المحفوظ ونسيبه يسجل دخول عادي بشاشة فاضية.
+    // ============================================================
+    async function tryAutoLogin() {
+        let savedPassword = null;
         try {
-            // استدعاء الرابط مع تمرير الباسورد
-            const response = await fetch(`${DASHBOARD_URL}?password=${encodeURIComponent(currentPassword)}`);
-            const data = await response.json();
+            savedPassword = localStorage.getItem(SAVED_PASSWORD_KEY);
+        } catch (e) {
+            savedPassword = null;
+        }
+        if (!savedPassword) return; // مفيش جلسة محفوظة - سيبه في شاشة الدخول العادية
 
-            if (data.status === 'success') {
-                // نجاح الدخول والتحديث
-                localStorage.setItem(SAVED_PASSWORD_KEY, currentPassword);
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('dashboardScreen').classList.add('active');
-                
-                // تحديث الواجهة بالبيانات
-                updateDashboardUI(data);
-                
-                const now = new Date();
-                document.getElementById('lastUpdated').innerText = 'آخر تحديث: ' + now.toLocaleTimeString('ar-EG');
-                if (!isSilent) refreshStatus.innerText = '';
-                
-                startAutoRefresh();
-            } else {
-                // فشل الدخول (باسورد غلط)
-                localStorage.removeItem(SAVED_PASSWORD_KEY);
-                document.getElementById('loginScreen').style.display = 'flex';
-                document.getElementById('dashboardScreen').classList.remove('active');
-                stopAutoRefresh();
-                
-                if (!isSilent) {
-                    errorDiv.innerText = 'كلمة المرور غير صحيحة';
-                    loginBtn.disabled = false;
-                    loginBtn.innerText = 'دخول';
-                }
-            }
-        } catch (error) {
-            if (!isSilent) {
-                refreshStatus.innerText = 'حدث خطأ في الاتصال، حاول مرة أخرى.';
-                loginBtn.disabled = false;
-                loginBtn.innerText = 'دخول';
-            }
+        const passwordInput = document.getElementById('passwordInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+
+        passwordInput.disabled = true;
+        loginBtn.disabled = true;
+        loginBtn.innerText = "جاري الدخول...";
+        currentPassword = savedPassword;
+
+        const success = await fetchDashboardData();
+
+        passwordInput.disabled = false;
+        loginBtn.disabled = false;
+        loginBtn.innerText = "دخول";
+
+        if (!success) {
+            // الباسورد المحفوظ بقى مش شغال (اتغير مثلاً) - امسحه من
+            // localStorage وسيبه يدخله بنفسه من جديد
+            try { localStorage.removeItem(SAVED_PASSWORD_KEY); } catch (e) {}
+            currentPassword = "";
+            passwordInput.value = "";
+            loginError.innerText = "انتهت صلاحية الجلسة، برجاء إدخال كلمة المرور مرة أخرى.";
         }
     }
 
-    // تسجيل الخروج
+    // ============================================================
+    // 🚪 تسجيل خروج: بيمسح الجلسة المحفوظة ويوقف التحديث التلقائي
+    // ويرجّع اليوزر لشاشة الدخول (مفيد لو الجهاز مشترك مع حد تاني)
+    // ============================================================
     function logout() {
-        localStorage.removeItem(SAVED_PASSWORD_KEY);
+        try { localStorage.removeItem(SAVED_PASSWORD_KEY); } catch (e) {}
         currentPassword = "";
-        document.getElementById('passwordInput').value = "";
         stopAutoRefresh();
-        
         document.getElementById('dashboardScreen').classList.remove('active');
         document.getElementById('loginScreen').style.display = 'flex';
-        
-        const loginBtn = document.getElementById('loginBtn');
-        loginBtn.disabled = false;
-        loginBtn.innerText = 'دخول';
+        document.getElementById('passwordInput').value = "";
+        document.getElementById('loginError').innerText = "";
     }
 
-    // دالة رسم المحافظات والتفاصيل
-    function updateDashboardUI(data) {
-        // تحديث إجمالي التسجيلات
-        document.getElementById('totalCount').innerText = data.total || 0;
-
-        const govList = document.getElementById('governoratesList');
-        const emptyState = document.getElementById('emptyState');
-        
-        govList.innerHTML = ''; // تنظيف القائمة القديمة
-
-        // لو مفيش بيانات
-        if (!data.governorates || data.governorates.length === 0) {
-            emptyState.style.display = 'block';
-            return;
-        } else {
-            emptyState.style.display = 'none';
-        }
-
-        // رسم كل محافظة باستخدام details و summary 
-        data.governorates.forEach(gov => {
-            const detailsElement = document.createElement('details');
-            detailsElement.className = 'gov-details';
-
-            // رأس المحافظة (الاسم + التوتال + الأيقونة)
-            const summaryElement = document.createElement('summary');
-            summaryElement.innerHTML = `
-                <div class="gov-name-wrapper">
-                    <span class="toggle-icon"></span>
-                    <span class="gov-name">${gov.name}</span>
-                </div>
-                <div class="gov-summary-stats">
-                    <span><b>${gov.count}</b> تسجيل</span>
-                </div>
-            `;
-            detailsElement.appendChild(summaryElement);
-
-            // جدول تفاصيل المسجلين في المحافظة دي
-            if (gov.users && gov.users.length > 0) {
-                const table = document.createElement('table');
-                table.className = 'entity-table';
-                
-                // الهيدر بتاع الجدول
-                table.innerHTML = `
-                    <tr>
-                        <th>الاسم</th>
-                        <th>الجامعة/الكيان</th>
-                        <th>رقم التليفون</th>
-                    </tr>
-                `;
-                
-                // بيانات الناس
-                gov.users.forEach(user => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${user.name || '-'}</td>
-                        <td>${user.entity || '-'}</td>
-                        <td><a href="https://wa.me/2${user.phone}" target="_blank" style="color:var(--primary-red);text-decoration:none;">${user.phone || '-'}</a></td>
-                    `;
-                    table.appendChild(tr);
-                });
-                
-                detailsElement.appendChild(table);
-            } else {
-                // لو مفيش تفاصيل مبعوتة للمحافظة
-                const noData = document.createElement('div');
-                noData.style.padding = '15px 20px';
-                noData.style.color = 'var(--muted-text)';
-                noData.innerText = 'لا توجد تفاصيل متاحة';
-                detailsElement.appendChild(noData);
+    async function fetchDashboardData(silent) {
+        const loginError = document.getElementById('loginError');
+        const refreshStatus = document.getElementById('refreshStatus');
+        // isInsideDashboard بتفرق بين حالتين:
+        // - true: إحنا مسجلين دخول أصلاً وبس بنحدّث البيانات (يدوي أو تلقائي)
+        // - false: دي أول محاولة تسجيل دخول من شاشة الباسورد
+        const isInsideDashboard = document.getElementById('dashboardScreen').classList.contains('active');
+        try {
+            const response = await fetch(DASHBOARD_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ password: currentPassword })
+            });
+            const result = await response.json();
+            if (result.status !== "success") {
+                console.error("فشل التحديث:", result.message);
+                if (isInsideDashboard) {
+                    // إحنا أصلاً جوه الداشبورد - منرجعش لشاشة الدخول، بس نوري
+                    // تنبيه بسيط جنب زرار التحديث لو الفشل ده من ضغطة يدوية
+                    if (!silent && refreshStatus) {
+                        refreshStatus.innerText = result.message || "فشل التحديث، جرب تاني.";
+                        setTimeout(function () { refreshStatus.innerText = ''; }, 5000);
+                    }
+                } else {
+                    loginError.innerText = result.message || "حدث خطأ، برجاء المحاولة مرة أخرى.";
+                    document.getElementById('loginScreen').style.display = 'flex';
+                    document.getElementById('dashboardScreen').classList.remove('active');
+                    stopAutoRefresh();
+                }
+                return false;
             }
-
-            govList.appendChild(detailsElement);
-        });
+            if (refreshStatus) refreshStatus.innerText = '';
+            renderDashboard(result);
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').classList.add('active');
+            startAutoRefresh(); // بعد أول نجاح، شغّل (أو استمر في) التحديث التلقائي كل ساعة
+            return true;
+        } catch (err) {
+            console.error(err);
+            if (isInsideDashboard) {
+                if (!silent && refreshStatus) {
+                    refreshStatus.innerText = "تعذر الاتصال بالخادم، جرب تاني.";
+                    setTimeout(function () { refreshStatus.innerText = ''; }, 5000);
+                }
+            } else if (!silent) {
+                loginError.innerText = "تعذر الاتصال بالخادم، تأكد من اتصالك بالإنترنت.";
+            }
+            return false;
+        }
     }
-
-    // السماح بالضغط على Enter لتسجيل الدخول
-    document.getElementById("passwordInput").addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
+    function renderDashboard(data) {
+        document.getElementById('totalCount').innerText = data.totalCount;
+        document.getElementById('lastUpdated').innerText = "آخر تحديث: " + formatDate(data.lastUpdated);
+        const govNames = Object.keys(data.governorates);
+        if (govNames.length === 0) {
+            document.getElementById('emptyState').style.display = 'block';
+            document.getElementById('winnersSection').innerHTML = '';
+            document.getElementById('governoratesList').innerHTML = '';
+            return;
+        }
+        document.getElementById('emptyState').style.display = 'none';
+        // ===== قسم الفايزين =====
+        const winnersHtml = govNames
+            .filter(gov => data.governorates[gov].winner)
+            .map(gov => {
+                const w = data.governorates[gov].winner;
+                return `
+                    <div class="winner-card">
+                        <div class="gov-name">${escapeHtml(gov)}</div>
+                        <div class="winner-name">${escapeHtml(w.name)}</div>
+                        <div class="winner-stats">${w.referredCount} ترشيح · ${w.followersCount} متابع</div>
+                    </div>
+                `;
+            }).join('');
+        if (winnersHtml) {
+            document.getElementById('winnersSection').innerHTML = `
+                <div class="section-title">الفائزين (الأكثر ترشيحاً - YLY)</div>
+                <div class="winners-grid">${winnersHtml}</div>
+            `;
+        } else {
+            document.getElementById('winnersSection').innerHTML = '';
+        }
+        // ===== جدول المحافظات (كل محافظة قابلة للفتح لعرض تفاصيل الاتحادات) =====
+        const govsHtml = govNames.map(gov => {
+            const g = data.governorates[gov];
+            const entityRows = g.byEntity.map(e => `
+                <tr>
+                    <td>${escapeHtml(e.entity)}</td>
+                    <td>${e.count}</td>
+                    <td>${e.certs}</td>
+                </tr>
+            `).join('');
+            return `
+                <details class="gov-details">
+                    <summary>
+                        <span>${escapeHtml(gov)}</span>
+                        <span class="gov-summary-stats">
+                            <span><b>${g.total}</b> تسجيل</span>
+                            <span><b>${g.totalCerts}</b> شهادة</span>
+                        </span>
+                    </summary>
+                    <table class="entity-table">
+                        <thead>
+                            <tr><th>الاتحاد</th><th>عدد المسجلين</th><th>الشهادات</th></tr>
+                        </thead>
+                        <tbody>${entityRows}</tbody>
+                    </table>
+                </details>
+            `;
+        }).join('');
+        document.getElementById('governoratesList').innerHTML = govsHtml;
+    }
+    // بيحول أي نص لصيغة آمنة قبل إدراجه في الصفحة (حماية من XSS)
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.innerText = str;
+        return div.innerHTML;
+    }
+    function formatDate(dateStr) {
+        try {
+            const d = new Date(dateStr);
+            return d.toLocaleString('ar-EG');
+        } catch (e) {
+            return dateStr;
+        }
+    }
+    document.getElementById('passwordInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
             attemptLogin();
         }
     });
+
+    // أول ما الصفحة تفتح: لو فيه جلسة محفوظة، جرب ادخل بيها تلقائيًا
+    // (يدخل عادي من غير ما يشوف شاشة الباسورد أصلاً)
+    tryAutoLogin();
 </script>
 </body>
 </html>
