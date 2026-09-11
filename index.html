@@ -827,10 +827,10 @@
         const messageDiv = document.getElementById('message');
         
        
-               let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
-if (submissionCount >= 10) {
+             let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
+if (submissionCount >= 1) {
     messageDiv.style.color = "red";
-    messageDiv.innerText = "لقد وصلت للحد الأقصى المسموح به من التسجيلات";
+    messageDiv.innerText = "لقد قمت بالتسجيل من قبل، مسموح بتسجيل مرة واحدة فقط.";
     return;
 }
 
