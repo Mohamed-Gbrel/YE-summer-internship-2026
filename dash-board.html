@@ -107,7 +107,7 @@
             text-align: right;
         }
 
-        /* ===== إحصائيات الاتحادات (كروت بخط أسود) ===== */
+        /* ===== إحصائيات الاتحادات (بالتصميم الجديد) ===== */
         .entities-grid {
             display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;
         }
@@ -115,26 +115,27 @@
             background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.04);
-            border-right: 5px solid #111;
-            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.04);
+            text-align: right;
         }
         .entity-card-header {
-            font-size: 16px; font-weight: 800; color: var(--muted-text); margin-bottom: 10px;
-        }
-        .entity-card-body {
-            display: flex; justify-content: space-between; align-items: center;
+            font-size: 16px; font-weight: 800; color: var(--muted-text); margin-bottom: 8px;
         }
         .entity-main-stat {
-            font-size: 35px; font-weight: 900; color: var(--primary-red);
+            font-size: 42px; font-weight: 900; color: var(--primary-red); margin-bottom: 12px; line-height: 1;
         }
         .entity-sub-stats {
-            font-size: 14px; font-weight: 600; color: var(--text-color);
-            display: flex; gap: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 14px; font-weight: 600; color: var(--muted-text);
+            padding: 12px 0 0 0;
+            border-top: 1px solid var(--border-color);
+            margin-bottom: 10px;
         }
         .entity-footer {
-            font-size: 13px; color: var(--muted-text); font-weight: 600;
-            margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 14px; font-weight: 700; color: var(--text-color);
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
         }
 
         /* ===== الفايزين (كروت بخط أحمر) ===== */
@@ -290,6 +291,21 @@
         return true;
     }
 
+    // دالة لحساب إجمالي المتابعين للاتحاد الواحد من بيانات المرشحين
+    function getEntityFollowers(entityName, data) {
+        let total = 0;
+        if (!data.governorates) return 0;
+        for (let gov in data.governorates) {
+            const g = data.governorates[gov];
+            if (g && g.referrersByEntity && g.referrersByEntity[entityName]) {
+                g.referrersByEntity[entityName].forEach(r => {
+                    total += (Number(r.followersCount) || 0);
+                });
+            }
+        }
+        return total;
+    }
+
     function startAutoRefresh() {
         if (autoRefreshTimer) return;
         autoRefreshTimer = setInterval(function () {
@@ -416,23 +432,27 @@
         }
         document.getElementById('emptyState').style.display = 'none';
 
-        // 1. قسم الاتحادات (إجمالي عام) مع الفلترة
+        // 1. قسم الاتحادات (إجمالي عام) بالتصميم الجديد المطلوب
         if (data.entityTotals && data.entityTotals.length > 0) {
             const validEntities = data.entityTotals.filter(e => isValidEntity(e.entity));
             if (validEntities.length > 0) {
-                const entitiesHtml = validEntities.map(e => `
-                    <div class="entity-card">
-                        <div class="entity-card-header">${escapeHtml(e.entity)}</div>
-                        <div class="entity-card-body">
+                const entitiesHtml = validEntities.map(e => {
+                    const entityFollowers = getEntityFollowers(e.entity, data);
+                    return `
+                        <div class="entity-card">
+                            <div class="entity-card-header">${escapeHtml(e.entity)}</div>
+                            <div class="entity-main-stat">${e.total}</div>
                             <div class="entity-sub-stats">
                                 <span>عضو: ${e.memberCount}</span>
                                 <span>صديق مرشح: ${e.friendCount}</span>
                             </div>
-                            <div class="entity-main-stat">${e.total}</div>
+                            <div class="entity-footer">
+                                <span>${e.certs} شهادة</span>
+                                <span>متابع: ${entityFollowers}</span>
+                            </div>
                         </div>
-                        <div class="entity-footer">${e.certs} شهادة</div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
                 document.getElementById('entityTotalsSection').innerHTML = `
                     <div class="section-title">التسجيلات حسب الاتحاد (إجمالي عام)</div>
                     <div class="entities-grid">${entitiesHtml}</div>
