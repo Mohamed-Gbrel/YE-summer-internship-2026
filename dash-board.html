@@ -85,10 +85,10 @@
             margin-top: 12px;
             min-height: 18px;
         }
-        /* ===== الداشبورد ===== */
+        /* ===== الداشبورد والهيدر العلوي ===== */
         #dashboardScreen {
             display: none;
-            max-width: 950px;
+            max-width: 1000px;
             margin: 0 auto;
         }
         #dashboardScreen.active {
@@ -104,7 +104,13 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
+        }
+        .dash-main-total {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
         .dash-total .number {
             font-size: 42px;
@@ -113,10 +119,41 @@
             line-height: 1;
         }
         .dash-total .label {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--muted-text);
             margin-top: 4px;
+            font-weight: 700;
         }
+
+        /* كروت إجمالي كل اتحاد */
+        .entity-totals-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            border-right: 2px solid var(--border-color);
+            padding-right: 20px;
+        }
+        .entity-chip {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 8px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .entity-chip .ent-name {
+            font-size: 11px;
+            color: var(--muted-text);
+            font-weight: 700;
+        }
+        .entity-chip .ent-count {
+            font-size: 16px;
+            font-weight: 900;
+            color: #1e293b;
+        }
+
         .dash-meta {
             text-align: left;
             direction: ltr;
@@ -159,6 +196,7 @@
             align-items: center;
             gap: 8px;
         }
+
         /* ===== قسم الفائزين ===== */
         .winners-grid {
             display: grid;
@@ -235,7 +273,6 @@
             font-weight: 800;
         }
 
-        /* جدول تفنيدة الاتحادات جوه كل محافظة */
         .entity-table-container {
             padding: 10px 15px 15px;
             overflow-x: auto;
@@ -284,6 +321,16 @@
             padding: 60px 20px;
             color: var(--muted-text);
         }
+
+        @media (max-width: 768px) {
+            .entity-totals-wrapper {
+                border-right: none;
+                padding-right: 0;
+                border-top: 1px solid var(--border-color);
+                padding-top: 12px;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -301,10 +348,15 @@
     <!-- ===== الداشبورد ===== -->
     <div id="dashboardScreen">
         <div class="dash-header">
-            <div class="dash-total">
-                <div class="number" id="totalCount">0</div>
-                <div class="label">إجمالي التسجيلات بكل المحافظات</div>
+            <div class="dash-main-total">
+                <div class="dash-total">
+                    <div class="number" id="totalCount">0</div>
+                    <div class="label">إجمالي كل المحافظات</div>
+                </div>
+                <!-- تفنيدة الإجمالي بكل اتحاد -->
+                <div class="entity-totals-wrapper" id="entityTotalsContainer"></div>
             </div>
+
             <div class="dash-meta">
                 <div class="updated" id="lastUpdated"></div>
                 <div class="dash-actions">
@@ -403,6 +455,19 @@
         document.getElementById('totalCount').innerText = data.totalCount;
         document.getElementById('lastUpdated').innerText = "آخر تحديث: " + formatDate(data.lastUpdated);
 
+        // ===== عرض إجمالي التسجيلات لكل اتحاد فوق =====
+        if (data.entityTotals && data.entityTotals.length > 0) {
+            const entityChipsHtml = data.entityTotals.map(e => `
+                <div class="entity-chip">
+                    <span class="ent-name">🏛️ ${escapeHtml(e.entity)}</span>
+                    <span class="ent-count">${e.total} <small style="font-size: 11px; font-weight: 600; color: var(--muted-text);">تسجيل</small></span>
+                </div>
+            `).join('');
+            document.getElementById('entityTotalsContainer').innerHTML = entityChipsHtml;
+        } else {
+            document.getElementById('entityTotalsContainer').innerHTML = '';
+        }
+
         const govNames = Object.keys(data.governorates);
         if (govNames.length === 0) {
             document.getElementById('emptyState').style.display = 'block';
@@ -434,11 +499,10 @@
             document.getElementById('winnersSection').innerHTML = '';
         }
 
-        // ===== عرض المحافظات والتفاصيل مقسمة لكل اتحاد =====
+        // ===== عرض المحافظات =====
         const govsHtml = govNames.map(gov => {
             const g = data.governorates[gov];
 
-            // صفوف الاتحادات جوه المحافظة
             const entityRows = g.byEntity.map(e => {
                 const regClass = e.count > 0 ? 'reg' : 'zero';
                 const certClass = e.certs > 0 ? 'cert' : 'zero';
