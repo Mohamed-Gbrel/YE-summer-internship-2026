@@ -827,12 +827,12 @@
         const messageDiv = document.getElementById('message');
         
        
-        let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
-        if (submissionCount >= 1) {
-            messageDiv.style.color = "red";
-            messageDiv.innerText = "لقد قمت بالتسجيل مسبقاً. لا يمكنك إرسال طلب آخر.";
-            return;
-        }
+               let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
+if (submissionCount >= 10) {
+    messageDiv.style.color = "red";
+    messageDiv.innerText = "لقد وصلت للحد الأقصى المسموح به من التسجيلات";
+    return;
+}
 
         const honeypotValue = document.getElementById('user_url').value;
         if (honeypotValue !== "") {
