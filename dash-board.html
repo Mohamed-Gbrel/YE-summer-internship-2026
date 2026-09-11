@@ -399,6 +399,17 @@
         // استخراج وفلترة المحافظات الصحيحة فقط
         const govNames = Object.keys(data.governorates || {}).filter(isValidGovernorate);
         
+        // ترتيب المحافظات تنازلياً (من الأعلى للأقل) حسب عدد تسجيلات YLY فقط
+        govNames.sort((a, b) => {
+            const getYlyCount = (gov) => {
+                const g = data.governorates[gov];
+                if (!g || !g.byEntity) return 0;
+                const ylyObj = g.byEntity.find(e => e.entity && e.entity.toLowerCase().includes('yly'));
+                return ylyObj ? ylyObj.count : 0;
+            };
+            return getYlyCount(b) - getYlyCount(a);
+        });
+        
         if (govNames.length === 0) {
             document.getElementById('emptyState').style.display = 'block';
             return;
@@ -454,8 +465,9 @@
             document.getElementById('winnersSection').innerHTML = '';
         }
 
-        // 3. المحافظات وجداول التفاصيل والمرشحين مع الفلترة
-        const govsHtml = govNames.map(gov => {
+        // 3. المحافظات وجداول التفاصيل والمرشحين مع الترتيب (1، 2، 3...)
+        const govsHtml = govNames.map((gov, index) => {
+            const rank = index + 1;
             const g = data.governorates[gov];
             
             // تصفية الاتحادات داخل المحافظة
@@ -511,7 +523,7 @@
             return `
                 <details class="gov-details">
                     <summary>
-                        <span>${escapeHtml(gov)}</span>
+                        <span>${rank}. ${escapeHtml(gov)}</span>
                         <span class="gov-summary-stats">
                             <span><b>${g.total}</b> تسجيل</span>
                             <span><b>${g.totalCerts}</b> شهادة</span>
