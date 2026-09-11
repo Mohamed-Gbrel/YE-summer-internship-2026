@@ -138,7 +138,7 @@
             padding-top: 10px;
         }
 
-        /* ===== الفايزين (مرتبة تنازلياً) ===== */
+        /* ===== الفايزين (مرتبة بدقة حسب الشروط) ===== */
         .winners-grid {
             display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;
         }
@@ -457,7 +457,7 @@
             }
         }
 
-        // 2. قسم الفائزين (مرتبة تنازلياً من الأعلى للأقل حسب عدد الترشيحات)
+        // 2. قسم الفائزين (مرتبة حسب: الترشيحات -> المتابعين -> الشهادات)
         let allWinners = [];
         govNames.forEach(gov => {
             if (data.governorates[gov] && data.governorates[gov].winner) {
@@ -468,7 +468,21 @@
             }
         });
 
-        allWinners.sort((a, b) => (b.winner.referredCount || 0) - (a.winner.referredCount || 0));
+        allWinners.sort((a, b) => {
+            const wa = a.winner;
+            const wb = b.winner;
+            
+            // 1. المقارنة بعدد الترشيحات (الأعلى أولاً)
+            const diffReferred = (wb.referredCount || 0) - (wa.referredCount || 0);
+            if (diffReferred !== 0) return diffReferred;
+
+            // 2. في حال التساوي، المقارنة بعدد المتابعين (الأعلى أولاً)
+            const diffFollowers = (wb.followersCount || 0) - (wa.followersCount || 0);
+            if (diffFollowers !== 0) return diffFollowers;
+
+            // 3. في حال التساوي، المقارنة بعدد الشهادات (الأعلى أولاً)
+            return (wb.totalCerts || 0) - (wa.totalCerts || 0);
+        });
 
         const winnersHtml = allWinners.map(item => {
             const w = item.winner;
