@@ -107,7 +107,7 @@
             text-align: right;
         }
 
-        /* ===== إحصائيات الاتحادات (بالتصميم الجديد) ===== */
+        /* ===== إحصائيات الاتحادات ===== */
         .entities-grid {
             display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;
         }
@@ -138,7 +138,7 @@
             padding-top: 10px;
         }
 
-        /* ===== الفايزين (كروت بخط أحمر) ===== */
+        /* ===== الفايزين (مرتبة تنازلياً) ===== */
         .winners-grid {
             display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;
         }
@@ -257,7 +257,6 @@
     let currentPassword = ""; 
     let autoRefreshTimer = null;
 
-    // دالة لتصفية واستبعاد الاتحادات الوهمية/عناوين الأعمدة
     function isValidEntity(entityName) {
         if (!entityName) return false;
         const cleaned = entityName.trim();
@@ -273,7 +272,6 @@
         return true;
     }
 
-    // دالة لتصفية واستبعاد المحافظات الوهمية أو عناوين الأعمدة بشكل شامل
     function isValidGovernorate(govName) {
         if (!govName) return false;
         const cleaned = govName.trim();
@@ -291,7 +289,6 @@
         return true;
     }
 
-    // دالة لحساب إجمالي المتابعين للاتحاد الواحد من بيانات المرشحين
     function getEntityFollowers(entityName, data) {
         let total = 0;
         if (!data.governorates) return 0;
@@ -412,10 +409,8 @@
         document.getElementById('totalCount').innerText = data.totalCount;
         document.getElementById('lastUpdated').innerText = "آخر تحديث: " + formatDate(data.lastUpdated);
         
-        // استخراج وفلترة المحافظات الصحيحة فقط
         const govNames = Object.keys(data.governorates || {}).filter(isValidGovernorate);
         
-        // ترتيب المحافظات تنازلياً (من الأعلى للأقل) حسب عدد تسجيلات YLY فقط
         govNames.sort((a, b) => {
             const getYlyCount = (gov) => {
                 const g = data.governorates[gov];
@@ -432,7 +427,7 @@
         }
         document.getElementById('emptyState').style.display = 'none';
 
-        // 1. قسم الاتحادات (إجمالي عام) بالتصميم الجديد المطلوب
+        // 1. قسم الاتحادات (إجمالي عام)
         if (data.entityTotals && data.entityTotals.length > 0) {
             const validEntities = data.entityTotals.filter(e => isValidEntity(e.entity));
             if (validEntities.length > 0) {
@@ -462,19 +457,29 @@
             }
         }
 
-        // 2. قسم الفائزين
-        const winnersHtml = govNames
-            .filter(gov => data.governorates[gov] && data.governorates[gov].winner)
-            .map(gov => {
-                const w = data.governorates[gov].winner;
-                return `
-                    <div class="winner-card">
-                        <div class="gov-name">${escapeHtml(gov)}</div>
-                        <div class="winner-name">${escapeHtml(w.name)}</div>
-                        <div class="winner-stats">${w.referredCount} ترشيح · ${w.followersCount} متابع · ${w.totalCerts} شهادة</div>
-                    </div>
-                `;
-            }).join('');
+        // 2. قسم الفائزين (مرتبة تنازلياً من الأعلى للأقل حسب عدد الترشيحات)
+        let allWinners = [];
+        govNames.forEach(gov => {
+            if (data.governorates[gov] && data.governorates[gov].winner) {
+                allWinners.push({
+                    gov: gov,
+                    winner: data.governorates[gov].winner
+                });
+            }
+        });
+
+        allWinners.sort((a, b) => (b.winner.referredCount || 0) - (a.winner.referredCount || 0));
+
+        const winnersHtml = allWinners.map(item => {
+            const w = item.winner;
+            return `
+                <div class="winner-card">
+                    <div class="gov-name">${escapeHtml(item.gov)}</div>
+                    <div class="winner-name">${escapeHtml(w.name)}</div>
+                    <div class="winner-stats">${w.referredCount} ترشيح · ${w.followersCount} متابع · ${w.totalCerts} شهادة</div>
+                </div>
+            `;
+        }).join('');
             
         if (winnersHtml) {
             document.getElementById('winnersSection').innerHTML = `
@@ -485,12 +490,11 @@
             document.getElementById('winnersSection').innerHTML = '';
         }
 
-        // 3. المحافظات وجداول التفاصيل والمرشحين مع الترتيب (1، 2، 3...)
+        // 3. المحافظات وجداول التفاصيل
         const govsHtml = govNames.map((gov, index) => {
             const rank = index + 1;
             const g = data.governorates[gov];
             
-            // تصفية الاتحادات داخل المحافظة
             const validByEntity = (g.byEntity || []).filter(e => isValidEntity(e.entity));
             
             let innerContent = `
@@ -509,7 +513,6 @@
                 </table>
             `;
 
-            // جداول المرشحين (مع تصفية اسم الاتحاد)
             for (let ent in g.referrersByEntity) {
                 if (!isValidEntity(ent)) continue;
                 let refs = g.referrersByEntity[ent];
