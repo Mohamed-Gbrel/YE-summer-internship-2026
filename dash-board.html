@@ -180,36 +180,8 @@
             margin: 25px 0 12px;
             color: var(--text-color);
         }
-        /* ===== الفايزين ===== */
-        .winners-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 14px;
-            margin-bottom: 10px;
-        }
-        .winner-card {
-            background: var(--card-bg);
-            border-radius: 18px;
-            padding: 16px 18px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
-            border-right: 4px solid var(--primary-red);
-        }
-        .winner-card .gov-name {
-            font-size: 13px;
-            color: var(--muted-text);
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .winner-card .winner-name {
-            font-size: 17px;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-        .winner-card .winner-stats {
-            font-size: 13px;
-            color: var(--muted-text);
-        }
-        /* ===== جدول المحافظات (التعديلات الجديدة هنا) ===== */
+        
+        /* ===== جدول المحافظات والتفاصيل ===== */
         .gov-details {
             background: var(--card-bg);
             border-radius: 18px;
@@ -233,23 +205,45 @@
         .gov-details summary::-webkit-details-marker {
             display: none;
         }
-        /* تصميم السهم الجديد */
-        .toggle-icon {
-            display: inline-block;
-            font-size: 12px;
-            color: var(--primary-red);
-            transition: transform 0.3s ease;
-        }
-        /* لف السهم لما المحافظة تتفتح */
-        .gov-details[open] .toggle-icon {
-            transform: rotate(180deg);
-        }
         
-        .gov-title-wrapper {
+        /* ===== شكل أيقونة الفتح والقفل (+ / -) ===== */
+        .gov-name-wrapper {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
+        .toggle-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background-color: #ffe6e6;
+            color: var(--primary-red);
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: 900;
+            transition: all 0.3s ease;
+        }
+        .toggle-icon::after {
+            content: '+';
+            margin-top: -2px;
+        }
+        /* الشكل لما المحافظة تتفتح */
+        .gov-details[open] .toggle-icon {
+            background-color: var(--primary-red);
+            color: #ffffff;
+            transform: rotate(180deg);
+        }
+        .gov-details[open] .toggle-icon::after {
+            content: '-';
+            margin-top: -4px;
+        }
+        .gov-details summary:hover .toggle-icon {
+            background-color: var(--primary-red);
+            color: #ffffff;
+        }
+
         .gov-summary-stats {
             display: flex;
             gap: 16px;
@@ -259,7 +253,9 @@
         }
         .gov-summary-stats b {
             color: var(--text-color);
+            font-size: 15px;
         }
+        
         .entity-table {
             width: 100%;
             border-collapse: collapse;
@@ -282,6 +278,7 @@
             padding: 60px 20px;
             color: var(--muted-text);
         }
+        
         @media (max-width: 480px) {
             .dash-header {
                 flex-direction: column;
@@ -306,6 +303,7 @@
             <div id="loginError"></div>
         </div>
     </div>
+
     <!-- ===== الداشبورد ===== -->
     <div id="dashboardScreen">
         <div class="dash-header">
@@ -322,28 +320,30 @@
                 <div class="refresh-status" id="refreshStatus"></div>
             </div>
         </div>
+        
         <div id="winnersSection"></div>
+        
         <div class="section-title">التسجيلات حسب المحافظة</div>
         <div id="governoratesList"></div>
         <div id="emptyState" style="display: none;">لا توجد بيانات تسجيل بعد.</div>
     </div>
+
 <script>
     // ⚠️ حط هنا رابط الـ Apps Script الجديد بتاع الداشبورد (بعد الديبلوي)
     const DASHBOARD_URL = 'https://script.google.com/macros/s/AKfycbxJZ8G0DbhhdqoX_BP5v03gkfkHeWGAZdoZLGFfx5H29DmGyauc8D47ivjdegwV800/exec';
 
-    // مفتاح تخزين كلمة المرور في localStorage عشان اليوزر "يفضل مسجل دخول"
+    // مفتاح تخزين كلمة المرور في localStorage
     const SAVED_PASSWORD_KEY = 'dashboard_saved_password';
-
     let currentPassword = ""; 
 
-    // ===== تحديث تلقائي كل ساعة (بجانب زرار "تحديث البيانات" اليدوي) =====
-    const AUTO_REFRESH_INTERVAL_MS = 60 * 60 * 1000; // ساعة بالميلي ثانية
+    // ===== تحديث تلقائي كل ساعة =====
+    const AUTO_REFRESH_INTERVAL_MS = 60 * 60 * 1000; 
     let autoRefreshTimer = null;
 
     function startAutoRefresh() {
-        if (autoRefreshTimer) return; // شغال أصلاً، متبدأش تاني تايمر جديد
+        if (autoRefreshTimer) return; 
         autoRefreshTimer = setInterval(function () {
-            fetchDashboardData(true); // true = silent، عشان لو حصل خطأ مؤقت ميرجعكش لشاشة تسجيل الدخول
+            fetchDashboardData(true); 
         }, AUTO_REFRESH_INTERVAL_MS);
     }
 
@@ -354,53 +354,180 @@
         }
     }
 
-    asyncفهمت قصدك بالظبط! الكود بتاعك فعلاً بيستخدم टैج `<details>` و `<summary>` اللي بيعملوا فكرة الفتح والقفل دي بشكل افتراضي، بس المشكلة إن مفيش **شكل أو علامة (زي + و -)** توضح لليوزر إن دي حاجة بتتداس عليها عشان تفتح التفاصيل.
-
-عشان نعملها زي ما أنت عاوز بالظبط (علامة **+** تفتح، وتتحول لـ **-** لما تفتح شكلها شيك ومتناسق مع الديزاين بتاعك)، هنعدل حتة صغيرة في الـ `CSS` وفي الـ `JavaScript`.
-
-### 1. ضيف كود الـ CSS ده:
-حط الكود ده جوه تاج `<style>` عندك (ممكن تحطه قبل `@media (max-width: 480px)` مباشرة):
-
-```css
-        /* ===== شكل أيقونة الفتح والقفل (+ / -) ===== */
-        .gov-name-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+    // فحص إذا كان المستخدم مسجل دخول من قبل
+    window.onload = function() {
+        const savedPassword = localStorage.getItem(SAVED_PASSWORD_KEY);
+        if (savedPassword) {
+            currentPassword = savedPassword;
+            document.getElementById('passwordInput').value = currentPassword;
+            attemptLogin();
         }
+    };
+
+    // تسجيل الدخول
+    async function attemptLogin() {
+        const passInput = document.getElementById('passwordInput').value;
+        if (!passInput) return;
         
-        .toggle-icon {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 28px;
-            height: 28px;
-            background-color: #ffe6e6; /* لون أحمر فاتح */
-            color: var(--primary-red);
-            border-radius: 8px;
-            font-size: 20px;
-            font-weight: 900;
-            transition: all 0.3s ease;
+        const loginBtn = document.getElementById('loginBtn');
+        const errorDiv = document.getElementById('loginError');
+        
+        loginBtn.disabled = true;
+        loginBtn.innerText = 'جاري التحقق...';
+        errorDiv.innerText = '';
+        currentPassword = passInput;
+
+        await fetchDashboardData(false);
+    }
+
+    // جلب البيانات من الجوجل شيت
+    async function fetchDashboardData(isSilent = false) {
+        const refreshStatus = document.getElementById('refreshStatus');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorDiv = document.getElementById('loginError');
+
+        if (!isSilent) {
+            refreshStatus.innerText = 'جاري التحديث...';
         }
 
-        .toggle-icon::after {
-            content: '+';
-            margin-top: -2px;
+        try {
+            // استدعاء الرابط مع تمرير الباسورد
+            const response = await fetch(`${DASHBOARD_URL}?password=${encodeURIComponent(currentPassword)}`);
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                // نجاح الدخول والتحديث
+                localStorage.setItem(SAVED_PASSWORD_KEY, currentPassword);
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboardScreen').classList.add('active');
+                
+                // تحديث الواجهة بالبيانات
+                updateDashboardUI(data);
+                
+                const now = new Date();
+                document.getElementById('lastUpdated').innerText = 'آخر تحديث: ' + now.toLocaleTimeString('ar-EG');
+                if (!isSilent) refreshStatus.innerText = '';
+                
+                startAutoRefresh();
+            } else {
+                // فشل الدخول (باسورد غلط)
+                localStorage.removeItem(SAVED_PASSWORD_KEY);
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('dashboardScreen').classList.remove('active');
+                stopAutoRefresh();
+                
+                if (!isSilent) {
+                    errorDiv.innerText = 'كلمة المرور غير صحيحة';
+                    loginBtn.disabled = false;
+                    loginBtn.innerText = 'دخول';
+                }
+            }
+        } catch (error) {
+            if (!isSilent) {
+                refreshStatus.innerText = 'حدث خطأ في الاتصال، حاول مرة أخرى.';
+                loginBtn.disabled = false;
+                loginBtn.innerText = 'دخول';
+            }
+        }
+    }
+
+    // تسجيل الخروج
+    function logout() {
+        localStorage.removeItem(SAVED_PASSWORD_KEY);
+        currentPassword = "";
+        document.getElementById('passwordInput').value = "";
+        stopAutoRefresh();
+        
+        document.getElementById('dashboardScreen').classList.remove('active');
+        document.getElementById('loginScreen').style.display = 'flex';
+        
+        const loginBtn = document.getElementById('loginBtn');
+        loginBtn.disabled = false;
+        loginBtn.innerText = 'دخول';
+    }
+
+    // دالة رسم المحافظات والتفاصيل
+    function updateDashboardUI(data) {
+        // تحديث إجمالي التسجيلات
+        document.getElementById('totalCount').innerText = data.total || 0;
+
+        const govList = document.getElementById('governoratesList');
+        const emptyState = document.getElementById('emptyState');
+        
+        govList.innerHTML = ''; // تنظيف القائمة القديمة
+
+        // لو مفيش بيانات
+        if (!data.governorates || data.governorates.length === 0) {
+            emptyState.style.display = 'block';
+            return;
+        } else {
+            emptyState.style.display = 'none';
         }
 
-        /* الشكل لما المحافظة تتفتح */
-        .gov-details[open] .toggle-icon {
-            background-color: var(--primary-red);
-            color: #ffffff;
-            transform: rotate(180deg);
-        }
+        // رسم كل محافظة باستخدام details و summary 
+        data.governorates.forEach(gov => {
+            const detailsElement = document.createElement('details');
+            detailsElement.className = 'gov-details';
 
-        .gov-details[open] .toggle-icon::after {
-            content: '-';
-            margin-top: -4px;
-        }
+            // رأس المحافظة (الاسم + التوتال + الأيقونة)
+            const summaryElement = document.createElement('summary');
+            summaryElement.innerHTML = `
+                <div class="gov-name-wrapper">
+                    <span class="toggle-icon"></span>
+                    <span class="gov-name">${gov.name}</span>
+                </div>
+                <div class="gov-summary-stats">
+                    <span><b>${gov.count}</b> تسجيل</span>
+                </div>
+            `;
+            detailsElement.appendChild(summaryElement);
 
-        .gov-details summary:hover .toggle-icon {
-            background-color: var(--primary-red);
-            color: #ffffff;
+            // جدول تفاصيل المسجلين في المحافظة دي
+            if (gov.users && gov.users.length > 0) {
+                const table = document.createElement('table');
+                table.className = 'entity-table';
+                
+                // الهيدر بتاع الجدول
+                table.innerHTML = `
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الجامعة/الكيان</th>
+                        <th>رقم التليفون</th>
+                    </tr>
+                `;
+                
+                // بيانات الناس
+                gov.users.forEach(user => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${user.name || '-'}</td>
+                        <td>${user.entity || '-'}</td>
+                        <td><a href="https://wa.me/2${user.phone}" target="_blank" style="color:var(--primary-red);text-decoration:none;">${user.phone || '-'}</a></td>
+                    `;
+                    table.appendChild(tr);
+                });
+                
+                detailsElement.appendChild(table);
+            } else {
+                // لو مفيش تفاصيل مبعوتة للمحافظة
+                const noData = document.createElement('div');
+                noData.style.padding = '15px 20px';
+                noData.style.color = 'var(--muted-text)';
+                noData.innerText = 'لا توجد تفاصيل متاحة';
+                detailsElement.appendChild(noData);
+            }
+
+            govList.appendChild(detailsElement);
+        });
+    }
+
+    // السماح بالضغط على Enter لتسجيل الدخول
+    document.getElementById("passwordInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            attemptLogin();
         }
+    });
+</script>
+</body>
+</html>
