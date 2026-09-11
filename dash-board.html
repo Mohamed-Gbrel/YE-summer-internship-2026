@@ -1,1119 +1,510 @@
 <!DOCTYPE html>
-
 <html lang="ar" dir="rtl">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>لوحة تحكم التسجيلات - YE Summer Internship 2026</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-
     <style>
-
         :root {
-
             --primary-red: #e31b23;
-
             --primary-hover: #c41219;
-
-            --bg-color: #e5e5e5;
-
+            --bg-color: #eef2f5;
             --card-bg: #ffffff;
-
             --text-color: #111111;
-
             --muted-text: #666666;
-
             --border-color: #eeeeee;
-
         }
-
         * {
-
             box-sizing: border-box;
-
             font-family: 'Cairo', sans-serif;
-
             margin: 0;
-
             padding: 0;
-
         }
-
         body {
-
             background-color: var(--bg-color);
-
             min-height: 100vh;
-
             padding: 20px 15px;
-
         }
-
+        
         /* ===== شاشة الدخول ===== */
-
         #loginScreen {
-
             display: flex;
-
             justify-content: center;
-
             align-items: center;
-
             min-height: 90vh;
-
         }
-
         .login-card {
-
             background: var(--card-bg);
-
             width: 100%;
-
             max-width: 400px;
-
             border-radius: 30px;
-
             padding: 40px 30px;
-
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.10);
             text-align: center;
-
         }
-
-        .login-card h1 {
-
-            font-size: 22px;
-
-            font-weight: 900;
-
-            margin-bottom: 8px;
-
-        }
-
-        .login-card p {
-
-            font-size: 14px;
-
-            color: var(--muted-text);
-
-            margin-bottom: 25px;
-
-        }
-
+        .login-card h1 { font-size: 22px; font-weight: 900; margin-bottom: 8px; }
+        .login-card p { font-size: 14px; color: var(--muted-text); margin-bottom: 25px; }
         .login-card input[type="password"] {
-
-            width: 100%;
-
-            padding: 14px 16px;
-
-            border: 2px solid #f4b2b5;
-
-            border-radius: 14px;
-
-            font-size: 16px;
-
-            font-family: 'Cairo', sans-serif;
-
-            outline: none;
-
-            margin-bottom: 15px;
-
-            text-align: center;
-
+            width: 100%; padding: 14px 16px; border: 2px solid #f4b2b5;
+            border-radius: 14px; font-size: 16px; outline: none;
+            margin-bottom: 15px; text-align: center;
         }
-
         .login-card button {
-
-            width: 100%;
-
-            padding: 14px;
-
-            background-color: var(--primary-red);
-
-            color: #ffffff;
-
-            border: none;
-
-            border-radius: 50px;
-
-            font-size: 17px;
-
-            font-weight: 800;
-
-            cursor: pointer;
-
-            transition: background-color 0.2s ease;
-
+            width: 100%; padding: 14px; background-color: var(--primary-red);
+            color: #ffffff; border: none; border-radius: 50px; font-size: 17px;
+            font-weight: 800; cursor: pointer; transition: 0.2s;
         }
-
-        .login-card button:hover {
-
-            background-color: var(--primary-hover);
-
-        }
-
-        .login-card button:disabled {
-
-            opacity: 0.6;
-
-            cursor: not-allowed;
-
-        }
-
-        #loginError {
-
-            color: var(--primary-red);
-
-            font-size: 14px;
-
-            font-weight: 700;
-
-            margin-top: 12px;
-
-            min-height: 18px;
-
-        }
+        .login-card button:hover { background-color: var(--primary-hover); }
+        .login-card button:disabled { opacity: 0.6; cursor: not-allowed; }
+        #loginError { color: var(--primary-red); font-size: 14px; font-weight: 700; margin-top: 12px; min-height: 18px; }
 
         /* ===== الداشبورد ===== */
-
         #dashboardScreen {
-
             display: none;
-
-            max-width: 900px;
-
+            max-width: 600px; /* تصغير العرض عشان يكون شبه الموبايل في الصور */
             margin: 0 auto;
-
         }
-
-        #dashboardScreen.active {
-
-            display: block;
-
-        }
-
+        #dashboardScreen.active { display: block; }
+        
+        /* الهيدر الموحد */
         .dash-header {
-
             background: var(--card-bg);
-
             border-radius: 25px;
-
-            padding: 25px 30px;
-
-            margin-bottom: 20px;
-
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            flex-wrap: wrap;
-
-            gap: 15px;
-
-        }
-
-        .dash-total {
-
-            display: flex;
-
-            flex-direction: column;
-
-        }
-
-        .dash-total .number {
-
-            font-size: 42px;
-
-            font-weight: 900;
-
-            color: var(--primary-red);
-
-            line-height: 1;
-
-        }
-
-        .dash-total .label {
-
-            font-size: 14px;
-
-            color: var(--muted-text);
-
-            margin-top: 4px;
-
-        }
-
-        .dash-meta {
-
-            text-align: left;
-
-            direction: ltr;
-
-        }
-
-        .dash-meta .updated {
-
-            font-size: 12px;
-
-            color: var(--muted-text);
-
-            margin-bottom: 8px;
-
-        }
-
-        .dash-actions {
-
-            display: flex;
-
-            gap: 8px;
-
-            flex-wrap: wrap;
-
-        }
-
-        .refresh-btn {
-
-            background-color: #f0f0f0;
-
-            color: var(--text-color);
-
-            border: none;
-
-            border-radius: 50px;
-
-            padding: 10px 20px;
-
-            font-family: 'Cairo', sans-serif;
-
-            font-weight: 700;
-
-            font-size: 14px;
-
-            cursor: pointer;
-
-        }
-
-        .refresh-btn:hover {
-
-            background-color: #e5e5e5;
-
-        }
-
-        .logout-btn {
-
-            background-color: transparent;
-
-            color: var(--muted-text);
-
-            border: none;
-
-            border-radius: 50px;
-
-            padding: 10px 16px;
-
-            font-family: 'Cairo', sans-serif;
-
-            font-weight: 700;
-
-            font-size: 13px;
-
-            cursor: pointer;
-
-            text-decoration: underline;
-
-        }
-
-        .logout-btn:hover {
-
-            color: var(--primary-red);
-
-        }
-
-        .refresh-status {
-
-            font-size: 12px;
-
-            color: var(--primary-red);
-
-            margin-top: 8px;
-
-            min-height: 14px;
-
-        }
-
-        .section-title {
-
-            font-size: 18px;
-
-            font-weight: 800;
-
-            margin: 25px 0 12px;
-
-            color: var(--text-color);
-
-        }
-
-        /* ===== الفايزين ===== */
-
-        .winners-grid {
-
-            display: grid;
-
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-
-            gap: 14px;
-
-            margin-bottom: 10px;
-
-        }
-
-        .winner-card {
-
-            background: var(--card-bg);
-
-            border-radius: 18px;
-
-            padding: 16px 18px;
-
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
-
-            border-right: 4px solid var(--primary-red);
-
-        }
-
-        .winner-card .gov-name {
-
-            font-size: 13px;
-
-            color: var(--muted-text);
-
-            font-weight: 700;
-
-            margin-bottom: 4px;
-
-        }
-
-        .winner-card .winner-name {
-
-            font-size: 17px;
-
-            font-weight: 800;
-
-            margin-bottom: 6px;
-
-        }
-
-        .winner-card .winner-stats {
-
-            font-size: 13px;
-
-            color: var(--muted-text);
-
-        }
-
-        /* ===== جدول المحافظات ===== */
-
-        .gov-details {
-
-            background: var(--card-bg);
-
-            border-radius: 18px;
-
-            margin-bottom: 10px;
-
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
-
-            overflow: hidden;
-
-        }
-
-        .gov-details summary {
-
-            padding: 16px 20px;
-
-            cursor: pointer;
-
-            font-weight: 800;
-
-            font-size: 15px;
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            list-style: none;
-
-        }
-
-        .gov-details summary::-webkit-details-marker {
-
-            display: none;
-
-        }
-
-        .gov-summary-stats {
-
-            display: flex;
-
-            gap: 16px;
-
-            font-size: 13px;
-
-            font-weight: 600;
-
-            color: var(--muted-text);
-
-        }
-
-        .gov-summary-stats b {
-
-            color: var(--text-color);
-
-        }
-
-        .entity-table {
-
-            width: 100%;
-
-            border-collapse: collapse;
-
-            font-size: 14px;
-
-        }
-
-        .entity-table th,
-
-        .entity-table td {
-
-            padding: 10px 20px;
-
-            text-align: right;
-
-            border-top: 1px solid var(--border-color);
-
-        }
-
-        .entity-table th {
-
-            color: var(--muted-text);
-
-            font-weight: 700;
-
-            font-size: 12px;
-
-        }
-
-        #emptyState {
-
+            padding: 30px 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
             text-align: center;
-
-            padding: 60px 20px;
-
-            color: var(--muted-text);
-
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .dash-total .number {
+            font-size: 55px;
+            font-weight: 900;
+            color: var(--primary-red);
+            line-height: 1;
+        }
+        .dash-total .label { font-size: 16px; color: var(--muted-text); margin-top: 5px; font-weight: 600;}
+        .dash-meta .updated { font-size: 13px; color: var(--muted-text); margin-bottom: 15px; }
+        .dash-actions { display: flex; gap: 10px; justify-content: center; width: 100%; }
+        
+        .refresh-btn {
+            background-color: #f0f0f0; color: var(--text-color); border: none;
+            border-radius: 50px; padding: 10px 25px; font-weight: 700; cursor: pointer;
+        }
+        .logout-btn {
+            background-color: transparent; color: var(--muted-text); border: none;
+            font-weight: 700; cursor: pointer; text-decoration: underline;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 900;
+            margin: 30px 0 15px;
+            color: var(--text-color);
+            text-align: right;
         }
 
-        @media (max-width: 480px) {
-
-            .dash-header {
-
-                flex-direction: column;
-
-                align-items: flex-start;
-
-            }
-
-            .dash-meta {
-
-                text-align: right;
-
-                direction: rtl;
-
-                width: 100%;
-
-            }
-
+        /* ===== إحصائيات الاتحادات (كروت بخط أسود) ===== */
+        .entities-grid {
+            display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;
+        }
+        .entity-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.04);
+            border-right: 5px solid #111; /* زي الصورة الأولى */
+            position: relative;
+        }
+        .entity-card-header {
+            font-size: 16px; font-weight: 800; color: var(--muted-text); margin-bottom: 10px;
+        }
+        .entity-card-body {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .entity-main-stat {
+            font-size: 35px; font-weight: 900; color: var(--primary-red);
+        }
+        .entity-sub-stats {
+            font-size: 14px; font-weight: 600; color: var(--text-color);
+            display: flex; gap: 20px;
+        }
+        .entity-footer {
+            font-size: 13px; color: var(--muted-text); font-weight: 600;
+            margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px;
         }
 
+        /* ===== الفايزين (كروت بخط أحمر) ===== */
+        .winners-grid {
+            display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;
+        }
+        .winner-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.04);
+            border-right: 5px solid var(--primary-red);
+            text-align: right;
+        }
+        .winner-card .gov-name { font-size: 14px; color: var(--muted-text); font-weight: 700; margin-bottom: 5px; }
+        .winner-card .winner-name { font-size: 19px; font-weight: 900; margin-bottom: 8px; color: #111; }
+        .winner-card .winner-stats { font-size: 14px; color: var(--muted-text); font-weight: 600; }
+
+        /* ===== جدول المحافظات القابل للفتح ===== */
+        .gov-details {
+            background: var(--card-bg);
+            border-radius: 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .gov-details[open] {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        .gov-details summary {
+            padding: 20px;
+            cursor: pointer;
+            font-weight: 900;
+            font-size: 17px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            list-style: none;
+        }
+        .gov-details summary::-webkit-details-marker { display: none; }
+        .gov-summary-stats {
+            display: flex; gap: 15px; font-size: 14px; font-weight: 700; color: var(--muted-text);
+        }
+        .gov-summary-stats b { color: var(--text-color); }
+        
+        .gov-content {
+            padding: 0 20px 20px 20px;
+        }
+
+        /* الجداول الداخلية (المرشحين والاتحادات) */
+        .inner-table-title {
+            font-size: 15px; font-weight: 800; color: #111; margin: 15px 0 10px; text-align: center;
+        }
+        .data-table {
+            width: 100%; border-collapse: collapse; font-size: 13px; text-align: center;
+            background: #fafafa; border-radius: 10px; overflow: hidden;
+        }
+        .data-table th {
+            background: #f0f0f0; color: var(--muted-text); font-weight: 800; padding: 12px 5px;
+        }
+        .data-table td {
+            padding: 12px 5px; border-bottom: 1px solid var(--border-color); font-weight: 600;
+        }
+        .data-table tr:last-child td { border-bottom: none; }
+
+        #emptyState { text-align: center; padding: 60px 20px; color: var(--muted-text); font-weight: bold; }
     </style>
-
 </head>
-
 <body>
 
     <!-- ===== شاشة الدخول ===== -->
-
     <div id="loginScreen">
-
         <div class="login-card">
-
             <h1>لوحة تحكم التسجيلات</h1>
-
             <p>أدخل كلمة المرور للمتابعة</p>
-
             <input type="password" id="passwordInput" placeholder="كلمة المرور" autocomplete="off">
-
             <button id="loginBtn" onclick="attemptLogin()">دخول</button>
-
             <div id="loginError"></div>
-
         </div>
-
     </div>
 
     <!-- ===== الداشبورد ===== -->
-
     <div id="dashboardScreen">
-
+        
+        <!-- الهيدر الموحد -->
         <div class="dash-header">
-
             <div class="dash-total">
-
                 <div class="number" id="totalCount">0</div>
-
                 <div class="label">إجمالي التسجيلات</div>
-
             </div>
-
             <div class="dash-meta">
-
                 <div class="updated" id="lastUpdated"></div>
-
                 <div class="dash-actions">
-
-                    <button class="refresh-btn" onclick="fetchDashboardData()">تحديث البيانات</button>
-
                     <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
-
+                    <button class="refresh-btn" onclick="fetchDashboardData()">تحديث البيانات</button>
                 </div>
-
-                <div class="refresh-status" id="refreshStatus"></div>
-
+                <div class="refresh-status" id="refreshStatus" style="color:red; font-size:12px; margin-top:5px; text-align:center;"></div>
             </div>
-
         </div>
 
+        <!-- إحصائيات الاتحادات (إجمالي عام) -->
+        <div id="entityTotalsSection"></div>
+
+        <!-- الفائزين -->
         <div id="winnersSection"></div>
 
+        <!-- المحافظات -->
         <div class="section-title">التسجيلات حسب المحافظة</div>
-
         <div id="governoratesList"></div>
 
         <div id="emptyState" style="display: none;">لا توجد بيانات تسجيل بعد.</div>
-
     </div>
 
 <script>
-
-    // ⚠️ حط هنا رابط الـ Apps Script الجديد بتاع الداشبورد (بعد الديبلوي)
-
+    // رابط السكريبت الخاص بك (تأكد إنه شغال وصح)
     const DASHBOARD_URL = 'https://script.google.com/macros/s/AKfycbxJZ8G0DbhhdqoX_BP5v03gkfkHeWGAZdoZLGFfx5H29DmGyauc8D47ivjdegwV800/exec';
-
-
-
-    // مفتاح تخزين كلمة المرور في localStorage عشان اليوزر "يفضل مسجل دخول"
-
     const SAVED_PASSWORD_KEY = 'dashboard_saved_password';
-
-
-
-    let currentPassword = ""; // بتتحط هنا وقت الاستخدام، وبتتحفظ كمان في localStorage
-
-                               // (بمفتاح SAVED_PASSWORD_KEY) عشان اليوزر ميحتاجش يسجل
-
-                               // دخول تاني كل مرة يقفل الصفحة ويفتحها - يدخل عادي على طول.
-
-                               // زرار "تسجيل خروج" هو اللي بيمسح النسخة المحفوظة دي.
-
-
-
-    // ===== تحديث تلقائي كل ساعة (بجانب زرار "تحديث البيانات" اليدوي) =====
-
-    const AUTO_REFRESH_INTERVAL_MS = 60 * 60 * 1000; // ساعة بالميلي ثانية
-
+    let currentPassword = ""; 
     let autoRefreshTimer = null;
 
-
-
     function startAutoRefresh() {
-
-        if (autoRefreshTimer) return; // شغال أصلاً، متبدأش تاني تايمر جديد
-
+        if (autoRefreshTimer) return;
         autoRefreshTimer = setInterval(function () {
-
-            fetchDashboardData(true); // true = silent، عشان لو حصل خطأ مؤقت ميرجعكش لشاشة تسجيل الدخول
-
-        }, AUTO_REFRESH_INTERVAL_MS);
-
+            fetchDashboardData(true); 
+        }, 60 * 60 * 1000);
     }
-
-
-
     function stopAutoRefresh() {
-
-        if (autoRefreshTimer) {
-
-            clearInterval(autoRefreshTimer);
-
-            autoRefreshTimer = null;
-
-        }
-
+        if (autoRefreshTimer) { clearInterval(autoRefreshTimer); autoRefreshTimer = null; }
     }
-
-
 
     async function attemptLogin() {
-
         const passwordInput = document.getElementById('passwordInput');
-
         const loginBtn = document.getElementById('loginBtn');
-
         const loginError = document.getElementById('loginError');
-
         const password = passwordInput.value;
-
-        if (!password) {
-
-            loginError.innerText = "برجاء إدخال كلمة المرور.";
-
-            return;
-
-        }
-
-        loginBtn.disabled = true;
-
-        loginBtn.innerText = "جاري التحقق...";
-
-        loginError.innerText = "";
-
+        if (!password) { loginError.innerText = "برجاء إدخال كلمة المرور."; return; }
+        
+        loginBtn.disabled = true; loginBtn.innerText = "جاري التحقق..."; loginError.innerText = "";
         currentPassword = password;
-
+        
         const success = await fetchDashboardData();
-
-        loginBtn.disabled = false;
-
-        loginBtn.innerText = "دخول";
-
+        
+        loginBtn.disabled = false; loginBtn.innerText = "دخول";
         if (success) {
-
-            // نجح الدخول - نحفظ كلمة المرور في localStorage عشان المرة الجاية
-
-            // يدخل عادي من غير ما يسجل دخول تاني
-
-            try {
-
-                localStorage.setItem(SAVED_PASSWORD_KEY, password);
-
-            } catch (e) {
-
-                console.warn("تعذر حفظ الجلسة محليًا:", e);
-
-            }
-
+            try { localStorage.setItem(SAVED_PASSWORD_KEY, password); } catch (e) {}
         } else {
-
-            currentPassword = "";
-
-            passwordInput.value = "";
-
+            currentPassword = ""; passwordInput.value = "";
         }
-
     }
-
-
-
-    // ============================================================
-
-    // 🔁 الدخول التلقائي: لو فيه كلمة مرور محفوظة من مرة قبل كده في
-
-    // localStorage، بنجرب ندخل بيها على طول من غير ما اليوزر يكتب
-
-    // حاجة. لو نجحت: يدخل الداشبورد عادي. لو فشلت (الباسورد اتغير
-
-    // مثلاً): بنمسح المحفوظ ونسيبه يسجل دخول عادي بشاشة فاضية.
-
-    // ============================================================
 
     async function tryAutoLogin() {
-
         let savedPassword = null;
-
-        try {
-
-            savedPassword = localStorage.getItem(SAVED_PASSWORD_KEY);
-
-        } catch (e) {
-
-            savedPassword = null;
-
-        }
-
-        if (!savedPassword) return; // مفيش جلسة محفوظة - سيبه في شاشة الدخول العادية
-
-
+        try { savedPassword = localStorage.getItem(SAVED_PASSWORD_KEY); } catch (e) {}
+        if (!savedPassword) return;
 
         const passwordInput = document.getElementById('passwordInput');
-
         const loginBtn = document.getElementById('loginBtn');
-
-        const loginError = document.getElementById('loginError');
-
-
-
-        passwordInput.disabled = true;
-
-        loginBtn.disabled = true;
-
-        loginBtn.innerText = "جاري الدخول...";
-
+        passwordInput.disabled = true; loginBtn.disabled = true; loginBtn.innerText = "جاري الدخول...";
         currentPassword = savedPassword;
 
-
-
         const success = await fetchDashboardData();
-
-
-
-        passwordInput.disabled = false;
-
-        loginBtn.disabled = false;
-
-        loginBtn.innerText = "دخول";
-
-
-
+        
+        passwordInput.disabled = false; loginBtn.disabled = false; loginBtn.innerText = "دخول";
         if (!success) {
-
-            // الباسورد المحفوظ بقى مش شغال (اتغير مثلاً) - امسحه من
-
-            // localStorage وسيبه يدخله بنفسه من جديد
-
             try { localStorage.removeItem(SAVED_PASSWORD_KEY); } catch (e) {}
-
-            currentPassword = "";
-
-            passwordInput.value = "";
-
-            loginError.innerText = "انتهت صلاحية الجلسة، برجاء إدخال كلمة المرور مرة أخرى.";
-
+            currentPassword = ""; passwordInput.value = "";
+            document.getElementById('loginError').innerText = "انتهت صلاحية الجلسة، برجاء إدخال كلمة المرور.";
         }
-
     }
-
-
-
-    // ============================================================
-
-    // 🚪 تسجيل خروج: بيمسح الجلسة المحفوظة ويوقف التحديث التلقائي
-
-    // ويرجّع اليوزر لشاشة الدخول (مفيد لو الجهاز مشترك مع حد تاني)
-
-    // ============================================================
 
     function logout() {
-
         try { localStorage.removeItem(SAVED_PASSWORD_KEY); } catch (e) {}
-
-        currentPassword = "";
-
-        stopAutoRefresh();
-
+        currentPassword = ""; stopAutoRefresh();
         document.getElementById('dashboardScreen').classList.remove('active');
-
         document.getElementById('loginScreen').style.display = 'flex';
-
         document.getElementById('passwordInput').value = "";
-
-        document.getElementById('loginError').innerText = "";
-
     }
 
-
-
     async function fetchDashboardData(silent) {
-
         const loginError = document.getElementById('loginError');
-
         const refreshStatus = document.getElementById('refreshStatus');
-
-        // isInsideDashboard بتفرق بين حالتين:
-
-        // - true: إحنا مسجلين دخول أصلاً وبس بنحدّث البيانات (يدوي أو تلقائي)
-
-        // - false: دي أول محاولة تسجيل دخول من شاشة الباسورد
-
         const isInsideDashboard = document.getElementById('dashboardScreen').classList.contains('active');
-
+        
         try {
-
             const response = await fetch(DASHBOARD_URL, {
-
                 method: 'POST',
-
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-
                 body: JSON.stringify({ password: currentPassword })
-
             });
-
             const result = await response.json();
-
+            
             if (result.status !== "success") {
-
-                console.error("فشل التحديث:", result.message);
-
                 if (isInsideDashboard) {
-
-                    // إحنا أصلاً جوه الداشبورد - منرجعش لشاشة الدخول، بس نوري
-
-                    // تنبيه بسيط جنب زرار التحديث لو الفشل ده من ضغطة يدوية
-
                     if (!silent && refreshStatus) {
-
-                        refreshStatus.innerText = result.message || "فشل التحديث، جرب تاني.";
-
-                        setTimeout(function () { refreshStatus.innerText = ''; }, 5000);
-
+                        refreshStatus.innerText = result.message || "فشل التحديث";
+                        setTimeout(() => refreshStatus.innerText = '', 3000);
                     }
-
                 } else {
-
-                    loginError.innerText = result.message || "حدث خطأ، برجاء المحاولة مرة أخرى.";
-
+                    loginError.innerText = result.message || "حدث خطأ";
                     document.getElementById('loginScreen').style.display = 'flex';
-
                     document.getElementById('dashboardScreen').classList.remove('active');
-
-                    stopAutoRefresh();
-
                 }
-
                 return false;
-
             }
-
+            
             if (refreshStatus) refreshStatus.innerText = '';
-
             renderDashboard(result);
-
             document.getElementById('loginScreen').style.display = 'none';
-
             document.getElementById('dashboardScreen').classList.add('active');
-
-            startAutoRefresh(); // بعد أول نجاح، شغّل (أو استمر في) التحديث التلقائي كل ساعة
-
+            startAutoRefresh();
             return true;
-
         } catch (err) {
-
-            console.error(err);
-
-            if (isInsideDashboard) {
-
-                if (!silent && refreshStatus) {
-
-                    refreshStatus.innerText = "تعذر الاتصال بالخادم، جرب تاني.";
-
-                    setTimeout(function () { refreshStatus.innerText = ''; }, 5000);
-
-                }
-
-            } else if (!silent) {
-
-                loginError.innerText = "تعذر الاتصال بالخادم، تأكد من اتصالك بالإنترنت.";
-
+            if (isInsideDashboard && !silent && refreshStatus) {
+                refreshStatus.innerText = "تعذر الاتصال بالخادم";
+                setTimeout(() => refreshStatus.innerText = '', 3000);
+            } else if (!silent && !isInsideDashboard) {
+                loginError.innerText = "تعذر الاتصال بالخادم، تأكد من الإنترنت.";
             }
-
             return false;
-
         }
-
     }
 
     function renderDashboard(data) {
-
         document.getElementById('totalCount').innerText = data.totalCount;
-
         document.getElementById('lastUpdated').innerText = "آخر تحديث: " + formatDate(data.lastUpdated);
-
+        
         const govNames = Object.keys(data.governorates);
-
         if (govNames.length === 0) {
-
             document.getElementById('emptyState').style.display = 'block';
-
-            document.getElementById('winnersSection').innerHTML = '';
-
-            document.getElementById('governoratesList').innerHTML = '';
-
             return;
-
         }
-
         document.getElementById('emptyState').style.display = 'none';
 
-        // ===== قسم الفايزين =====
-
-        const winnersHtml = govNames
-
-            .filter(gov => data.governorates[gov].winner)
-
-            .map(gov => {
-
-                const w = data.governorates[gov].winner;
-
-                return `
-
-                    <div class="winner-card">
-
-                        <div class="gov-name">${escapeHtml(gov)}</div>
-
-                        <div class="winner-name">${escapeHtml(w.name)}</div>
-
-                        <div class="winner-stats">${w.referredCount} ترشيح · ${w.followersCount} متابع</div>
-
+        // 1. قسم الاتحادات (إجمالي عام)
+        if (data.entityTotals && data.entityTotals.length > 0) {
+            const entitiesHtml = data.entityTotals.map(e => `
+                <div class="entity-card">
+                    <div class="entity-card-header">${escapeHtml(e.entity)}</div>
+                    <div class="entity-card-body">
+                        <div class="entity-sub-stats">
+                            <span>عضو: ${e.memberCount}</span>
+                            <span>صديق مرشح: ${e.friendCount}</span>
+                        </div>
+                        <div class="entity-main-stat">${e.total}</div>
                     </div>
-
-                `;
-
-            }).join('');
-
-        if (winnersHtml) {
-
-            document.getElementById('winnersSection').innerHTML = `
-
-                <div class="section-title">الفائزين (الأكثر ترشيحاً - YLY)</div>
-
-                <div class="winners-grid">${winnersHtml}</div>
-
+                    <div class="entity-footer">${e.certs} شهادة</div>
+                </div>
+            `).join('');
+            document.getElementById('entityTotalsSection').innerHTML = `
+                <div class="section-title">التسجيلات حسب الاتحاد (إجمالي عام)</div>
+                <div class="entities-grid">${entitiesHtml}</div>
             `;
-
-        } else {
-
-            document.getElementById('winnersSection').innerHTML = '';
-
         }
 
-        // ===== جدول المحافظات (كل محافظة قابلة للفتح لعرض تفاصيل الاتحادات) =====
+        // 2. قسم الفائزين
+        const winnersHtml = govNames
+            .filter(gov => data.governorates[gov].winner)
+            .map(gov => {
+                const w = data.governorates[gov].winner;
+                return `
+                    <div class="winner-card">
+                        <div class="gov-name">${escapeHtml(gov)}</div>
+                        <div class="winner-name">${escapeHtml(w.name)}</div>
+                        <div class="winner-stats">${w.referredCount} ترشيح · ${w.followersCount} متابع · ${w.totalCerts} شهادة</div>
+                    </div>
+                `;
+            }).join('');
+            
+        if (winnersHtml) {
+            document.getElementById('winnersSection').innerHTML = `
+                <div class="section-title">الفائزين (الأكثر ترشيحاً - YLY)</div>
+                <div class="winners-grid">${winnersHtml}</div>
+            `;
+        } else {
+            document.getElementById('winnersSection').innerHTML = '';
+        }
 
+        // 3. المحافظات وجداول التفاصيل والمرشحين
         const govsHtml = govNames.map(gov => {
-
             const g = data.governorates[gov];
-
-            const entityRows = g.byEntity.map(e => `
-
-                <tr>
-
-                    <td>${escapeHtml(e.entity)}</td>
-
-                    <td>${e.count}</td>
-
-                    <td>${e.certs}</td>
-
-                </tr>
-
-            `).join('');
-
-            return `
-
-                <details class="gov-details">
-
-                    <summary>
-
-                        <span>${escapeHtml(gov)}</span>
-
-                        <span class="gov-summary-stats">
-
-                            <span><b>${g.total}</b> تسجيل</span>
-
-                            <span><b>${g.totalCerts}</b> شهادة</span>
-
-                        </span>
-
-                    </summary>
-
-                    <table class="entity-table">
-
-                        <thead>
-
-                            <tr><th>الاتحاد</th><th>عدد المسجلين</th><th>الشهادات</th></tr>
-
-                        </thead>
-
-                        <tbody>${entityRows}</tbody>
-
-                    </table>
-
-                </details>
-
+            
+            // جدول الاتحادات داخل المحافظة
+            let innerContent = `
+                <div class="inner-table-title">إحصائيات الاتحادات</div>
+                <table class="data-table">
+                    <thead><tr><th>الاتحاد</th><th>التسجيلات</th><th>الشهادات</th></tr></thead>
+                    <tbody>
+                        ${g.byEntity.map(e => `
+                            <tr>
+                                <td>${escapeHtml(e.entity)}</td>
+                                <td>${e.count}</td>
+                                <td>${e.certs}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
             `;
 
+            // جداول المرشحين (لكل اتحاد جوه المحافظة دي)
+            for (let ent in g.referrersByEntity) {
+                let refs = g.referrersByEntity[ent];
+                if (refs && refs.length > 0) {
+                    innerContent += `
+                        <div class="inner-table-title">المرشحين (${escapeHtml(ent)})</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>الترشيحات</th>
+                                    <th>الشهادات</th>
+                                    <th>متابع فيس</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${refs.map(r => `
+                                    <tr>
+                                        <td>${escapeHtml(r.name)}</td>
+                                        <td>${r.referredCount}</td>
+                                        <td>${r.totalCerts}</td>
+                                        <td>${r.followersCount}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                }
+            }
+
+            // بناء الكارت الخارجي للمحافظة
+            return `
+                <details class="gov-details">
+                    <summary>
+                        <span>${escapeHtml(gov)}</span>
+                        <span class="gov-summary-stats">
+                            <span><b>${g.total}</b> تسجيل</span>
+                            <span><b>${g.totalCerts}</b> شهادة</span>
+                        </span>
+                    </summary>
+                    <div class="gov-content">
+                        ${innerContent}
+                    </div>
+                </details>
+            `;
         }).join('');
-
+        
         document.getElementById('governoratesList').innerHTML = govsHtml;
-
     }
 
-    // بيحول أي نص لصيغة آمنة قبل إدراجه في الصفحة (حماية من XSS)
-
     function escapeHtml(str) {
-
         const div = document.createElement('div');
-
         div.innerText = str;
-
         return div.innerHTML;
-
     }
 
     function formatDate(dateStr) {
-
         try {
-
             const d = new Date(dateStr);
-
             return d.toLocaleString('ar-EG');
-
         } catch (e) {
-
             return dateStr;
-
         }
-
     }
 
     document.getElementById('passwordInput').addEventListener('keypress', function (e) {
-
-        if (e.key === 'Enter') {
-
-            attemptLogin();
-
-        }
-
+        if (e.key === 'Enter') attemptLogin();
     });
 
-
-
-    // أول ما الصفحة تفتح: لو فيه جلسة محفوظة، جرب ادخل بيها تلقائيًا
-
-    // (يدخل عادي من غير ما يشوف شاشة الباسورد أصلاً)
-
     tryAutoLogin();
-
 </script>
-
 </body>
-
 </html>
