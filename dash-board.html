@@ -62,7 +62,7 @@
         /* ===== الداشبورد ===== */
         #dashboardScreen {
             display: none;
-            max-width: 600px; /* تصغير العرض عشان يكون شبه الموبايل في الصور */
+            max-width: 600px;
             margin: 0 auto;
         }
         #dashboardScreen.active { display: block; }
@@ -116,7 +116,7 @@
             border-radius: 20px;
             padding: 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.04);
-            border-right: 5px solid #111; /* زي الصورة الأولى */
+            border-right: 5px solid #111;
             position: relative;
         }
         .entity-card-header {
@@ -186,7 +186,7 @@
             padding: 0 20px 20px 20px;
         }
 
-        /* الجداول الداخلية (المرشحين والاتحادات) */
+        /* الجداول الداخلية */
         .inner-table-title {
             font-size: 15px; font-weight: 800; color: #111; margin: 15px 0 10px; text-align: center;
         }
@@ -251,11 +251,26 @@
     </div>
 
 <script>
-    // رابط السكريبت الخاص بك (تأكد إنه شغال وصح)
     const DASHBOARD_URL = 'https://script.google.com/macros/s/AKfycbxJZ8G0DbhhdqoX_BP5v03gkfkHeWGAZdoZLGFfx5H29DmGyauc8D47ivjdegwV800/exec';
     const SAVED_PASSWORD_KEY = 'dashboard_saved_password';
     let currentPassword = ""; 
     let autoRefreshTimer = null;
+
+    // دالة لتصفية واستبعاد أي جمل غير مرغوب فيها مثل عناوين الأعمدة
+    function isValidEntity(entityName) {
+        if (!entityName) return false;
+        const cleaned = entityName.trim();
+        if (
+            cleaned === "" || 
+            cleaned.includes("الاتحاد المنضم اليه") || 
+            cleaned.includes("الاتحاد المنضم إليه") ||
+            cleaned.toLowerCase() === "undefined" ||
+            cleaned.toLowerCase() === "null"
+        ) {
+            return false;
+        }
+        return true;
+    }
 
     function startAutoRefresh() {
         if (autoRefreshTimer) return;
@@ -370,25 +385,30 @@
         }
         document.getElementById('emptyState').style.display = 'none';
 
-        // 1. قسم الاتحادات (إجمالي عام)
+        // 1. قسم الاتحادات (إجمالي عام) مع الفلترة
         if (data.entityTotals && data.entityTotals.length > 0) {
-            const entitiesHtml = data.entityTotals.map(e => `
-                <div class="entity-card">
-                    <div class="entity-card-header">${escapeHtml(e.entity)}</div>
-                    <div class="entity-card-body">
-                        <div class="entity-sub-stats">
-                            <span>عضو: ${e.memberCount}</span>
-                            <span>صديق مرشح: ${e.friendCount}</span>
+            const validEntities = data.entityTotals.filter(e => isValidEntity(e.entity));
+            if (validEntities.length > 0) {
+                const entitiesHtml = validEntities.map(e => `
+                    <div class="entity-card">
+                        <div class="entity-card-header">${escapeHtml(e.entity)}</div>
+                        <div class="entity-card-body">
+                            <div class="entity-sub-stats">
+                                <span>عضو: ${e.memberCount}</span>
+                                <span>صديق مرشح: ${e.friendCount}</span>
+                            </div>
+                            <div class="entity-main-stat">${e.total}</div>
                         </div>
-                        <div class="entity-main-stat">${e.total}</div>
+                        <div class="entity-footer">${e.certs} شهادة</div>
                     </div>
-                    <div class="entity-footer">${e.certs} شهادة</div>
-                </div>
-            `).join('');
-            document.getElementById('entityTotalsSection').innerHTML = `
-                <div class="section-title">التسجيلات حسب الاتحاد (إجمالي عام)</div>
-                <div class="entities-grid">${entitiesHtml}</div>
-            `;
+                `).join('');
+                document.getElementById('entityTotalsSection').innerHTML = `
+                    <div class="section-title">التسجيلات حسب الاتحاد (إجمالي عام)</div>
+                    <div class="entities-grid">${entitiesHtml}</div>
+                `;
+            } else {
+                document.getElementById('entityTotalsSection').innerHTML = '';
+            }
         }
 
         // 2. قسم الفائزين
@@ -414,17 +434,19 @@
             document.getElementById('winnersSection').innerHTML = '';
         }
 
-        // 3. المحافظات وجداول التفاصيل والمرشحين
+        // 3. المحافظات وجداول التفاصيل والمرشحين مع الفلترة
         const govsHtml = govNames.map(gov => {
             const g = data.governorates[gov];
             
-            // جدول الاتحادات داخل المحافظة
+            // تصفية الاتحادات داخل المحافظة
+            const validByEntity = (g.byEntity || []).filter(e => isValidEntity(e.entity));
+            
             let innerContent = `
                 <div class="inner-table-title">إحصائيات الاتحادات</div>
                 <table class="data-table">
                     <thead><tr><th>الاتحاد</th><th>التسجيلات</th><th>الشهادات</th></tr></thead>
                     <tbody>
-                        ${g.byEntity.map(e => `
+                        ${validByEntity.map(e => `
                             <tr>
                                 <td>${escapeHtml(e.entity)}</td>
                                 <td>${e.count}</td>
@@ -435,8 +457,9 @@
                 </table>
             `;
 
-            // جداول المرشحين (لكل اتحاد جوه المحافظة دي)
+            // جداول المرشحين (مع تصفية اسم الاتحاد)
             for (let ent in g.referrersByEntity) {
+                if (!isValidEntity(ent)) continue;
                 let refs = g.referrersByEntity[ent];
                 if (refs && refs.length > 0) {
                     innerContent += `
@@ -465,7 +488,6 @@
                 }
             }
 
-            // بناء الكارت الخارجي للمحافظة
             return `
                 <details class="gov-details">
                     <summary>
