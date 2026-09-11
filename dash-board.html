@@ -9,12 +9,11 @@
         :root {
             --primary-red: #e31b23;
             --primary-hover: #c41219;
-            --bg-color: #f4f5f7;
+            --bg-color: #e5e5e5;
             --card-bg: #ffffff;
             --text-color: #111111;
             --muted-text: #666666;
-            --border-color: #e2e8f0;
-            --badge-bg: #f8fafc;
+            --border-color: #eeeeee;
         }
         * {
             box-sizing: border-box;
@@ -38,9 +37,9 @@
             background: var(--card-bg);
             width: 100%;
             max-width: 400px;
-            border-radius: 24px;
+            border-radius: 30px;
             padding: 40px 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             text-align: center;
         }
         .login-card h1 {
@@ -59,6 +58,7 @@
             border: 2px solid #f4b2b5;
             border-radius: 14px;
             font-size: 16px;
+            font-family: 'Cairo', sans-serif;
             outline: none;
             margin-bottom: 15px;
             text-align: center;
@@ -78,6 +78,10 @@
         .login-card button:hover {
             background-color: var(--primary-hover);
         }
+        .login-card button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
         #loginError {
             color: var(--primary-red);
             font-size: 14px;
@@ -85,10 +89,10 @@
             margin-top: 12px;
             min-height: 18px;
         }
-        /* ===== الداشبورد والهيدر العلوي ===== */
+        /* ===== الداشبورد ===== */
         #dashboardScreen {
             display: none;
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
         }
         #dashboardScreen.active {
@@ -96,21 +100,19 @@
         }
         .dash-header {
             background: var(--card-bg);
-            border-radius: 20px;
+            border-radius: 25px;
             padding: 25px 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 15px;
         }
-        .dash-main-total {
+        .dash-total {
             display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            flex-direction: column;
         }
         .dash-total .number {
             font-size: 42px;
@@ -119,41 +121,10 @@
             line-height: 1;
         }
         .dash-total .label {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--muted-text);
             margin-top: 4px;
-            font-weight: 700;
         }
-
-        /* كروت إجمالي كل اتحاد */
-        .entity-totals-wrapper {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-            border-right: 2px solid var(--border-color);
-            padding-right: 20px;
-        }
-        .entity-chip {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 8px 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .entity-chip .ent-name {
-            font-size: 11px;
-            color: var(--muted-text);
-            font-weight: 700;
-        }
-        .entity-chip .ent-count {
-            font-size: 16px;
-            font-weight: 900;
-            color: #1e293b;
-        }
-
         .dash-meta {
             text-align: left;
             direction: ltr;
@@ -166,6 +137,7 @@
         .dash-actions {
             display: flex;
             gap: 8px;
+            flex-wrap: wrap;
         }
         .refresh-btn {
             background-color: #f0f0f0;
@@ -173,161 +145,151 @@
             border: none;
             border-radius: 50px;
             padding: 10px 20px;
+            font-family: 'Cairo', sans-serif;
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
+        }
+        .refresh-btn:hover {
+            background-color: #e5e5e5;
         }
         .logout-btn {
             background-color: transparent;
             color: var(--muted-text);
             border: none;
+            border-radius: 50px;
             padding: 10px 16px;
+            font-family: 'Cairo', sans-serif;
             font-weight: 700;
             font-size: 13px;
             cursor: pointer;
             text-decoration: underline;
         }
-        .section-title {
-            font-size: 20px;
-            font-weight: 900;
-            margin: 30px 0 15px;
-            color: var(--text-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .logout-btn:hover {
+            color: var(--primary-red);
         }
-
-        /* ===== قسم الفائزين ===== */
+        .refresh-status {
+            font-size: 12px;
+            color: var(--primary-red);
+            margin-top: 8px;
+            min-height: 14px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 25px 0 12px;
+            color: var(--text-color);
+        }
+        /* ===== الفايزين ===== */
         .winners-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 14px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         .winner-card {
             background: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 16px 18px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            border-right: 5px solid var(--primary-red);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+            border-right: 4px solid var(--primary-red);
         }
         .winner-card .gov-name {
             font-size: 13px;
             color: var(--muted-text);
             font-weight: 700;
+            margin-bottom: 4px;
         }
         .winner-card .winner-name {
             font-size: 17px;
             font-weight: 800;
-            margin: 4px 0;
-            color: var(--text-color);
+            margin-bottom: 6px;
         }
         .winner-card .winner-stats {
             font-size: 13px;
-            color: #2563eb;
-            font-weight: 700;
+            color: var(--muted-text);
         }
-
-        /* ===== كروت المحافظات وتفنيدة الاتحادات ===== */
-        .gov-card {
+        /* ===== جدول المحافظات (التعديلات الجديدة هنا) ===== */
+        .gov-details {
             background: var(--card-bg);
             border-radius: 18px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
             overflow: hidden;
+            transition: all 0.3s ease;
         }
-        .gov-header {
-            padding: 18px 22px;
-            background: #fafafa;
-            border-bottom: 1px solid var(--border-color);
+        .gov-details summary {
+            padding: 16px 20px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            list-style: none;
+            user-select: none;
         }
-        .gov-title {
-            font-size: 18px;
-            font-weight: 900;
-            color: #1e293b;
+        /* إخفاء السهم القديم */
+        .gov-details summary::-webkit-details-marker {
+            display: none;
         }
-        .gov-total-badges {
+        /* تصميم السهم الجديد */
+        .toggle-icon {
+            display: inline-block;
+            font-size: 12px;
+            color: var(--primary-red);
+            transition: transform 0.3s ease;
+        }
+        /* لف السهم لما المحافظة تتفتح */
+        .gov-details[open] .toggle-icon {
+            transform: rotate(180deg);
+        }
+        
+        .gov-title-wrapper {
             display: flex;
+            align-items: center;
             gap: 10px;
         }
-        .badge-total-reg {
-            background: #fee2e2;
-            color: #991b1b;
-            padding: 4px 12px;
-            border-radius: 30px;
+        .gov-summary-stats {
+            display: flex;
+            gap: 16px;
             font-size: 13px;
-            font-weight: 800;
+            font-weight: 600;
+            color: var(--muted-text);
         }
-        .badge-total-cert {
-            background: #dcfce7;
-            color: #166534;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 800;
-        }
-
-        .entity-table-container {
-            padding: 10px 15px 15px;
-            overflow-x: auto;
+        .gov-summary-stats b {
+            color: var(--text-color);
         }
         .entity-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
+            background-color: #fafafa;
+        }
+        .entity-table th,
+        .entity-table td {
+            padding: 12px 20px;
+            text-align: right;
+            border-top: 1px solid var(--border-color);
         }
         .entity-table th {
-            padding: 12px 16px;
-            text-align: right;
             color: var(--muted-text);
             font-weight: 700;
-            font-size: 13px;
-            border-bottom: 2px solid var(--border-color);
+            font-size: 12px;
         }
-        .entity-table td {
-            padding: 12px 16px;
-            text-align: right;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .entity-table tr:last-child td {
-            border-bottom: none;
-        }
-        .entity-name-cell {
-            font-weight: 800;
-            color: #334155;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .count-pill {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 6px;
-            font-weight: 800;
-            font-size: 13px;
-        }
-        .count-pill.reg { background: #f1f5f9; color: #0f172a; }
-        .count-pill.cert { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
-        .count-pill.zero { color: #94a3b8; font-weight: 600; background: transparent; }
-
         #emptyState {
             text-align: center;
             padding: 60px 20px;
             color: var(--muted-text);
         }
-
-        @media (max-width: 768px) {
-            .entity-totals-wrapper {
-                border-right: none;
-                padding-right: 0;
-                border-top: 1px solid var(--border-color);
-                padding-top: 12px;
+        @media (max-width: 480px) {
+            .dash-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .dash-meta {
+                text-align: right;
+                direction: rtl;
                 width: 100%;
             }
         }
@@ -344,227 +306,101 @@
             <div id="loginError"></div>
         </div>
     </div>
-
     <!-- ===== الداشبورد ===== -->
     <div id="dashboardScreen">
         <div class="dash-header">
-            <div class="dash-main-total">
-                <div class="dash-total">
-                    <div class="number" id="totalCount">0</div>
-                    <div class="label">إجمالي كل المحافظات</div>
-                </div>
-                <!-- تفنيدة الإجمالي بكل اتحاد -->
-                <div class="entity-totals-wrapper" id="entityTotalsContainer"></div>
+            <div class="dash-total">
+                <div class="number" id="totalCount">0</div>
+                <div class="label">إجمالي التسجيلات</div>
             </div>
-
             <div class="dash-meta">
                 <div class="updated" id="lastUpdated"></div>
                 <div class="dash-actions">
                     <button class="refresh-btn" onclick="fetchDashboardData()">تحديث البيانات</button>
                     <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
                 </div>
-                <div id="refreshStatus" style="font-size: 12px; color: var(--primary-red); margin-top: 5px;"></div>
+                <div class="refresh-status" id="refreshStatus"></div>
             </div>
         </div>
-
         <div id="winnersSection"></div>
-
-        <div class="section-title">📍 إحصائيات المحافظات مقسمة حسب كل اتحاد</div>
+        <div class="section-title">التسجيلات حسب المحافظة</div>
         <div id="governoratesList"></div>
         <div id="emptyState" style="display: none;">لا توجد بيانات تسجيل بعد.</div>
     </div>
-
 <script>
+    // ⚠️ حط هنا رابط الـ Apps Script الجديد بتاع الداشبورد (بعد الديبلوي)
     const DASHBOARD_URL = 'https://script.google.com/macros/s/AKfycbxJZ8G0DbhhdqoX_BP5v03gkfkHeWGAZdoZLGFfx5H29DmGyauc8D47ivjdegwV800/exec';
+
+    // مفتاح تخزين كلمة المرور في localStorage عشان اليوزر "يفضل مسجل دخول"
     const SAVED_PASSWORD_KEY = 'dashboard_saved_password';
-    let currentPassword = "";
 
-    async function attemptLogin() {
-        const passwordInput = document.getElementById('passwordInput');
-        const loginBtn = document.getElementById('loginBtn');
-        const loginError = document.getElementById('loginError');
-        const password = passwordInput.value;
-        if (!password) {
-            loginError.innerText = "برجاء إدخال كلمة المرور.";
-            return;
-        }
-        loginBtn.disabled = true;
-        loginBtn.innerText = "جاري التحقق...";
-        loginError.innerText = "";
-        currentPassword = password;
-        const success = await fetchDashboardData();
-        loginBtn.disabled = false;
-        loginBtn.innerText = "دخول";
-        if (success) {
-            try { localStorage.setItem(SAVED_PASSWORD_KEY, password); } catch (e) {}
-        } else {
-            currentPassword = "";
-            passwordInput.value = "";
+    let currentPassword = ""; 
+
+    // ===== تحديث تلقائي كل ساعة (بجانب زرار "تحديث البيانات" اليدوي) =====
+    const AUTO_REFRESH_INTERVAL_MS = 60 * 60 * 1000; // ساعة بالميلي ثانية
+    let autoRefreshTimer = null;
+
+    function startAutoRefresh() {
+        if (autoRefreshTimer) return; // شغال أصلاً، متبدأش تاني تايمر جديد
+        autoRefreshTimer = setInterval(function () {
+            fetchDashboardData(true); // true = silent، عشان لو حصل خطأ مؤقت ميرجعكش لشاشة تسجيل الدخول
+        }, AUTO_REFRESH_INTERVAL_MS);
+    }
+
+    function stopAutoRefresh() {
+        if (autoRefreshTimer) {
+            clearInterval(autoRefreshTimer);
+            autoRefreshTimer = null;
         }
     }
 
-    async function tryAutoLogin() {
-        let savedPassword = null;
-        try { savedPassword = localStorage.getItem(SAVED_PASSWORD_KEY); } catch (e) {}
-        if (!savedPassword) return;
+    asyncفهمت قصدك بالظبط! الكود بتاعك فعلاً بيستخدم टैج `<details>` و `<summary>` اللي بيعملوا فكرة الفتح والقفل دي بشكل افتراضي، بس المشكلة إن مفيش **شكل أو علامة (زي + و -)** توضح لليوزر إن دي حاجة بتتداس عليها عشان تفتح التفاصيل.
 
-        currentPassword = savedPassword;
-        await fetchDashboardData();
-    }
+عشان نعملها زي ما أنت عاوز بالظبط (علامة **+** تفتح، وتتحول لـ **-** لما تفتح شكلها شيك ومتناسق مع الديزاين بتاعك)، هنعدل حتة صغيرة في الـ `CSS` وفي الـ `JavaScript`.
 
-    function logout() {
-        try { localStorage.removeItem(SAVED_PASSWORD_KEY); } catch (e) {}
-        currentPassword = "";
-        document.getElementById('dashboardScreen').classList.remove('active');
-        document.getElementById('loginScreen').style.display = 'flex';
-        document.getElementById('passwordInput').value = "";
-    }
+### 1. ضيف كود الـ CSS ده:
+حط الكود ده جوه تاج `<style>` عندك (ممكن تحطه قبل `@media (max-width: 480px)` مباشرة):
 
-    async function fetchDashboardData(silent) {
-        const loginError = document.getElementById('loginError');
-        const refreshStatus = document.getElementById('refreshStatus');
-        const isInsideDashboard = document.getElementById('dashboardScreen').classList.contains('active');
-
-        try {
-            const response = await fetch(DASHBOARD_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ password: currentPassword })
-            });
-            const result = await response.json();
-            if (result.status !== "success") {
-                if (isInsideDashboard && !silent) {
-                    refreshStatus.innerText = result.message || "فشل التحديث";
-                } else if (!isInsideDashboard) {
-                    loginError.innerText = result.message || "كلمة المرور غير صحيحة";
-                }
-                return false;
-            }
-
-            renderDashboard(result);
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('dashboardScreen').classList.add('active');
-            return true;
-        } catch (err) {
-            if (!silent) loginError.innerText = "تعذر الاتصال بالخادم";
-            return false;
+```css
+        /* ===== شكل أيقونة الفتح والقفل (+ / -) ===== */
+        .gov-name-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-    }
-
-    function renderDashboard(data) {
-        document.getElementById('totalCount').innerText = data.totalCount;
-        document.getElementById('lastUpdated').innerText = "آخر تحديث: " + formatDate(data.lastUpdated);
-
-        // ===== عرض إجمالي التسجيلات لكل اتحاد فوق =====
-        if (data.entityTotals && data.entityTotals.length > 0) {
-            const entityChipsHtml = data.entityTotals.map(e => `
-                <div class="entity-chip">
-                    <span class="ent-name">🏛️ ${escapeHtml(e.entity)}</span>
-                    <span class="ent-count">${e.total} <small style="font-size: 11px; font-weight: 600; color: var(--muted-text);">تسجيل</small></span>
-                </div>
-            `).join('');
-            document.getElementById('entityTotalsContainer').innerHTML = entityChipsHtml;
-        } else {
-            document.getElementById('entityTotalsContainer').innerHTML = '';
+        
+        .toggle-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background-color: #ffe6e6; /* لون أحمر فاتح */
+            color: var(--primary-red);
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: 900;
+            transition: all 0.3s ease;
         }
 
-        const govNames = Object.keys(data.governorates);
-        if (govNames.length === 0) {
-            document.getElementById('emptyState').style.display = 'block';
-            document.getElementById('governoratesList').innerHTML = '';
-            return;
-        }
-        document.getElementById('emptyState').style.display = 'none';
-
-        // ===== قسم الفائزين =====
-        const winnersHtml = govNames
-            .filter(gov => data.governorates[gov].winner)
-            .map(gov => {
-                const w = data.governorates[gov].winner;
-                return `
-                    <div class="winner-card">
-                        <div class="gov-name">${escapeHtml(gov)}</div>
-                        <div class="winner-name">👑 ${escapeHtml(w.name)}</div>
-                        <div class="winner-stats">${w.referredCount} ترشيح · ${w.followersCount} متابع</div>
-                    </div>
-                `;
-            }).join('');
-
-        if (winnersHtml) {
-            document.getElementById('winnersSection').innerHTML = `
-                <div class="section-title">🏆 الأكثر ترشيحاً (YLY) حسب المحافظة</div>
-                <div class="winners-grid">${winnersHtml}</div>
-            `;
-        } else {
-            document.getElementById('winnersSection').innerHTML = '';
+        .toggle-icon::after {
+            content: '+';
+            margin-top: -2px;
         }
 
-        // ===== عرض المحافظات =====
-        const govsHtml = govNames.map(gov => {
-            const g = data.governorates[gov];
-
-            const entityRows = g.byEntity.map(e => {
-                const regClass = e.count > 0 ? 'reg' : 'zero';
-                const certClass = e.certs > 0 ? 'cert' : 'zero';
-                return `
-                    <tr>
-                        <td class="entity-name-cell">🏛️ ${escapeHtml(e.entity)}</td>
-                        <td><span class="count-pill ${regClass}">${e.count} تسجيل</span></td>
-                        <td><span class="count-pill ${certClass}">${e.certs} شهادة</span></td>
-                    </tr>
-                `;
-            }).join('');
-
-            return `
-                <div class="gov-card">
-                    <div class="gov-header">
-                        <div class="gov-title">📍 ${escapeHtml(gov)}</div>
-                        <div class="gov-total-badges">
-                            <span class="badge-total-reg">الإجمالي: ${g.total} تسجيل</span>
-                            <span class="badge-total-cert">الشهادات: ${g.totalCerts}</span>
-                        </div>
-                    </div>
-                    <div class="entity-table-container">
-                        <table class="entity-table">
-                            <thead>
-                                <tr>
-                                    <th>الاتحاد / الكيان</th>
-                                    <th>عدد المسجلين</th>
-                                    <th>عدد الشهادات المرفوعة</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${entityRows}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        document.getElementById('governoratesList').innerHTML = govsHtml;
-    }
-
-    function escapeHtml(str) {
-        const div = document.createElement('div');
-        div.innerText = str;
-        return div.innerHTML;
-    }
-
-    function formatDate(dateStr) {
-        try {
-            const d = new Date(dateStr);
-            return d.toLocaleString('ar-EG');
-        } catch (e) {
-            return dateStr;
+        /* الشكل لما المحافظة تتفتح */
+        .gov-details[open] .toggle-icon {
+            background-color: var(--primary-red);
+            color: #ffffff;
+            transform: rotate(180deg);
         }
-    }
 
-    document.getElementById('passwordInput').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') attemptLogin();
-    });
+        .gov-details[open] .toggle-icon::after {
+            content: '-';
+            margin-top: -4px;
+        }
 
-    tryAutoLogin();
-</script>
-</body>
-</html>
+        .gov-details summary:hover .toggle-icon {
+            background-color: var(--primary-red);
+            color: #ffffff;
+        }
