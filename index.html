@@ -45,38 +45,6 @@
             align-items: center;
         }
 
-        /* تنسيق عدادات الإحصائيات */
-        .stats-container {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-box {
-            flex: 1;
-            background: #f9f9f9;
-            border: 2px solid var(--box-border);
-            border-radius: 18px;
-            padding: 12px 10px;
-            text-align: center;
-        }
-
-        .stat-title {
-            display: block;
-            font-size: 13px;
-            color: #555;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: 900;
-            color: var(--primary-red);
-        }
-
         .main-title {
             text-align: center;
             font-size: clamp(22px, 5vw, 26px);
@@ -423,18 +391,6 @@
 
 <div class="main-card">
     
-    <!-- حاوية العدادات (إجمالي التسجيلات يمين، إجمالي الشهادات شمال) -->
-    <div class="stats-container">
-        <div class="stat-box">
-            <span class="stat-title">إجمالي التسجيلات</span>
-            <span class="stat-value" id="totalRegs">0</span>
-        </div>
-        <div class="stat-box">
-            <span class="stat-title">إجمالي الشهادات</span>
-            <span class="stat-value" id="totalCerts">0</span>
-        </div>
-    </div>
-
     <div class="logos-container">
         <div class="top-logos">
             <img src="photo_5796201732420341509_y.jpg" alt="Youth Empowered">
@@ -616,6 +572,8 @@
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPvmuYbVibnhlbToybuWAsFwXQpn8YHRRChxFeOFPs9uABS862oBjXsB5KXxSrDGWX/exec';
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/gqxqvxhe/upload';
     const CLOUDINARY_PRESET = 'ye_intern_preset';
+
+
     const RECAPTCHA_SITE_KEY = '6LeqaqAtAAAAAL6QRjbJP0JZnXd4U7KtuLpkEuof';
 
     const standardGovernorates = [
@@ -625,22 +583,6 @@
     ];
 
     let currentStep = 1;
-
-    // جلب الإحصائيات عند تحميل الصفحة
-    async function fetchStats() {
-        try {
-            const response = await fetch(SCRIPT_URL + '?action=stats');
-            const data = await response.json();
-            if (data.status === "success") {
-                document.getElementById('totalRegs').innerText = data.totalRegistrations || 0;
-                document.getElementById('totalCerts').innerText = data.totalCertificates || 0;
-            }
-        } catch (error) {
-            console.error("Error fetching stats:", error);
-        }
-    }
-
-    window.addEventListener('DOMContentLoaded', fetchStats);
 
     function validateTripleName(input) {
         if (input.value.trim() === "") {
@@ -857,7 +799,7 @@
         }
     }
 
-    function getRecaptchaToken() {
+   function getRecaptchaToken() {
         return new Promise((resolve, reject) => {
             if (typeof grecaptcha === "undefined") {
                 reject(new Error("تعذر تحميل نظام التحقق الأمني (reCAPTCHA). تأكد من اتصالك بالإنترنت وأعد المحاولة."));
@@ -871,6 +813,7 @@
         });
     }
 
+   
     function showThankYouScreen() {
         document.getElementById('mainTitle').classList.add('hidden');
         document.getElementById('competitionForm').classList.add('hidden');
@@ -883,12 +826,13 @@
         e.preventDefault();
         const messageDiv = document.getElementById('message');
         
-        let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
-        if (submissionCount >= 1) {
-            messageDiv.style.color = "red";
-            messageDiv.innerText = "لقد قمت بالتسجيل من قبل، مسموح بتسجيل مرة واحدة فقط.";
-            return;
-        }
+       
+             let submissionCount = parseInt(localStorage.getItem('form_sub_count') || '0');
+if (submissionCount >= 1) {
+    messageDiv.style.color = "red";
+    messageDiv.innerText = "لقد قمت بالتسجيل من قبل، مسموح بتسجيل مرة واحدة فقط.";
+    return;
+}
 
         const honeypotValue = document.getElementById('user_url').value;
         if (honeypotValue !== "") {
@@ -904,7 +848,8 @@
         messageDiv.innerText = "";
 
         try {
-            const recaptchaToken = await getRecaptchaToken();
+                const recaptchaToken = await getRecaptchaToken();
+
             const entityName = document.getElementById('entity').value || "غير_معروف";
 
             const fbInput = document.getElementById('fbScreenshot');
@@ -957,6 +902,7 @@
 
             submissionCount++;
             localStorage.setItem('form_sub_count', submissionCount);
+
         
             document.getElementById('competitionForm').reset();
             showThankYouScreen();
