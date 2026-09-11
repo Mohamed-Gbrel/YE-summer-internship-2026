@@ -256,7 +256,7 @@
     let currentPassword = ""; 
     let autoRefreshTimer = null;
 
-    // دالة لتصفية واستبعاد أي جمل غير مرغوب فيها مثل عناوين الأعمدة
+    // دالة لتصفية واستبعاد الاتحادات الوهمية/عناوين الأعمدة
     function isValidEntity(entityName) {
         if (!entityName) return false;
         const cleaned = entityName.trim();
@@ -264,6 +264,22 @@
             cleaned === "" || 
             cleaned.includes("الاتحاد المنضم اليه") || 
             cleaned.includes("الاتحاد المنضم إليه") ||
+            cleaned.toLowerCase() === "undefined" ||
+            cleaned.toLowerCase() === "null"
+        ) {
+            return false;
+        }
+        return true;
+    }
+
+    // دالة لتصفية واستبعاد المحافظات الوهمية أو عناوين الأعمدة
+    function isValidGovernorate(govName) {
+        if (!govName) return false;
+        const cleaned = govName.trim();
+        if (
+            cleaned === "" || 
+            cleaned.includes("المحافظة/التيم التابع له") ||
+            cleaned.includes("المحافظة / التيم التابع له") ||
             cleaned.toLowerCase() === "undefined" ||
             cleaned.toLowerCase() === "null"
         ) {
@@ -378,7 +394,9 @@
         document.getElementById('totalCount').innerText = data.totalCount;
         document.getElementById('lastUpdated').innerText = "آخر تحديث: " + formatDate(data.lastUpdated);
         
-        const govNames = Object.keys(data.governorates);
+        // استخراج وفلترة المحافظات الصحيحة فقط
+        const govNames = Object.keys(data.governorates || {}).filter(isValidGovernorate);
+        
         if (govNames.length === 0) {
             document.getElementById('emptyState').style.display = 'block';
             return;
@@ -413,7 +431,7 @@
 
         // 2. قسم الفائزين
         const winnersHtml = govNames
-            .filter(gov => data.governorates[gov].winner)
+            .filter(gov => data.governorates[gov] && data.governorates[gov].winner)
             .map(gov => {
                 const w = data.governorates[gov].winner;
                 return `
