@@ -487,7 +487,6 @@
                 const entitiesHtml = validEntities.map(e => {
                     const entityFollowers = getEntityFollowers(e.entity, data);
                     
-                    // استخراج وتنسيق اللجان لو الاتحاد YLY
                     let committeesList = '';
                     if ((e.entity.toLowerCase().includes('yly') || e.entity.includes('يدير شباب')) && e.committees) {
                         committeesList = Object.entries(e.committees).map(([name, count]) => {
@@ -581,11 +580,11 @@
                     <thead><tr><th>الاتحاد</th><th>التسجيلات</th><th>الشهادات</th></tr></thead>
                     <tbody>
                         ${validByEntity.map(e => {
-                            // إضافة تفاصيل لجان YLY لكل محافظة تحت اسم الاتحاد
                             let ylySubCommittees = '';
-                            if ((e.entity.toLowerCase().includes('yly') || e.entity.includes('يدير شباب')) && e.committees) {
+                            const committeesData = e.committees || g.committees || g.ylyCommittees;
+                            if ((e.entity.toLowerCase().includes('yly') || e.entity.includes('يدير شباب')) && committeesData) {
                                 ylySubCommittees = `<div style="font-size: 11px; color: var(--muted-text); margin-top: 4px; font-weight: normal; line-height: 1.4;">` +
-                                    Object.entries(e.committees).map(([cName, cCount]) => `${escapeHtml(cName)}: <b>${cCount}</b>`).join(' | ') +
+                                    Object.entries(committeesData).map(([cName, cCount]) => `${escapeHtml(cName)}: <b>${cCount}</b>`).join(' | ') +
                                     `</div>`;
                             }
 
