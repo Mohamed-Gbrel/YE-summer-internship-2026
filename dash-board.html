@@ -62,7 +62,7 @@
         /* ===== الداشبورد ===== */
         #dashboardScreen {
             display: none;
-            max-width: 600px;
+            max-width: 800px; /* تم زيادة العرض قليلاً لتتسع اللجان */
             margin: 0 auto;
         }
         #dashboardScreen.active { display: block; }
@@ -173,28 +173,6 @@
             font-weight: 700;
         }
 
-        /* تنسيقات اللجان لـ YLY في جدول المحافظات */
-        .table-committees {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 6px;
-            margin-top: 8px;
-        }
-        .table-committees span {
-            background-color: #fce8e9; /* لون أحمر فاتح جداً */
-            color: #555;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 6px;
-            border: 1px solid #fad2d4;
-        }
-        .table-committees span b {
-            color: var(--primary-red);
-            margin-right: 3px;
-        }
-
         /* ===== الفايزين ===== */
         .winners-grid {
             display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;
@@ -227,14 +205,48 @@
         .gov-details summary {
             padding: 20px;
             cursor: pointer;
-            font-weight: 900;
-            font-size: 17px;
+            list-style: none;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            list-style: none;
+            flex-wrap: wrap; /* للسماح بنزول المحتوى في الشاشات الصغيرة */
+            gap: 15px;
         }
         .gov-details summary::-webkit-details-marker { display: none; }
+        
+        .gov-title {
+            font-weight: 900;
+            font-size: 17px;
+            color: var(--text-color);
+        }
+
+        .gov-stats-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* تنسيق اللجان بخط صغير بجوار إجمالي التسجيلات */
+        .gov-yly-comms {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .gov-yly-comms .comm-badge {
+            background-color: #f7f7f7;
+            color: var(--muted-text);
+            font-size: 11px; /* خط صغير جداً كما طلبت */
+            padding: 2px 8px;
+            border-radius: 8px;
+            border: 1px solid #eaeaea;
+            font-weight: 600;
+        }
+        .gov-yly-comms .comm-badge b {
+            color: var(--primary-red);
+            margin-right: 3px;
+        }
+
         .gov-summary-stats {
             display: flex; gap: 15px; font-size: 14px; font-weight: 700; color: var(--muted-text);
         }
@@ -261,6 +273,14 @@
         .data-table tr:last-child td { border-bottom: none; }
 
         #emptyState { text-align: center; padding: 60px 20px; color: var(--muted-text); font-weight: bold; }
+
+        @media (max-width: 600px) {
+            .gov-stats-wrapper {
+                flex-direction: column-reverse;
+                align-items: flex-end;
+                gap: 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -597,36 +617,32 @@
             
             const validByEntity = (g.byEntity || []).filter(e => isValidEntity(e.entity));
             
+            // استخراج لجان YLY لوضعها في الشريط الخارجي
+            let externalCommsHtml = '';
+            const ylyEntity = validByEntity.find(e => e.entity.toLowerCase().includes('yly') || e.entity.includes('يدير شباب'));
+            
+            if (ylyEntity && ylyEntity.committees) {
+                const comms = Object.entries(ylyEntity.committees).map(([name, count]) => {
+                    return `<span class="comm-badge">${escapeHtml(name)} <b>${count}</b></span>`;
+                }).join('');
+                
+                if (comms) {
+                    externalCommsHtml = `<div class="gov-yly-comms">${comms}</div>`;
+                }
+            }
+
             let innerContent = `
                 <div class="inner-table-title">إحصائيات الاتحادات</div>
                 <table class="data-table">
                     <thead><tr><th>الاتحاد</th><th>التسجيلات</th><th>الشهادات</th></tr></thead>
                     <tbody>
-                        ${validByEntity.map(e => {
-                            // بداية كود استخراج اللجان لـ YLY
-                            let committeesHtml = '';
-                            if ((e.entity.toLowerCase().includes('yly') || e.entity.includes('يدير شباب')) && e.committees) {
-                                const comms = Object.entries(e.committees).map(([name, count]) => {
-                                    return `<span>${escapeHtml(name)} <b>${count}</b></span>`;
-                                }).join('');
-                                
-                                if (comms) {
-                                    committeesHtml = `<div class="table-committees">${comms}</div>`;
-                                }
-                            }
-                            // نهاية كود استخراج اللجان
-                            
-                            return `
+                        ${validByEntity.map(e => `
                             <tr>
-                                <td>
-                                    <div style="font-weight: 800;">${escapeHtml(e.entity)}</div>
-                                    ${committeesHtml}
-                                </td>
+                                <td>${escapeHtml(e.entity)}</td>
                                 <td>${e.count}</td>
                                 <td>${e.certs}</td>
                             </tr>
-                            `;
-                        }).join('')}
+                        `).join('')}
                     </tbody>
                 </table>
             `;
@@ -664,11 +680,14 @@
             return `
                 <details class="gov-details">
                     <summary>
-                        <span>${rank}. ${escapeHtml(gov)}</span>
-                        <span class="gov-summary-stats">
-                            <span><b>${g.total}</b> تسجيل</span>
-                            <span><b>${g.totalCerts}</b> شهادة</span>
-                        </span>
+                        <div class="gov-title">${rank}. ${escapeHtml(gov)}</div>
+                        <div class="gov-stats-wrapper">
+                            ${externalCommsHtml}
+                            <span class="gov-summary-stats">
+                                <span><b>${g.total}</b> تسجيل</span>
+                                <span><b>${g.totalCerts}</b> شهادة</span>
+                            </span>
+                        </div>
                     </summary>
                     <div class="gov-content">
                         ${innerContent}
