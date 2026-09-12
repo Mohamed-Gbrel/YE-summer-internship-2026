@@ -158,7 +158,7 @@
             padding-top: 10px;
         }
 
-        /* تنسيقات اللجان لـ YLY */
+        /* تنسيقات اللجان لـ YLY (في الإجمالي العام) */
         .yly-committees {
             font-size: 11px;
             color: #888;
@@ -171,6 +171,28 @@
         .committee-stat span {
             color: var(--text-color);
             font-weight: 700;
+        }
+
+        /* تنسيقات اللجان لـ YLY في جدول المحافظات */
+        .table-committees {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .table-committees span {
+            background-color: #fce8e9; /* لون أحمر فاتح جداً */
+            color: #555;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid #fad2d4;
+        }
+        .table-committees span b {
+            color: var(--primary-red);
+            margin-right: 3px;
         }
 
         /* ===== الفايزين ===== */
@@ -487,6 +509,7 @@
                 const entitiesHtml = validEntities.map(e => {
                     const entityFollowers = getEntityFollowers(e.entity, data);
                     
+                    // استخراج وتنسيق اللجان لو الاتحاد YLY
                     let committeesList = '';
                     if ((e.entity.toLowerCase().includes('yly') || e.entity.includes('يدير شباب')) && e.committees) {
                         committeesList = Object.entries(e.committees).map(([name, count]) => {
@@ -580,25 +603,28 @@
                     <thead><tr><th>الاتحاد</th><th>التسجيلات</th><th>الشهادات</th></tr></thead>
                     <tbody>
                         ${validByEntity.map(e => {
-                            let ylySubCommittees = '';
-                            const committeesData = e.committees || g.committees || g.ylyCommittees;
-                            if ((e.entity.toLowerCase().includes('yly') || e.entity.includes('يدير شباب')) && committeesData) {
-                                ylySubCommittees = `<div class="yly-committees" style="margin-top: 6px;">` +
-                                    Object.entries(committeesData).map(([cName, cCount]) => 
-                                        `<div class="committee-stat">${escapeHtml(cName)}: <span>${cCount}</span></div>`
-                                    ).join('') +
-                                    `</div>`;
+                            // بداية كود استخراج اللجان لـ YLY
+                            let committeesHtml = '';
+                            if ((e.entity.toLowerCase().includes('yly') || e.entity.includes('يدير شباب')) && e.committees) {
+                                const comms = Object.entries(e.committees).map(([name, count]) => {
+                                    return `<span>${escapeHtml(name)} <b>${count}</b></span>`;
+                                }).join('');
+                                
+                                if (comms) {
+                                    committeesHtml = `<div class="table-committees">${comms}</div>`;
+                                }
                             }
-
+                            // نهاية كود استخراج اللجان
+                            
                             return `
-                                <tr>
-                                    <td style="text-align: right; padding-right: 10px;">
-                                        ${escapeHtml(e.entity)}
-                                        ${ylySubCommittees}
-                                    </td>
-                                    <td>${e.count}</td>
-                                    <td>${e.certs}</td>
-                                </tr>
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 800;">${escapeHtml(e.entity)}</div>
+                                    ${committeesHtml}
+                                </td>
+                                <td>${e.count}</td>
+                                <td>${e.certs}</td>
+                            </tr>
                             `;
                         }).join('')}
                     </tbody>
