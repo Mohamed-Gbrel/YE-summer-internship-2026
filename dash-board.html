@@ -583,8 +583,10 @@
                             let ylySubCommittees = '';
                             const committeesData = e.committees || g.committees || g.ylyCommittees;
                             if ((e.entity.toLowerCase().includes('yly') || e.entity.includes('يدير شباب')) && committeesData) {
-                                ylySubCommittees = `<div style="font-size: 11px; color: var(--muted-text); margin-top: 4px; font-weight: normal; line-height: 1.4;">` +
-                                    Object.entries(committeesData).map(([cName, cCount]) => `${escapeHtml(cName)}: <b>${cCount}</b>`).join(' | ') +
+                                ylySubCommittees = `<div class="yly-committees" style="margin-top: 6px;">` +
+                                    Object.entries(committeesData).map(([cName, cCount]) => 
+                                        `<div class="committee-stat">${escapeHtml(cName)}: <span>${cCount}</span></div>`
+                                    ).join('') +
                                     `</div>`;
                             }
 
