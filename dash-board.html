@@ -158,6 +158,21 @@
             padding-top: 10px;
         }
 
+        /* تنسيقات اللجان لـ YLY */
+        .yly-committees {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-weight: normal;
+        }
+        .committee-stat span {
+            color: var(--text-color);
+            font-weight: 700;
+        }
+
         /* ===== الفايزين ===== */
         .winners-grid {
             display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;
@@ -471,14 +486,28 @@
             if (validEntities.length > 0) {
                 const entitiesHtml = validEntities.map(e => {
                     const entityFollowers = getEntityFollowers(e.entity, data);
+                    
+                    // استخراج وتنسيق اللجان لو الاتحاد YLY
+                    let committeesList = '';
+                    if ((e.entity.toLowerCase().includes('yly') || e.entity.includes('يدير شباب')) && e.committees) {
+                        committeesList = Object.entries(e.committees).map(([name, count]) => {
+                            return `<div class="committee-stat">${escapeHtml(name)}: <span>${count}</span></div>`;
+                        }).join('');
+                    }
+
                     return `
                         <div class="entity-card">
                             <div class="entity-card-header">${escapeHtml(e.entity)}</div>
                             <div class="entity-main-stat">${e.total}</div>
-                            <div class="entity-sub-stats">
-                                <span>عضو: ${e.memberCount}</span>
-                                <span>صديق مرشح: ${e.friendCount}</span>
+                            
+                            <div class="entity-sub-stats" style="align-items: flex-end;">
+                                <div>عضو: ${e.memberCount}</div>
+                                <div style="text-align: left;">
+                                    ${committeesList ? `<div class="yly-committees">${committeesList}</div>` : ''}
+                                    <div>صديق مرشح: ${e.friendCount}</div>
+                                </div>
                             </div>
+                            
                             <div class="entity-footer">
                                 <span>${e.certs} شهادة</span>
                                 <span>متابع: ${entityFollowers}</span>
